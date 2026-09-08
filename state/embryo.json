@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 2,
-  "energy_spent": 8,
-  "next_node_seq": 5,
-  "next_event_seq": 9,
-  "ledger_head": "2f05d32037329323bb9c46b679aca17490e55b23fcd1dd722b20308ee1b5529e",
+  "generation": 3,
+  "energy_spent": 12,
+  "next_node_seq": 6,
+  "next_event_seq": 13,
+  "ledger_head": "beb66bdd1ae7ea535bddce16df20b8cf3d937a81ea48e04796aad0fe3cc223c4",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -43,7 +43,7 @@
     {
       "id": "question-0003",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What do you think about the impact of the work environment on the development of human values among employees?\nOutput only that question, in the language of the value.\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen",
       "source": "questioner-cell",
       "created_event": 6
@@ -51,10 +51,18 @@
     {
       "id": "proposal-0004",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen LLM geworden s",
       "source": "proposer-cell",
       "created_event": 7
+    },
+    {
+      "id": "question-0005",
+      "kind": "question",
+      "status": "open",
+      "text": "What does the research focus on?\n- What is the main objective of the study?\n- What is the research's main aim?\n- What is the research's main topic?\n- What is the research's main subject?\n- What is the research's main theme?\n- What is the",
+      "source": "questioner-cell",
+      "created_event": 11
     }
   ],
   "edges": [
@@ -85,6 +93,13 @@
       "to": "question-0003",
       "relation": "answers",
       "created_event": 7
+    },
+    {
+      "id": "edge-0005",
+      "from": "question-0005",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 11
     }
   ],
   "needs": [
@@ -139,10 +154,29 @@
       "id": "need-review-6dd5bac9afd0",
       "kind": "REVIEW",
       "target_id": "proposal-0004",
-      "status": "open",
-      "attempts": 1,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 1,
       "priority": 40
+    },
+    {
+      "id": "need-question-23ea66727647",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-a17f5e9cd4d5",
+      "kind": "PROPOSE",
+      "target_id": "question-0005",
+      "status": "open",
+      "attempts": 1,
+      "created_generation": 2,
+      "priority": 30
     }
   ]
 }
