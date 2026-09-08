@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-005",
-  "generation": 5,
-  "energy_spent": 20,
-  "next_node_seq": 12,
-  "next_event_seq": 21,
-  "ledger_head": "9013a612d670f75044aa089414a44a5a168b9508aafb190b2d042f08f7cf6316",
+  "generation": 6,
+  "energy_spent": 24,
+  "next_node_seq": 16,
+  "next_event_seq": 25,
+  "ledger_head": "ac927b74e047d7eed754b7bba44e511034e1b29fcb208042fd448c1f64838890",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -117,6 +117,40 @@
       "text": "What does the research focus on?\n- What is the main objective of the study?\n- What is the research's main aim?\n- What is the research's main topic?\n- What is the research's main subject?\n- What is the research's main theme?\n- What is the",
       "source": "questioner-cell",
       "created_event": 17
+    },
+    {
+      "id": "question-0012",
+      "kind": "question",
+      "status": "under_review",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Ent",
+      "source": "questioner-cell",
+      "created_event": 21
+    },
+    {
+      "id": "proposal-0013",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen LLM geworden",
+      "source": "proposer-cell",
+      "created_event": 22
+    },
+    {
+      "id": "review-fragment-0014",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 23
+    },
+    {
+      "id": "review-fragment-0015",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen LLM geworden\n- Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen LLM geworden\n- Entwickel eine philosophische",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 24
     }
   ],
   "edges": [
@@ -196,6 +230,34 @@
       "to": "goal-0001",
       "relation": "investigates",
       "created_event": 17
+    },
+    {
+      "id": "edge-0012",
+      "from": "question-0012",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 21
+    },
+    {
+      "id": "edge-0013",
+      "from": "proposal-0013",
+      "to": "question-0012",
+      "relation": "answers",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0014",
+      "from": "review-fragment-0014",
+      "to": "proposal-0013",
+      "relation": "reviews",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0015",
+      "from": "review-fragment-0015",
+      "to": "proposal-0013",
+      "relation": "reviews",
+      "created_event": 24
     }
   ],
   "needs": [
@@ -338,11 +400,50 @@
       "id": "need-question-e9e10611f19c",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 4,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-ad1936e5d9d8",
+      "kind": "PROPOSE",
+      "target_id": "question-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-763369a7ca02",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0013",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-8ebe7b3edc1d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0013",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-595daf277066",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0013",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 2
     }
   ]
 }
