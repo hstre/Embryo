@@ -1,19 +1,19 @@
 {
-  "schema_version": 1,
-  "embryo_id": "human-llm-society-002",
+  "schema_version": 2,
+  "embryo_id": "human-llm-society-003",
   "generation": 0,
   "energy_spent": 0,
   "next_node_seq": 1,
   "next_event_seq": 1,
   "ledger_head": null,
   "config": {
-    "target_claims": 6,
+    "target_proposals": 4,
     "max_attempts_per_need": 3,
     "max_cells_per_generation": 4,
     "max_generations": 16,
     "energy_budget": 64,
     "max_text_chars": 1200,
-    "local_observation_limit": 3
+    "local_context_limit": 6
   },
   "nodes": [
     {
@@ -28,8 +28,8 @@
   "edges": [],
   "needs": [
     {
-      "id": "need-explore-00f210982900",
-      "kind": "EXPLORE",
+      "id": "need-question-d021588ad209",
+      "kind": "QUESTION",
       "target_id": "goal-0001",
       "status": "open",
       "attempts": 0,

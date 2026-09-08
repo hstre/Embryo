@@ -1,61 +1,48 @@
 import { digest } from "./canonical.mjs";
 import { nodeById } from "./state.mjs";
 
-const STOPWORDS = new Set(["a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "in", "is", "it", "of", "on", "or", "that", "the", "to", "with"]);
-
-function tokens(text) {
-  return new Set(
-    text
-      .toLowerCase()
-      .match(/[\p{L}\p{N}]+/gu)
-      ?.filter((token) => token.length > 2 && !STOPWORDS.has(token)) ?? [],
-  );
+function linkedQuestion(state, proposal) {
+  if (proposal.kind === "question") return proposal;
+  if (proposal.kind !== "proposal") return null;
+  const edge = state.edges.find((candidate) => candidate.from === proposal.id && candidate.relation === "answers");
+  return edge ? nodeById(state, edge.to) : null;
 }
 
-function overlapScore(left, right) {
-  const a = tokens(left);
-  const b = tokens(right);
-  let score = 0;
-  for (const token of a) if (b.has(token)) score += 1;
-  return score;
+function reviewsFor(state, targetId) {
+  const reviewIds = state.edges
+    .filter((edge) => edge.to === targetId && ["accepts", "revises", "rejects"].includes(edge.relation))
+    .map((edge) => edge.from);
+  return reviewIds.map((id) => nodeById(state, id)).filter(Boolean);
 }
 
 export function buildLocalView(state, need) {
   const goal = state.nodes.find((node) => node.kind === "goal");
   const target = nodeById(state, need.target_id);
-  const observations = state.nodes
-    .filter((node) => node.kind === "observation")
-    .map((node) => ({ node, score: overlapScore(target.text, node.text) }))
-    .sort((a, b) => b.score - a.score || (a.node.ordinal ?? 0) - (b.node.ordinal ?? 0))
-    .slice(0, state.config.local_observation_limit)
-    .map(({ node }) => ({ id: node.id, text: node.text, source: node.source }));
-
-  const linkedIds = new Set(
-    state.edges
-      .filter((edge) => edge.from === target.id || edge.to === target.id)
-      .flatMap((edge) => [edge.from, edge.to]),
-  );
-  linkedIds.delete(target.id);
-  const neighbors = [...linkedIds]
-    .map((id) => nodeById(state, id))
-    .filter(Boolean)
+  const limit = state.config.local_context_limit;
+  const question = linkedQuestion(state, target);
+  const acceptedProposals = state.nodes
+    .filter((node) => node.kind === "proposal" && node.status === "accepted")
+    .slice(-limit)
+    .map(({ id, text }) => ({ id, text }));
+  const negativeTraces = state.nodes
+    .filter((node) =>
+      (node.kind === "question" && node.status === "abandoned")
+      || (["proposal", "synthesis"].includes(node.kind) && ["rejected", "superseded"].includes(node.status)),
+    )
+    .slice(-limit)
     .map(({ id, kind, status, text }) => ({ id, kind, status, text }));
 
   const view = {
     embryo_id: state.embryo_id,
     generation: state.generation,
+    role: need.kind === "QUESTION" ? "questioner" : need.kind === "REVIEW" ? "reviewer" : "proposer",
     need: { id: need.id, kind: need.kind, target_id: need.target_id, attempts: need.attempts },
     goal: { id: goal.id, text: goal.text },
     target: { id: target.id, kind: target.kind, status: target.status, text: target.text },
-    neighbors,
-    observations,
-    supported_claims: state.nodes
-      .filter((node) => node.kind === "claim" && node.status === "supported")
-      .map(({ id, text }) => ({ id, text })),
-    negative_traces: state.nodes
-      .filter((node) => node.kind === "claim" && ["retracted", "superseded"].includes(node.status))
-      .slice(-5)
-      .map(({ id, text, status }) => ({ id, text, status })),
+    question: question ? { id: question.id, status: question.status, text: question.text } : null,
+    reviews: reviewsFor(state, target.id).slice(-limit).map(({ id, text }) => ({ id, text })),
+    accepted_proposals: acceptedProposals,
+    negative_traces: negativeTraces,
   };
   return { view, hash: digest(view) };
 }

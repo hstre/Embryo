@@ -27,7 +27,7 @@ The analogy is operational, not a claim that software is literally biological.
 
 ## Invariants
 
-1. **Work, not messages, recruits cells.** An unsupported claim creates a `VERIFY` need; a challenged claim creates a `REPAIR` need.
+1. **Work, not messages, recruits cells.** A question creates a `PROPOSE` need; a proposal creates a `REVIEW` need; a review changes what the tissue needs next.
 2. **Proposal is not consequence.** LLM output is never authoritative. The gate validates a closed action vocabulary and all referenced objects.
 3. **Evidence must exist in the environment.** A cell cannot create an observation and cite it as evidence in the same action.
 4. **Every attempt leaves a receipt.** Receipts are append-only, hash-linked, attributable and replay-checked.
@@ -37,15 +37,12 @@ The analogy is operational, not a claim that software is literally biological.
 ## Current developmental cycle
 
 ```text
-EXPLORE -> ADD_CLAIM -> VERIFY -> SUPPORT or CHALLENGE
-                                      |          |
-                                      |          v
-                                      |        REPAIR -> REVISE or RETRACT
-                                      v
-                              enough supported claims
-                                      |
-                                      v
-                                  SYNTHESIZE -> quiescence
+QUESTION -> question artifact -> PROPOSE -> proposal artifact -> REVIEW
+    ^                                      |                    |
+    |                                      v                    v
+    +---------------------------- reject / reframe       accept / revise
+
+enough accepted proposals -> SYNTHESIZE (proposer phenotype) -> REVIEW -> quiescence
 ```
 
 The model does not choose to spawn anything. `deriveNeeds()` examines the accepted tissue and deterministically creates the next local work gradients.
@@ -114,6 +111,6 @@ The `GITHUB_TOKEN` has only `contents: write` and `actions: write`. Generated mo
 
 Version 0.1 establishes the experimental substrate. The next research stage is a blinded benchmark against a single cell, best-of-N independent cells, fixed-role communicating agents and the growing stigmergic condition.
 
-## Experiment 002
+## Experiment 003
 
-The second embryo begins with one open goal and no supplied observations. Exploration cells may leave new propositions; separate local cells provisionally support, challenge, revise or retract them. Retracted and superseded propositions remain visible as negative traces, and the deterministic gate refuses their exact reintroduction.
+The third embryo begins with one open goal and no supplied observations or examples. It differentiates three cell phenotypes: a questioner leaves questions, a proposer answers or revises them, and a reviewer leaves a reasoned `ACCEPT`, `REVISE` or `REJECT` trace. Failed and superseded work remains visible as inhibition, while exhausted review causes deterministic rejection and reframing rather than an endless loop.

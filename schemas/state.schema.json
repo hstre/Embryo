@@ -6,7 +6,7 @@
   "required": ["schema_version", "embryo_id", "generation", "energy_spent", "next_node_seq", "next_event_seq", "ledger_head", "config", "nodes", "edges", "needs"],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "const": 1 },
+    "schema_version": { "const": 2 },
     "embryo_id": { "type": "string", "minLength": 1, "maxLength": 80 },
     "generation": { "$ref": "#/$defs/nonNegativeInteger" },
     "energy_spent": { "$ref": "#/$defs/nonNegativeInteger" },
@@ -15,16 +15,16 @@
     "ledger_head": { "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^[a-f0-9]{64}$" }] },
     "config": {
       "type": "object",
-      "required": ["target_claims", "max_attempts_per_need", "max_cells_per_generation", "max_generations", "energy_budget", "max_text_chars", "local_observation_limit"],
+      "required": ["target_proposals", "max_attempts_per_need", "max_cells_per_generation", "max_generations", "energy_budget", "max_text_chars", "local_context_limit"],
       "additionalProperties": false,
       "properties": {
-        "target_claims": { "$ref": "#/$defs/positiveInteger" },
+        "target_proposals": { "$ref": "#/$defs/positiveInteger" },
         "max_attempts_per_need": { "$ref": "#/$defs/positiveInteger" },
         "max_cells_per_generation": { "$ref": "#/$defs/positiveInteger" },
         "max_generations": { "$ref": "#/$defs/positiveInteger" },
         "energy_budget": { "$ref": "#/$defs/positiveInteger" },
         "max_text_chars": { "$ref": "#/$defs/positiveInteger" },
-        "local_observation_limit": { "$ref": "#/$defs/positiveInteger" }
+        "local_context_limit": { "$ref": "#/$defs/positiveInteger" }
       }
     },
     "nodes": { "type": "array", "items": { "$ref": "#/$defs/node" } },
@@ -41,8 +41,8 @@
       "additionalProperties": false,
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "kind": { "enum": ["goal", "observation", "claim", "challenge", "synthesis"] },
-        "status": { "enum": ["given", "open", "unverified", "supported", "challenged", "superseded", "retracted", "accepted"] },
+        "kind": { "enum": ["goal", "observation", "question", "proposal", "review", "synthesis"] },
+        "status": { "enum": ["given", "open", "under_review", "answered", "abandoned", "unreviewed", "accepted", "revision_requested", "rejected", "superseded", "recorded"] },
         "text": { "type": "string", "minLength": 1 },
         "source": { "type": "string", "minLength": 1 },
         "created_event": { "$ref": "#/$defs/nonNegativeInteger" },
@@ -57,7 +57,7 @@
         "id": { "$ref": "#/$defs/id" },
         "from": { "$ref": "#/$defs/id" },
         "to": { "$ref": "#/$defs/id" },
-        "relation": { "enum": ["addresses", "supports", "challenges", "supersedes", "synthesizes"] },
+        "relation": { "enum": ["investigates", "answers", "accepts", "revises", "rejects", "supersedes", "synthesizes"] },
         "created_event": { "$ref": "#/$defs/nonNegativeInteger" }
       }
     },
@@ -67,7 +67,7 @@
       "additionalProperties": false,
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "kind": { "enum": ["EXPLORE", "VERIFY", "REPAIR", "SYNTHESIZE"] },
+        "kind": { "enum": ["QUESTION", "PROPOSE", "REVIEW", "SYNTHESIZE"] },
         "target_id": { "$ref": "#/$defs/id" },
         "status": { "enum": ["open", "resolved", "exhausted"] },
         "attempts": { "$ref": "#/$defs/nonNegativeInteger" },

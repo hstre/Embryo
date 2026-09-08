@@ -3,13 +3,13 @@ import { dirname } from "node:path";
 import { validateSeed, validateState } from "./schema.mjs";
 
 export const DEFAULT_CONFIG = Object.freeze({
-  target_claims: 2,
-  max_attempts_per_need: 2,
+  target_proposals: 4,
+  max_attempts_per_need: 3,
   max_cells_per_generation: 4,
-  max_generations: 12,
-  energy_budget: 32,
+  max_generations: 16,
+  energy_budget: 64,
   max_text_chars: 1200,
-  local_observation_limit: 3,
+  local_context_limit: 6,
 });
 
 export function createState(seed) {
@@ -35,7 +35,7 @@ export function createState(seed) {
     })),
   ];
   const state = {
-    schema_version: 1,
+    schema_version: 2,
     embryo_id: seed.embryo_id,
     generation: 0,
     energy_spent: 0,

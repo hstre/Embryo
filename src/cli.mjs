@@ -47,11 +47,12 @@ function summary(state) {
     generation: state.generation,
     energy: `${state.energy_spent}/${state.config.energy_budget}`,
     nodes: state.nodes.length,
-    claims: state.nodes.filter((node) => node.kind === "claim").length,
-    supported_claims: state.nodes.filter((node) => node.kind === "claim" && node.status === "supported").length,
+    questions: state.nodes.filter((node) => node.kind === "question").length,
+    proposals: state.nodes.filter((node) => node.kind === "proposal").length,
+    accepted_proposals: state.nodes.filter((node) => node.kind === "proposal" && node.status === "accepted").length,
     open_needs: openNeeds.map((need) => ({ id: need.id, kind: need.kind, target_id: need.target_id })),
     can_grow: canGrow(state),
-    synthesis: state.nodes.find((node) => node.kind === "synthesis")?.text ?? null,
+    synthesis: state.nodes.find((node) => node.kind === "synthesis" && node.status === "accepted")?.text ?? null,
     ledger_head: state.ledger_head,
   };
 }
