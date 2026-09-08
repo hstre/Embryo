@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 9,
-  "energy_spent": 36,
-  "next_node_seq": 16,
-  "next_event_seq": 37,
-  "ledger_head": "e6930cbe6429be46cccd3ef90b39bc32688aa36ee663726d14baff7511f21488",
+  "generation": 10,
+  "energy_spent": 40,
+  "next_node_seq": 17,
+  "next_event_seq": 41,
+  "ledger_head": "220a25624be0dd4b27c1e1aa3b1a6e84bc972e5b351aef1939c0f3f09c7b7b5b",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -131,7 +131,7 @@
     {
       "id": "question-0014",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What's wrong with this sentence?\n- \"There were several reasons why the company decided to hire me.\"\n- \"It seems that the company has been hiring people for some time now.\"\n- \"I had a few questions about the company.\"\n- \"I would like to thank the company for its services",
       "source": "questioner-cell",
       "created_event": 35
@@ -139,10 +139,18 @@
     {
       "id": "proposal-0015",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- What do you think about the following statement?\n- \"In general, there is a lot of evidence that shows that the amount of time spent studying is related to the quality of",
       "source": "proposer-cell",
       "created_event": 36
+    },
+    {
+      "id": "question-0016",
+      "kind": "question",
+      "status": "open",
+      "text": "- What is the best way to approach this problem?\n- What does the goal look like?\n- What kind of data do we need to use?\n- What kind of data do we need to collect?\n- What kind of data do we need to analyze?\n- What kind of data do",
+      "source": "questioner-cell",
+      "created_event": 40
     }
   ],
   "edges": [
@@ -250,6 +258,13 @@
       "to": "question-0014",
       "relation": "answers",
       "created_event": 36
+    },
+    {
+      "id": "edge-0016",
+      "from": "question-0016",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 40
     }
   ],
   "needs": [
@@ -463,10 +478,29 @@
       "id": "need-review-965e15ba9d7b",
       "kind": "REVIEW",
       "target_id": "proposal-0015",
-      "status": "open",
-      "attempts": 0,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 8,
       "priority": 40
+    },
+    {
+      "id": "need-question-489891884388",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-1e4936d95811",
+      "kind": "PROPOSE",
+      "target_id": "question-0016",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 30
     }
   ]
 }
