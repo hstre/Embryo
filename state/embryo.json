@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 12,
-  "energy_spent": 48,
-  "next_node_seq": 20,
-  "next_event_seq": 49,
-  "ledger_head": "1229f017966b190975c1535195d846bf92f15230d3a84bbfc3b5ba45d19d40e7",
+  "generation": 13,
+  "energy_spent": 52,
+  "next_node_seq": 22,
+  "next_event_seq": 53,
+  "ledger_head": "94c516f3fa3a3e5fbdb5041daa6eade7a79a124bbfa4f38e01d97d17bb03a3ab",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -163,7 +163,7 @@
     {
       "id": "question-0018",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What is the best way to approach this problem?\n- \"The company will be giving us a proposal to help them to improve their academic performance.\"\n- \"We will be giving a proposal to help them to improve their academic performance.\"\n- \"They will give us a proposal to help them to improve their",
       "source": "questioner-cell",
       "created_event": 45
@@ -171,10 +171,26 @@
     {
       "id": "proposal-0019",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "\"To improve the academic performance of its students\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n-",
       "source": "proposer-cell",
       "created_event": 46
+    },
+    {
+      "id": "question-0020",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What if I was asking a question about the following statement?\n- \"If you don't want to have any impact on the outcome, then what do you do?\"\n- \"How can you avoid having an impact on the outcome?\"\n- \"Is it possible to avoid having an impact on the outcome without",
+      "source": "questioner-cell",
+      "created_event": 50
+    },
+    {
+      "id": "proposal-0021",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "\"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve",
+      "source": "proposer-cell",
+      "created_event": 51
     }
   ],
   "edges": [
@@ -310,6 +326,20 @@
       "to": "question-0018",
       "relation": "answers",
       "created_event": 46
+    },
+    {
+      "id": "edge-0020",
+      "from": "question-0020",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 50
+    },
+    {
+      "id": "edge-0021",
+      "from": "proposal-0021",
+      "to": "question-0020",
+      "relation": "answers",
+      "created_event": 51
     }
   ],
   "needs": [
@@ -579,9 +609,37 @@
       "id": "need-review-f9bfc7b5ddb7",
       "kind": "REVIEW",
       "target_id": "proposal-0019",
-      "status": "open",
-      "attempts": 2,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 11,
+      "priority": 40
+    },
+    {
+      "id": "need-question-3a22b3282530",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-60ef38c1b2d6",
+      "kind": "PROPOSE",
+      "target_id": "question-0020",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 30
+    },
+    {
+      "id": "need-review-60d5f8f05181",
+      "kind": "REVIEW",
+      "target_id": "proposal-0021",
+      "status": "open",
+      "attempts": 1,
+      "created_generation": 12,
       "priority": 40
     }
   ]
