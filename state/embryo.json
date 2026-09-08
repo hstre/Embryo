@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 5,
-  "energy_spent": 20,
-  "next_node_seq": 9,
-  "next_event_seq": 21,
-  "ledger_head": "8be3ac696376841e6a6d9998df5d76ff3242ba8dc477a248d71788611c394f4d",
+  "generation": 6,
+  "energy_spent": 24,
+  "next_node_seq": 10,
+  "next_event_seq": 25,
+  "ledger_head": "1ba378663982ac034dc6f5bd945b46f4c4444b8792c605e09e1da2a37bfca7ee",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -83,10 +83,18 @@
     {
       "id": "question-0008",
       "kind": "question",
-      "status": "open",
+      "status": "abandoned",
       "text": "What is the best way to approach this problem?\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres,",
       "source": "questioner-cell",
       "created_event": 20
+    },
+    {
+      "id": "proposal-0009",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "1) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n2) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfn",
+      "source": "proposer-cell",
+      "created_event": 21
     }
   ],
   "edges": [
@@ -145,6 +153,13 @@
       "to": "goal-0001",
       "relation": "investigates",
       "created_event": 20
+    },
+    {
+      "id": "edge-0009",
+      "from": "proposal-0009",
+      "to": "question-0008",
+      "relation": "answers",
+      "created_event": 21
     }
   ],
   "needs": [
@@ -265,10 +280,29 @@
       "id": "need-propose-f7bf53eb3a21",
       "kind": "PROPOSE",
       "target_id": "question-0008",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 4,
       "priority": 30
+    },
+    {
+      "id": "need-review-a887fcae3982",
+      "kind": "REVIEW",
+      "target_id": "proposal-0009",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 5,
+      "priority": 40
+    },
+    {
+      "id": "need-question-7049473934a0",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 10,
+      "stage": 0
     }
   ]
 }
