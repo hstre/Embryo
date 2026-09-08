@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 15,
-  "energy_spent": 60,
-  "next_node_seq": 25,
-  "next_event_seq": 61,
-  "ledger_head": "f8fa1e3909230bcd40a2517bf23ea9479a1c026944edfb2bd0afba30b1a8035f",
+  "generation": 16,
+  "energy_spent": 64,
+  "next_node_seq": 26,
+  "next_event_seq": 65,
+  "ledger_head": "9f573912224009446170606a1a139e106a429610b02938e529cc173b30fe3569",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -203,7 +203,7 @@
     {
       "id": "question-0023",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "- \"Can you tell me more about the process and the results of your research?\"\n- \"Do you know what the results mean for the company's future plans?\"\n- \"Are there any other questions or topics you would like to discuss with me?\"\n- \"I am interested in hearing more about your",
       "source": "questioner-cell",
       "created_event": 59
@@ -211,10 +211,18 @@
     {
       "id": "proposal-0024",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to",
       "source": "proposer-cell",
       "created_event": 60
+    },
+    {
+      "id": "question-0025",
+      "kind": "question",
+      "status": "open",
+      "text": "- \"The first step in the process is to identify the key factors that will influence the outcome.\"\n- \"The second step is to identify the most important factors that will influence the outcome.\"\n- \"The third step is to identify the most critical factors that will influence the outcome.\"\n- \"The fourth",
+      "source": "questioner-cell",
+      "created_event": 64
     }
   ],
   "edges": [
@@ -385,6 +393,13 @@
       "to": "question-0023",
       "relation": "answers",
       "created_event": 60
+    },
+    {
+      "id": "edge-0025",
+      "from": "question-0025",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 64
     }
   ],
   "needs": [
@@ -729,10 +744,29 @@
       "id": "need-review-b6ec82241d88",
       "kind": "REVIEW",
       "target_id": "proposal-0024",
-      "status": "open",
-      "attempts": 0,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 14,
       "priority": 40
+    },
+    {
+      "id": "need-question-b7021af4b381",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-2a785abc2a5c",
+      "kind": "PROPOSE",
+      "target_id": "question-0025",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 30
     }
   ]
 }
