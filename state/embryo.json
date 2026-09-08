@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 7,
-  "energy_spent": 28,
-  "next_node_seq": 12,
-  "next_event_seq": 29,
-  "ledger_head": "feac3ba4552fdd51d574078a432821d9f4428f42494162e516b55848e2f69dc9",
+  "generation": 8,
+  "energy_spent": 32,
+  "next_node_seq": 14,
+  "next_event_seq": 33,
+  "ledger_head": "5b5011e77e2a41b9781cbb95d44097df51921fa556f27807cd0c19ae2befe0bc",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -99,7 +99,7 @@
     {
       "id": "question-0010",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What do you think about the following statement?\n\"The purpose of the study was to investigate the relationship between the number of hours studied by students and their performance.\"\n- What did you find out from it?\n- What did you learn from it?\n- What did you find interesting?\n- What",
       "source": "questioner-cell",
       "created_event": 25
@@ -107,10 +107,26 @@
     {
       "id": "proposal-0011",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n3) Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi\nWort",
       "source": "proposer-cell",
       "created_event": 26
+    },
+    {
+      "id": "question-0012",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What is the best way to approach this problem?\nEntwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi\nBeschleunigt\n- Entwickel eine philosophische Projekt,",
+      "source": "questioner-cell",
+      "created_event": 30
+    },
+    {
+      "id": "proposal-0013",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "\"I am writing an essay on the topic of how many hours a student should spend studying for better academic performance.\"\n- I have no idea what to write about.\n- I don't know if I can make a good proposal.\n- I'm not sure if I want to write a proposal at all.\n- I don't know if I want to write a proposal or just a proposal.\n- I don't know if I want to write a proposal or",
+      "source": "proposer-cell",
+      "created_event": 31
     }
   ],
   "edges": [
@@ -190,6 +206,20 @@
       "to": "question-0010",
       "relation": "answers",
       "created_event": 26
+    },
+    {
+      "id": "edge-0012",
+      "from": "question-0012",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0013",
+      "from": "proposal-0013",
+      "to": "question-0012",
+      "relation": "answers",
+      "created_event": 31
     }
   ],
   "needs": [
@@ -347,9 +377,37 @@
       "id": "need-review-1d25491ae686",
       "kind": "REVIEW",
       "target_id": "proposal-0011",
-      "status": "open",
-      "attempts": 2,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 6,
+      "priority": 40
+    },
+    {
+      "id": "need-question-3fad5a76cfc4",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-ad1936e5d9d8",
+      "kind": "PROPOSE",
+      "target_id": "question-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 30
+    },
+    {
+      "id": "need-review-828f0790444c",
+      "kind": "REVIEW",
+      "target_id": "proposal-0013",
+      "status": "open",
+      "attempts": 1,
+      "created_generation": 7,
       "priority": 40
     }
   ]
