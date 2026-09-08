@@ -120,3 +120,5 @@ It ran to quiescence on `embryo-state` and produced **no accepted proposal at al
 The cause was a defect, not a result. `SmolLmPolicy` handed the text-generation pipeline a plain string, and the pipeline only applies a model's chat template when it receives a message array. Both arms therefore ran instruction-tuned models in raw completion mode, which is why the receipts contain prompt continuations rather than reviews. Under the same prompt, the 360M meta-reviewer opens with a verdict once the chat template is applied and produced none without it.
 
 Experiments 003 to 005 are affected by this and do not answer the question they were set up to ask. Their tissue is preserved on the `archive/embryo-00N` branches; the comparison has to be run again on the repaired substrate.
+
+The full forensic report on all five runs, with the ledger evidence, is in [`docs/befund-001-005.md`](docs/befund-001-005.md) (German).
