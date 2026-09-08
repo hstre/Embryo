@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-004",
-  "generation": 4,
-  "energy_spent": 16,
-  "next_node_seq": 11,
-  "next_event_seq": 17,
-  "ledger_head": "b282ce76d6d259d7afb7f8485a8e20c07dc1ec8ed0f338b06e41e939a0ada738",
+  "generation": 5,
+  "energy_spent": 20,
+  "next_node_seq": 12,
+  "next_event_seq": 21,
+  "ledger_head": "e91130891305c9c5447b2659d22341f93c60ef6c5e463e52ab7ee52b78677f96",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -109,6 +109,14 @@
       "source": "reviewer-cell",
       "perspective": "coherence",
       "created_event": 13
+    },
+    {
+      "id": "question-0011",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "What does the research focus on?\n- What is the main objective of the study?\n- What is the research's main aim?\n- What is the research's main topic?\n- What is the research's main subject?\n- What is the research's main theme?\n- What is the",
+      "source": "questioner-cell",
+      "created_event": 17
     }
   ],
   "edges": [
@@ -181,6 +189,13 @@
       "to": "proposal-0007",
       "relation": "reviews",
       "created_event": 13
+    },
+    {
+      "id": "edge-0011",
+      "from": "question-0011",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 17
     }
   ],
   "needs": [
@@ -304,9 +319,28 @@
       "id": "need-question-23ea66727647",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 3,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-d05a540056af",
+      "kind": "PROPOSE",
+      "target_id": "question-0011",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 4,
+      "priority": 30
+    },
+    {
+      "id": "need-question-e9e10611f19c",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 4,
       "priority": 10,
       "stage": 0
     }
