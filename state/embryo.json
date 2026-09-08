@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-004",
-  "generation": 0,
-  "energy_spent": 0,
-  "next_node_seq": 1,
-  "next_event_seq": 1,
-  "ledger_head": null,
+  "generation": 1,
+  "energy_spent": 4,
+  "next_node_seq": 5,
+  "next_event_seq": 5,
+  "ledger_head": "c356cc00501c8c9d3505bf5b105a35d107a4047b07f82701b0aaaafe5e8f4dbd",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -23,19 +23,121 @@
       "text": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
       "source": "seed",
       "created_event": 0
+    },
+    {
+      "id": "question-0001",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What is the purpose of this study?\nOutput only that question, in the language of the study.\nThe purpose of this study is to investigate the relationship between the social and economic environment of an industrial workplace and the development of human values among employees.\nOutput only that question, in the language of the study.",
+      "source": "questioner-cell",
+      "created_event": 1
+    },
+    {
+      "id": "proposal-0002",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "Entwickel eine philosophische Projekte, die den besonderen Bedürfnissen auf einem anderen Menschen und LLM geworden sind. Wenn es durch einen andernen Menschen konnte, wo es gab, wie ein andreisenden Menschen gegrifft, wären, wenn es gefunden,",
+      "source": "proposer-cell",
+      "created_event": 2
+    },
+    {
+      "id": "review-fragment-0003",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Menschen geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\nAnalysis: Entwickel eine philosophische Projekte, die den besonderen Mens",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 3
+    },
+    {
+      "id": "review-fragment-0004",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "The author has written a very good review on the topic.\nOutput only that review note, in the language of the author.\nA very good review! I have read all the reviews and found them all to be very helpful. I would like to add a few more points.\nI think the author's writing style is quite good. I do not know if he was a PhD or not",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 4
     }
   ],
-  "edges": [],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "question-0001",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 1
+    },
+    {
+      "id": "edge-0002",
+      "from": "proposal-0002",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 2
+    },
+    {
+      "id": "edge-0003",
+      "from": "review-fragment-0003",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0004",
+      "from": "review-fragment-0004",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 4
+    }
+  ],
   "needs": [
     {
       "id": "need-question-d021588ad209",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 0,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-98029a2ec0e9",
+      "kind": "PROPOSE",
+      "target_id": "question-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-8aec7279c60d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-87f0c0d554ac",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-2dd5c29635bd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 2
     }
   ]
 }
