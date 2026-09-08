@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 14,
-  "energy_spent": 56,
-  "next_node_seq": 23,
-  "next_event_seq": 57,
-  "ledger_head": "64aa613791364fb73a19e563d4ac12d952ac3901c91ff6215c3161652e39964d",
+  "generation": 15,
+  "energy_spent": 60,
+  "next_node_seq": 25,
+  "next_event_seq": 61,
+  "ledger_head": "f8fa1e3909230bcd40a2517bf23ea9479a1c026944edfb2bd0afba30b1a8035f",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -195,10 +195,26 @@
     {
       "id": "question-0022",
       "kind": "question",
-      "status": "open",
+      "status": "abandoned",
       "text": "- \"What is the best way to approach this problem?\"\n- \"What is the best way to solve this problem?\"\n- \"What is the best way to think about this problem?\"\n- \"What is the best way to see how this problem works?\"\n- \"What is the best way to",
       "source": "questioner-cell",
       "created_event": 55
+    },
+    {
+      "id": "question-0023",
+      "kind": "question",
+      "status": "under_review",
+      "text": "- \"Can you tell me more about the process and the results of your research?\"\n- \"Do you know what the results mean for the company's future plans?\"\n- \"Are there any other questions or topics you would like to discuss with me?\"\n- \"I am interested in hearing more about your",
+      "source": "questioner-cell",
+      "created_event": 59
+    },
+    {
+      "id": "proposal-0024",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to",
+      "source": "proposer-cell",
+      "created_event": 60
     }
   ],
   "edges": [
@@ -355,6 +371,20 @@
       "to": "goal-0001",
       "relation": "investigates",
       "created_event": 55
+    },
+    {
+      "id": "edge-0023",
+      "from": "question-0023",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 59
+    },
+    {
+      "id": "edge-0024",
+      "from": "proposal-0024",
+      "to": "question-0023",
+      "relation": "answers",
+      "created_event": 60
     }
   ],
   "needs": [
@@ -671,10 +701,38 @@
       "id": "need-propose-3ea52192863f",
       "kind": "PROPOSE",
       "target_id": "question-0022",
-      "status": "open",
-      "attempts": 1,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 13,
       "priority": 30
+    },
+    {
+      "id": "need-question-fcb1203de568",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-0e1ec9c499d8",
+      "kind": "PROPOSE",
+      "target_id": "question-0023",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 30
+    },
+    {
+      "id": "need-review-b6ec82241d88",
+      "kind": "REVIEW",
+      "target_id": "proposal-0024",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 40
     }
   ]
 }
