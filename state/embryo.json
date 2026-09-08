@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-004",
-  "generation": 15,
-  "energy_spent": 60,
-  "next_node_seq": 37,
-  "next_event_seq": 61,
-  "ledger_head": "2811239d9950f9cf42edf88e298d3c5d6d5e4593ac2448d856cdcffe7749c14b",
+  "generation": 16,
+  "energy_spent": 64,
+  "next_node_seq": 41,
+  "next_event_seq": 65,
+  "ledger_head": "1869a779b6a32a84658a395290a5474c1c7c6f3278409f74282c19487e737811",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -332,6 +332,40 @@
       "source": "reviewer-cell",
       "perspective": "coherence",
       "created_event": 57
+    },
+    {
+      "id": "question-0037",
+      "kind": "question",
+      "status": "under_review",
+      "text": "- What is the best way to approach this problem?\n- What does the goal look like?\n- What kind of data do we need to use?\n- What kind of data do we need to collect?\n- What kind of data do we need to analyze?\n- What kind of data do",
+      "source": "questioner-cell",
+      "created_event": 61
+    },
+    {
+      "id": "proposal-0038",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company",
+      "source": "proposer-cell",
+      "created_event": 62
+    },
+    {
+      "id": "review-fragment-0039",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 63
+    },
+    {
+      "id": "review-fragment-0040",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- I have been working on the project for several months now. I have some ideas but no concrete plan yet. I would like to start with a small group of students and then work my way up to more and more students. I will be starting with a few classes and then moving on to more and more classes. I will also be using a lot of online resources and other tools that I can",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 64
     }
   ],
   "edges": [
@@ -586,6 +620,34 @@
       "to": "proposal-0033",
       "relation": "reviews",
       "created_event": 57
+    },
+    {
+      "id": "edge-0037",
+      "from": "question-0037",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 61
+    },
+    {
+      "id": "edge-0038",
+      "from": "proposal-0038",
+      "to": "question-0037",
+      "relation": "answers",
+      "created_event": 62
+    },
+    {
+      "id": "edge-0039",
+      "from": "review-fragment-0039",
+      "to": "proposal-0038",
+      "relation": "reviews",
+      "created_event": 63
+    },
+    {
+      "id": "edge-0040",
+      "from": "review-fragment-0040",
+      "to": "proposal-0038",
+      "relation": "reviews",
+      "created_event": 64
     }
   ],
   "needs": [
@@ -1018,11 +1080,50 @@
       "id": "need-question-489891884388",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 14,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-3e4f8bb01f91",
+      "kind": "PROPOSE",
+      "target_id": "question-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-c4057a516e9f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0038",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-51ffecc852f3",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0038",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-381d61ebd221",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0038",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 2
     }
   ]
 }
