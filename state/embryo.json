@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 10,
-  "energy_spent": 40,
-  "next_node_seq": 17,
-  "next_event_seq": 41,
-  "ledger_head": "220a25624be0dd4b27c1e1aa3b1a6e84bc972e5b351aef1939c0f3f09c7b7b5b",
+  "generation": 11,
+  "energy_spent": 44,
+  "next_node_seq": 18,
+  "next_event_seq": 45,
+  "ledger_head": "2dba6e7a1561ceee57101569e79a7bdd79d76a2ec1aa075b63f7e631bb99a807",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -147,10 +147,18 @@
     {
       "id": "question-0016",
       "kind": "question",
-      "status": "open",
+      "status": "abandoned",
       "text": "- What is the best way to approach this problem?\n- What does the goal look like?\n- What kind of data do we need to use?\n- What kind of data do we need to collect?\n- What kind of data do we need to analyze?\n- What kind of data do",
       "source": "questioner-cell",
       "created_event": 40
+    },
+    {
+      "id": "proposal-0017",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company",
+      "source": "proposer-cell",
+      "created_event": 41
     }
   ],
   "edges": [
@@ -265,6 +273,13 @@
       "to": "goal-0001",
       "relation": "investigates",
       "created_event": 40
+    },
+    {
+      "id": "edge-0017",
+      "from": "proposal-0017",
+      "to": "question-0016",
+      "relation": "answers",
+      "created_event": 41
     }
   ],
   "needs": [
@@ -497,10 +512,29 @@
       "id": "need-propose-1e4936d95811",
       "kind": "PROPOSE",
       "target_id": "question-0016",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 9,
       "priority": 30
+    },
+    {
+      "id": "need-review-4c0206117643",
+      "kind": "REVIEW",
+      "target_id": "proposal-0017",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 10,
+      "priority": 40
+    },
+    {
+      "id": "need-question-b4bd9522056b",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 10,
+      "stage": 0
     }
   ]
 }
