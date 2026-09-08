@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "embryo_id": "human-llm-society-002",
-  "generation": 0,
-  "energy_spent": 0,
-  "next_node_seq": 1,
-  "next_event_seq": 1,
-  "ledger_head": null,
+  "generation": 1,
+  "energy_spent": 4,
+  "next_node_seq": 2,
+  "next_event_seq": 5,
+  "ledger_head": "068fe0160cd7546f1bdbd9d112597828b3c088b81661b7e51df26c0842969072",
   "config": {
     "target_claims": 6,
     "max_attempts_per_need": 3,
@@ -23,19 +23,54 @@
       "text": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
       "source": "seed",
       "created_event": 0
+    },
+    {
+      "id": "claim-0001",
+      "kind": "claim",
+      "status": "unverified",
+      "text": "Entwickeln eine philosophische Probleme, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs geworden.\n\nThe first part is an example of a statement that can be used to describe a problem and then the second part is an example of a statement that can be used to describe a problem and",
+      "source": "cell",
+      "created_event": 1
     }
   ],
-  "edges": [],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "claim-0001",
+      "to": "goal-0001",
+      "relation": "addresses",
+      "created_event": 1
+    }
+  ],
   "needs": [
     {
       "id": "need-explore-00f210982900",
+      "kind": "EXPLORE",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-verify-d63af9da917e",
+      "kind": "VERIFY",
+      "target_id": "claim-0001",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-explore-701fcc0bd1b2",
       "kind": "EXPLORE",
       "target_id": "goal-0001",
       "status": "open",
       "attempts": 0,
       "created_generation": 0,
       "priority": 10,
-      "stage": 0
+      "stage": 1
     }
   ]
 }
