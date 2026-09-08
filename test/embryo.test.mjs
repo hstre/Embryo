@@ -119,3 +119,30 @@ test("retraction recreates a previously satisfied exploration gradient", async (
   assert.equal(duplicate.accepted, false);
   assert.equal(duplicate.code, "DUPLICATE_CLAIM");
 });
+
+test("replay mirrors rejected duplicate attempts", async () => {
+  const seed = await readJson(seedPath);
+  const state = createState(seed);
+  const dir = await mkdtemp(join(tmpdir(), "embryo-rejection-test-"));
+  const statePath = join(dir, "state.json");
+  const eventsPath = join(dir, "events.jsonl");
+  const policy = {
+    name: "repeating-test-policy",
+    async propose(view) {
+      if (view.need.kind === "EXPLORE") {
+        return { type: "ADD_CLAIM", need_id: view.need.id, payload: { text: "The same proposition." } };
+      }
+      return {
+        type: "SUPPORT",
+        need_id: view.need.id,
+        payload: { target_id: view.target.id, rationale: "Accepted in test." },
+      };
+    },
+  };
+  await runGeneration({ state, statePath, eventsPath, policy, maxCells: 4 });
+  await runGeneration({ state, statePath, eventsPath, policy, maxCells: 4 });
+  const receipts = await readReceipts(eventsPath);
+  const rebuilt = replay(seed, receipts);
+  assert.equal(stateDigest(rebuilt), stateDigest(state));
+  assert.ok(receipts.some((receipt) => receipt.decision.code === "DUPLICATE_CLAIM"));
+});
