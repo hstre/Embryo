@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-005",
-  "generation": 11,
-  "energy_spent": 44,
-  "next_node_seq": 27,
-  "next_event_seq": 45,
-  "ledger_head": "e495f54bfb573595982dbdf597acf6c9e75edd86e0a47d813188f8c69235c628",
+  "generation": 12,
+  "energy_spent": 48,
+  "next_node_seq": 31,
+  "next_event_seq": 49,
+  "ledger_head": "052d665c159e2a833f311050632e87c77b041e59e219511b939f5e1878309277",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -246,6 +246,40 @@
       "source": "reviewer-cell",
       "perspective": "coherence",
       "created_event": 41
+    },
+    {
+      "id": "question-0027",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What is the best way to approach this problem?\nEntwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi\nBeschleunigt\n- Entwickel eine philosophische Projekt,",
+      "source": "questioner-cell",
+      "created_event": 45
+    },
+    {
+      "id": "proposal-0028",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "\"I am writing an essay on the topic of how many hours a student should spend studying for better academic performance.\"\n- I have no idea what to write about.\n- I don't know if I can make a good proposal.\n- I'm not sure if I want to write a proposal at all.\n- I don't know if I want to write a proposal or just a proposal.\n- I don't know if I want to write a proposal or",
+      "source": "proposer-cell",
+      "created_event": 46
+    },
+    {
+      "id": "review-fragment-0029",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfussen geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekt, die den besond",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 47
+    },
+    {
+      "id": "review-fragment-0030",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "1) I was very disappointed with the first part of the proposal. 2) I did not like the second part either. 3) I do not know if I will be able to get a good proposal from you. 4) I do not know if I will be able to get a good proposal from you. 5) I do not know if I will be able to",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 48
     }
   ],
   "edges": [
@@ -430,6 +464,34 @@
       "to": "proposal-0023",
       "relation": "reviews",
       "created_event": 41
+    },
+    {
+      "id": "edge-0027",
+      "from": "question-0027",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 45
+    },
+    {
+      "id": "edge-0028",
+      "from": "proposal-0028",
+      "to": "question-0027",
+      "relation": "answers",
+      "created_event": 46
+    },
+    {
+      "id": "edge-0029",
+      "from": "review-fragment-0029",
+      "to": "proposal-0028",
+      "relation": "reviews",
+      "created_event": 47
+    },
+    {
+      "id": "edge-0030",
+      "from": "review-fragment-0030",
+      "to": "proposal-0028",
+      "relation": "reviews",
+      "created_event": 48
     }
   ],
   "needs": [
@@ -746,11 +808,50 @@
       "id": "need-question-3fad5a76cfc4",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 10,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-3cb7f5ca8503",
+      "kind": "PROPOSE",
+      "target_id": "question-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-93048f09b37e",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0028",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-f54eec2d2b1a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0028",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-e9cd684458bc",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0028",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 2
     }
   ]
 }
