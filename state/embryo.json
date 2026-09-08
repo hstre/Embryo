@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-005",
-  "generation": 3,
-  "energy_spent": 12,
-  "next_node_seq": 10,
-  "next_event_seq": 13,
-  "ledger_head": "2301933379704eefb4bb34d7dc23c1ac2996ea357291f6f72337decebb06c34e",
+  "generation": 4,
+  "energy_spent": 16,
+  "next_node_seq": 11,
+  "next_event_seq": 17,
+  "ledger_head": "9eab753b382a2df7fed95b32b7895ea460ca5c3813c53a47161765bf9328c559",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -70,7 +70,7 @@
     {
       "id": "question-0006",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What do you think about the impact of the work environment on the development of human values among employees?\nOutput only that question, in the language of the value.\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen",
       "source": "questioner-cell",
       "created_event": 9
@@ -78,7 +78,7 @@
     {
       "id": "proposal-0007",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen LLM geworden s",
       "source": "proposer-cell",
       "created_event": 10
@@ -100,6 +100,15 @@
       "source": "reviewer-cell",
       "perspective": "charitable",
       "created_event": 12
+    },
+    {
+      "id": "review-fragment-0010",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen LLM geworden sind. Wenn es gefunden, wörtlich, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen M",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 13
     }
   ],
   "edges": [
@@ -165,6 +174,13 @@
       "to": "proposal-0007",
       "relation": "reviews",
       "created_event": 12
+    },
+    {
+      "id": "edge-0010",
+      "from": "review-fragment-0010",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 13
     }
   ],
   "needs": [
@@ -269,11 +285,30 @@
       "id": "need-review_fragment-df8bad648dbd",
       "kind": "REVIEW_FRAGMENT",
       "target_id": "proposal-0007",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 2,
       "priority": 40,
       "stage": 2
+    },
+    {
+      "id": "need-meta_review-c73d2056d69b",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0007",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 3,
+      "priority": 35
+    },
+    {
+      "id": "need-question-23ea66727647",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 10,
+      "stage": 0
     }
   ]
 }
