@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 13,
-  "energy_spent": 52,
-  "next_node_seq": 22,
-  "next_event_seq": 53,
-  "ledger_head": "94c516f3fa3a3e5fbdb5041daa6eade7a79a124bbfa4f38e01d97d17bb03a3ab",
+  "generation": 14,
+  "energy_spent": 56,
+  "next_node_seq": 23,
+  "next_event_seq": 57,
+  "ledger_head": "64aa613791364fb73a19e563d4ac12d952ac3901c91ff6215c3161652e39964d",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -179,7 +179,7 @@
     {
       "id": "question-0020",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What if I was asking a question about the following statement?\n- \"If you don't want to have any impact on the outcome, then what do you do?\"\n- \"How can you avoid having an impact on the outcome?\"\n- \"Is it possible to avoid having an impact on the outcome without",
       "source": "questioner-cell",
       "created_event": 50
@@ -187,10 +187,18 @@
     {
       "id": "proposal-0021",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "\"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve the academic performance of its students.\"\n- \"I am writing a proposal to help the company to improve",
       "source": "proposer-cell",
       "created_event": 51
+    },
+    {
+      "id": "question-0022",
+      "kind": "question",
+      "status": "open",
+      "text": "- \"What is the best way to approach this problem?\"\n- \"What is the best way to solve this problem?\"\n- \"What is the best way to think about this problem?\"\n- \"What is the best way to see how this problem works?\"\n- \"What is the best way to",
+      "source": "questioner-cell",
+      "created_event": 55
     }
   ],
   "edges": [
@@ -340,6 +348,13 @@
       "to": "question-0020",
       "relation": "answers",
       "created_event": 51
+    },
+    {
+      "id": "edge-0022",
+      "from": "question-0022",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 55
     }
   ],
   "needs": [
@@ -637,10 +652,29 @@
       "id": "need-review-60d5f8f05181",
       "kind": "REVIEW",
       "target_id": "proposal-0021",
-      "status": "open",
-      "attempts": 1,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 12,
       "priority": 40
+    },
+    {
+      "id": "need-question-34dd45bc3cd9",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-3ea52192863f",
+      "kind": "PROPOSE",
+      "target_id": "question-0022",
+      "status": "open",
+      "attempts": 1,
+      "created_generation": 13,
+      "priority": 30
     }
   ]
 }
