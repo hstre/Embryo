@@ -8,6 +8,7 @@ import { deriveNeeds, canGrow } from "../src/needs.mjs";
 import { applyProposal } from "../src/gate.mjs";
 import { runGeneration } from "../src/engine.mjs";
 import { DeterministicPolicy } from "../src/policies/deterministic.mjs";
+import { SmolLmPolicy, smolLmDefaults } from "../src/policies/smollm.mjs";
 import { readReceipts, validateLedger } from "../src/ledger.mjs";
 import { replay } from "../src/replay.mjs";
 import { stateDigest } from "../src/canonical.mjs";
@@ -159,4 +160,30 @@ test("energy budget stops growth", async () => {
   state.energy_spent = 1;
   deriveNeeds(state);
   assert.equal(canGrow(state), false);
+});
+
+test("only the meta-review role uses the larger pinned model", async () => {
+  const policy = new SmolLmPolicy();
+  assert.equal(policy.model, "HuggingFaceTB/SmolLM2-135M-Instruct");
+  assert.equal(policy.metaModel, "HuggingFaceTB/SmolLM2-360M-Instruct");
+  assert.equal(policy.metaRevision, smolLmDefaults.metaRevision);
+  assert.match(policy.name, /\+meta:HuggingFaceTB\/SmolLM2-360M-Instruct@/);
+  assert.equal(policy.generators.size, 0);
+  let selectedRole;
+  policy.generate = async (_prompt, _maxNewTokens, role) => {
+    selectedRole = role;
+    return "ACCEPT: sufficiently coherent.";
+  };
+  await policy.propose({
+    need: { id: "need-meta", kind: "META_REVIEW" },
+    goal: { text: "A goal." },
+    question: { text: "A question?" },
+    target: { id: "proposal-1", kind: "proposal", text: "A proposal." },
+    review_fragments: [
+      { perspective: "adversarial", text: "An objection." },
+      { perspective: "charitable", text: "A strength." },
+      { perspective: "coherence", text: "A connection." },
+    ],
+  });
+  assert.equal(selectedRole, "meta");
 });
