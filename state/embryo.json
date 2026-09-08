@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 3,
-  "energy_spent": 12,
-  "next_node_seq": 6,
-  "next_event_seq": 13,
-  "ledger_head": "beb66bdd1ae7ea535bddce16df20b8cf3d937a81ea48e04796aad0fe3cc223c4",
+  "generation": 4,
+  "energy_spent": 16,
+  "next_node_seq": 8,
+  "next_event_seq": 17,
+  "ledger_head": "53c0554a932e7c21054404f73eb9e5463ec95316c35922f82dff2e2c254efcee",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -59,10 +59,26 @@
     {
       "id": "question-0005",
       "kind": "question",
-      "status": "open",
+      "status": "abandoned",
       "text": "What does the research focus on?\n- What is the main objective of the study?\n- What is the research's main aim?\n- What is the research's main topic?\n- What is the research's main subject?\n- What is the research's main theme?\n- What is the",
       "source": "questioner-cell",
       "created_event": 11
+    },
+    {
+      "id": "question-0006",
+      "kind": "question",
+      "status": "under_review",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Ent",
+      "source": "questioner-cell",
+      "created_event": 15
+    },
+    {
+      "id": "proposal-0007",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen LLM geworden",
+      "source": "proposer-cell",
+      "created_event": 16
     }
   ],
   "edges": [
@@ -100,6 +116,20 @@
       "to": "goal-0001",
       "relation": "investigates",
       "created_event": 11
+    },
+    {
+      "id": "edge-0006",
+      "from": "question-0006",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0007",
+      "from": "proposal-0007",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 16
     }
   ],
   "needs": [
@@ -173,10 +203,38 @@
       "id": "need-propose-a17f5e9cd4d5",
       "kind": "PROPOSE",
       "target_id": "question-0005",
-      "status": "open",
-      "attempts": 1,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 2,
       "priority": 30
+    },
+    {
+      "id": "need-question-e9e10611f19c",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-22e7fbcabd09",
+      "kind": "PROPOSE",
+      "target_id": "question-0006",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 30
+    },
+    {
+      "id": "need-review-2baf244fd4f5",
+      "kind": "REVIEW",
+      "target_id": "proposal-0007",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40
     }
   ]
 }
