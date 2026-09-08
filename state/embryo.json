@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "embryo_id": "stigmergy-emergence-001",
+  "generation": 0,
+  "energy_spent": 0,
+  "next_node_seq": 1,
+  "next_event_seq": 1,
+  "ledger_head": null,
+  "config": {
+    "target_claims": 2,
+    "max_attempts_per_need": 2,
+    "max_cells_per_generation": 4,
+    "max_generations": 12,
+    "energy_budget": 32,
+    "max_text_chars": 1200,
+    "local_observation_limit": 3
+  },
+  "nodes": [
+    {
+      "id": "goal-0001",
+      "kind": "goal",
+      "status": "open",
+      "text": "Explain the distinction between stigmergy and emergence using only the supplied observations.",
+      "source": "seed",
+      "created_event": 0
+    },
+    {
+      "id": "observation-01",
+      "kind": "observation",
+      "status": "given",
+      "text": "In stigmergy, the result of an action changes a shared environment and that changed environment influences later action.",
+      "source": "experiment seed",
+      "created_event": 0,
+      "ordinal": 0
+    },
+    {
+      "id": "observation-02",
+      "kind": "observation",
+      "status": "given",
+      "text": "Emergence denotes a system-level structure or behavior produced by interactions among components.",
+      "source": "experiment seed",
+      "created_event": 0,
+      "ordinal": 1
+    },
+    {
+      "id": "observation-03",
+      "kind": "observation",
+      "status": "given",
+      "text": "A partially built termite mound changes where later building activity occurs; the work product helps organize continuation of the work.",
+      "source": "experiment seed",
+      "created_event": 0,
+      "ordinal": 2
+    }
+  ],
+  "edges": [],
+  "needs": [
+    {
+      "id": "need-explore-00f210982900",
+      "kind": "EXPLORE",
+      "target_id": "goal-0001",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 10,
+      "stage": 0
+    }
+  ]
+}
