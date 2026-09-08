@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 1,
-  "energy_spent": 4,
-  "next_node_seq": 3,
-  "next_event_seq": 5,
-  "ledger_head": "b7144881f0d4f3bf2946661287e64fc39d543ab1ca1042052a3c287314277c13",
+  "generation": 2,
+  "energy_spent": 8,
+  "next_node_seq": 5,
+  "next_event_seq": 9,
+  "ledger_head": "2f05d32037329323bb9c46b679aca17490e55b23fcd1dd722b20308ee1b5529e",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -27,7 +27,7 @@
     {
       "id": "question-0001",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What is the purpose of this study?\nOutput only that question, in the language of the study.\nThe purpose of this study is to investigate the relationship between the social and economic environment of an industrial workplace and the development of human values among employees.\nOutput only that question, in the language of the study.",
       "source": "questioner-cell",
       "created_event": 1
@@ -35,10 +35,26 @@
     {
       "id": "proposal-0002",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "Entwickel eine philosophische Projekte, die den besonderen Bedürfnissen auf einem anderen Menschen und LLM geworden sind. Wenn es durch einen andernen Menschen konnte, wo es gab, wie ein andreisenden Menschen gegrifft, wären, wenn es gefunden,",
       "source": "proposer-cell",
       "created_event": 2
+    },
+    {
+      "id": "question-0003",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What do you think about the impact of the work environment on the development of human values among employees?\nOutput only that question, in the language of the value.\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen",
+      "source": "questioner-cell",
+      "created_event": 6
+    },
+    {
+      "id": "proposal-0004",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen LLM geworden s",
+      "source": "proposer-cell",
+      "created_event": 7
     }
   ],
   "edges": [
@@ -55,6 +71,20 @@
       "to": "question-0001",
       "relation": "answers",
       "created_event": 2
+    },
+    {
+      "id": "edge-0003",
+      "from": "question-0003",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 6
+    },
+    {
+      "id": "edge-0004",
+      "from": "proposal-0004",
+      "to": "question-0003",
+      "relation": "answers",
+      "created_event": 7
     }
   ],
   "needs": [
@@ -81,9 +111,37 @@
       "id": "need-review-b621e9267cd3",
       "kind": "REVIEW",
       "target_id": "proposal-0002",
-      "status": "open",
-      "attempts": 2,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 0,
+      "priority": 40
+    },
+    {
+      "id": "need-question-320ac35a20fd",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-f0f1405c988d",
+      "kind": "PROPOSE",
+      "target_id": "question-0003",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 30
+    },
+    {
+      "id": "need-review-6dd5bac9afd0",
+      "kind": "REVIEW",
+      "target_id": "proposal-0004",
+      "status": "open",
+      "attempts": 1,
+      "created_generation": 1,
       "priority": 40
     }
   ]
