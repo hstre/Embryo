@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-004",
-  "generation": 13,
-  "energy_spent": 52,
-  "next_node_seq": 32,
-  "next_event_seq": 53,
-  "ledger_head": "80912948e3422a913d7f044f595d8041e6d6ccde69958f3e51406e0f73377dca",
+  "generation": 14,
+  "energy_spent": 56,
+  "next_node_seq": 36,
+  "next_event_seq": 57,
+  "ledger_head": "3f864a228e6a9e8dc93807efef6c80bf32bbca63436afff8591429bf6ef02859",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -289,6 +289,40 @@
       "source": "reviewer-cell",
       "perspective": "coherence",
       "created_event": 49
+    },
+    {
+      "id": "question-0032",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What's wrong with this sentence?\n- \"There were several reasons why the company decided to hire me.\"\n- \"It seems that the company has been hiring people for some time now.\"\n- \"I had a few questions about the company.\"\n- \"I would like to thank the company for its services",
+      "source": "questioner-cell",
+      "created_event": 53
+    },
+    {
+      "id": "proposal-0033",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- What do you think about the following statement?\n- \"In general, there is a lot of evidence that shows that the amount of time spent studying is related to the quality of",
+      "source": "proposer-cell",
+      "created_event": 54
+    },
+    {
+      "id": "review-fragment-0034",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- \"I am writing a proposal to the university, but I will probably be disappointed if I get rejected.\"\n- \"I am writing a proposal to the university, but I will probably be disappointed if I get rejected.\"\n- \"I am writing a proposal to the university, but I will probably be disappointed if I get rejected.\"\n- \"I am writing a proposal to the university",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 55
+    },
+    {
+      "id": "review-fragment-0035",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "1) \"The number of students who have studied more than 5 hours\" - \"the number of students who have studied less than 5 hours\" - \"the number of students who have studied more than 5 hours\" - \"the number of students who have studied less than 5 hours\" - \"the number of students who have studied more than 5 hours\" - \"the",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 56
     }
   ],
   "edges": [
@@ -508,6 +542,34 @@
       "to": "proposal-0028",
       "relation": "reviews",
       "created_event": 49
+    },
+    {
+      "id": "edge-0032",
+      "from": "question-0032",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 53
+    },
+    {
+      "id": "edge-0033",
+      "from": "proposal-0033",
+      "to": "question-0032",
+      "relation": "answers",
+      "created_event": 54
+    },
+    {
+      "id": "edge-0034",
+      "from": "review-fragment-0034",
+      "to": "proposal-0033",
+      "relation": "reviews",
+      "created_event": 55
+    },
+    {
+      "id": "edge-0035",
+      "from": "review-fragment-0035",
+      "to": "proposal-0033",
+      "relation": "reviews",
+      "created_event": 56
     }
   ],
   "needs": [
@@ -882,11 +944,50 @@
       "id": "need-question-4de027ee8a3c",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 12,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-e683174b227a",
+      "kind": "PROPOSE",
+      "target_id": "question-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-2cda133bb0fd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0033",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-da431b503fcc",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0033",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-0282abd3b595",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0033",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 40,
+      "stage": 2
     }
   ]
 }
