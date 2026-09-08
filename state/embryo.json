@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 6,
-  "energy_spent": 24,
-  "next_node_seq": 10,
-  "next_event_seq": 25,
-  "ledger_head": "1ba378663982ac034dc6f5bd945b46f4c4444b8792c605e09e1da2a37bfca7ee",
+  "generation": 7,
+  "energy_spent": 28,
+  "next_node_seq": 12,
+  "next_event_seq": 29,
+  "ledger_head": "feac3ba4552fdd51d574078a432821d9f4428f42494162e516b55848e2f69dc9",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -95,6 +95,22 @@
       "text": "1) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n2) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfn",
       "source": "proposer-cell",
       "created_event": 21
+    },
+    {
+      "id": "question-0010",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What do you think about the following statement?\n\"The purpose of the study was to investigate the relationship between the number of hours studied by students and their performance.\"\n- What did you find out from it?\n- What did you learn from it?\n- What did you find interesting?\n- What",
+      "source": "questioner-cell",
+      "created_event": 25
+    },
+    {
+      "id": "proposal-0011",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n3) Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi\nWort",
+      "source": "proposer-cell",
+      "created_event": 26
     }
   ],
   "edges": [
@@ -160,6 +176,20 @@
       "to": "question-0008",
       "relation": "answers",
       "created_event": 21
+    },
+    {
+      "id": "edge-0010",
+      "from": "question-0010",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0011",
+      "from": "proposal-0011",
+      "to": "question-0010",
+      "relation": "answers",
+      "created_event": 26
     }
   ],
   "needs": [
@@ -298,11 +328,29 @@
       "id": "need-question-7049473934a0",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 5,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-19eed60b0c4f",
+      "kind": "PROPOSE",
+      "target_id": "question-0010",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 30
+    },
+    {
+      "id": "need-review-1d25491ae686",
+      "kind": "REVIEW",
+      "target_id": "proposal-0011",
+      "status": "open",
+      "attempts": 2,
+      "created_generation": 6,
+      "priority": 40
     }
   ]
 }
