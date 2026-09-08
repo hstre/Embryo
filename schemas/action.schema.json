@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hstre/Embryo/schemas/action.schema.json",
+  "title": "Embryo cell proposal",
+  "type": "object",
+  "required": ["type", "need_id", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "type": { "enum": ["ADD_CLAIM", "SUPPORT", "CHALLENGE", "REVISE", "RETRACT", "SYNTHESIZE", "ABSTAIN"] },
+    "need_id": { "$ref": "#/$defs/id" },
+    "payload": { "type": "object" }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "type": { "const": "ADD_CLAIM" },
+        "payload": {
+          "type": "object",
+          "required": ["text"],
+          "additionalProperties": false,
+          "properties": { "text": { "$ref": "#/$defs/text" } }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": { "const": "SUPPORT" },
+        "payload": {
+          "type": "object",
+          "required": ["target_id", "observation_ids"],
+          "additionalProperties": false,
+          "properties": {
+            "target_id": { "$ref": "#/$defs/id" },
+            "observation_ids": { "$ref": "#/$defs/idArray" },
+            "rationale": { "$ref": "#/$defs/text" }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": { "const": "CHALLENGE" },
+        "payload": {
+          "type": "object",
+          "required": ["target_id", "reason"],
+          "additionalProperties": false,
+          "properties": {
+            "target_id": { "$ref": "#/$defs/id" },
+            "reason": { "$ref": "#/$defs/text" }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": { "const": "REVISE" },
+        "payload": {
+          "type": "object",
+          "required": ["target_id", "text"],
+          "additionalProperties": false,
+          "properties": {
+            "target_id": { "$ref": "#/$defs/id" },
+            "text": { "$ref": "#/$defs/text" }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": { "const": "RETRACT" },
+        "payload": {
+          "type": "object",
+          "required": ["target_id"],
+          "additionalProperties": false,
+          "properties": { "target_id": { "$ref": "#/$defs/id" } }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": { "const": "SYNTHESIZE" },
+        "payload": {
+          "type": "object",
+          "required": ["text", "claim_ids"],
+          "additionalProperties": false,
+          "properties": {
+            "text": { "$ref": "#/$defs/text" },
+            "claim_ids": { "$ref": "#/$defs/idArray" }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "type": { "const": "ABSTAIN" },
+        "payload": {
+          "type": "object",
+          "required": ["reason"],
+          "additionalProperties": false,
+          "properties": { "reason": { "$ref": "#/$defs/text" } }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "text": { "type": "string", "minLength": 1, "maxLength": 1200 },
+    "idArray": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    }
+  }
+}

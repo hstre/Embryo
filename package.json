@@ -1,0 +1,22 @@
+{
+  "name": "embryo-stigmergic-ai",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A bounded experiment in developmental, stigmergic AI.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "init": "node src/cli.mjs init",
+    "step": "node src/cli.mjs step",
+    "status": "node src/cli.mjs status",
+    "validate": "node src/cli.mjs validate",
+    "replay": "node src/cli.mjs replay",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "4.2.0"
+  }
+}
