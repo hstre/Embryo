@@ -1,6 +1,11 @@
 name: Grow embryo
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .embryo/start
   workflow_dispatch:
     inputs:
       backend:
@@ -69,8 +74,8 @@ jobs:
 
       - name: Run one bounded generation
         env:
-          BACKEND: ${{ inputs.backend }}
-          MAX_CELLS: ${{ inputs.max_cells }}
+          BACKEND: ${{ inputs.backend || 'smollm' }}
+          MAX_CELLS: ${{ inputs.max_cells || '4' }}
         run: >-
           npm run step --
           --backend "$BACKEND"
@@ -98,11 +103,11 @@ jobs:
         run: echo "can_grow=$(node src/cli.mjs can-grow)" >> "$GITHUB_OUTPUT"
 
       - name: Recruit next generation
-        if: inputs.auto_grow && steps.growth.outputs.can_grow == 'true'
+        if: (inputs.auto_grow || github.event_name == 'push') && steps.growth.outputs.can_grow == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-          BACKEND: ${{ inputs.backend }}
-          MAX_CELLS: ${{ inputs.max_cells }}
+          BACKEND: ${{ inputs.backend || 'smollm' }}
+          MAX_CELLS: ${{ inputs.max_cells || '4' }}
         run: >-
           gh workflow run embryo.yml
           --ref main
