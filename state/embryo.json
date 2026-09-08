@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-005",
-  "generation": 8,
-  "energy_spent": 32,
-  "next_node_seq": 21,
-  "next_event_seq": 33,
-  "ledger_head": "926299ce58e02edc982082b0e2fed7bec8ffd496a8ecef8046afcd59c9a13f99",
+  "generation": 9,
+  "energy_spent": 36,
+  "next_node_seq": 22,
+  "next_event_seq": 37,
+  "ledger_head": "7bf1aa51bfc33575e2da02c4df1172c1c568abfaa07d6bec8a6215e81cf76ef7",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -164,7 +164,7 @@
     {
       "id": "question-0017",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What is the best way to approach this problem?\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres,",
       "source": "questioner-cell",
       "created_event": 29
@@ -172,7 +172,7 @@
     {
       "id": "proposal-0018",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "1) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n2) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfn",
       "source": "proposer-cell",
       "created_event": 30
@@ -194,6 +194,15 @@
       "source": "reviewer-cell",
       "perspective": "charitable",
       "created_event": 32
+    },
+    {
+      "id": "review-fragment-0021",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 33
     }
   ],
   "edges": [
@@ -336,6 +345,13 @@
       "to": "proposal-0018",
       "relation": "reviews",
       "created_event": 32
+    },
+    {
+      "id": "edge-0021",
+      "from": "review-fragment-0021",
+      "to": "proposal-0018",
+      "relation": "reviews",
+      "created_event": 33
     }
   ],
   "needs": [
@@ -575,11 +591,30 @@
       "id": "need-review_fragment-c176b3a8d6d0",
       "kind": "REVIEW_FRAGMENT",
       "target_id": "proposal-0018",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 7,
       "priority": 40,
       "stage": 2
+    },
+    {
+      "id": "need-meta_review-fe15e7879c0a",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0018",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 8,
+      "priority": 35
+    },
+    {
+      "id": "need-question-7049473934a0",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 10,
+      "stage": 0
     }
   ]
 }
