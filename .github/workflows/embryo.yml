@@ -50,6 +50,8 @@ jobs:
       - name: Check out persistent tissue
         shell: bash
         run: |
+          git config user.name "embryo-cell"
+          git config user.email "embryo-cell@users.noreply.github.com"
           if git ls-remote --exit-code --heads origin embryo-state >/dev/null 2>&1; then
             git fetch origin embryo-state
             git checkout -B embryo-state origin/embryo-state
