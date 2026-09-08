@@ -169,10 +169,19 @@ test("only the meta-review role uses the larger pinned model", async () => {
   assert.equal(policy.metaRevision, smolLmDefaults.metaRevision);
   assert.match(policy.name, /\+meta:HuggingFaceTB\/SmolLM2-360M-Instruct@/);
   assert.equal(policy.generators.size, 0);
-  let selectedRole;
-  policy.generate = async (_prompt, _maxNewTokens, role) => {
-    selectedRole = role;
-    return "ACCEPT: sufficiently coherent.";
+  let scoredRole;
+  let continuedRole;
+  policy.scoreVerdicts = async (_messages, role) => {
+    scoredRole = role;
+    return [
+      { verdict: "ACCEPT", sum: -1, mean: -0.5, tokens: 2 },
+      { verdict: "REVISE", sum: -9, mean: -3, tokens: 3 },
+      { verdict: "REJECT", sum: -9, mean: -4.5, tokens: 2 },
+    ];
+  };
+  policy.continueFrom = async (_messages, _prefix, _maxNewTokens, role) => {
+    continuedRole = role;
+    return "sufficiently coherent.";
   };
   await policy.propose({
     need: { id: "need-meta", kind: "META_REVIEW" },
@@ -185,7 +194,10 @@ test("only the meta-review role uses the larger pinned model", async () => {
       { perspective: "coherence", text: "A connection." },
     ],
   });
-  assert.equal(selectedRole, "meta");
+  assert.equal(scoredRole, "meta");
+  assert.equal(continuedRole, "meta");
+  // Stubbed throughout: judging must not have loaded a model.
+  assert.equal(policy.generators.size, 0);
 });
 
 test("an exhausted gradient inhibits instead of being minted again", async () => {
@@ -272,7 +284,7 @@ test("an interrupted generation still replays exactly", async () => {
   assert.throws(() => replay(seed, receipts, state.generation + 5), /not reachable from the ledger/);
 });
 
-test("the meta-reviewer only counts a verdict it opens with", async () => {
+test("the meta-review verdict is scored, not parsed out of prose", async () => {
   const policy = new SmolLmPolicy();
   const view = {
     max_text_chars: 1200,
@@ -282,13 +294,48 @@ test("the meta-reviewer only counts a verdict it opens with", async () => {
     target: { id: "proposal-1", kind: "proposal", text: "A proposal." },
     review_fragments: [{ perspective: "adversarial", text: "An objection." }],
   };
-  policy.generate = async () => "I would not REJECT this, so ACCEPT.";
-  const buried = await policy.propose(view);
-  assert.equal(buried.action.type, "ABSTAIN");
-  policy.generate = async () => "ACCEPT: sufficiently coherent.";
-  assert.equal((await policy.propose(view)).action.payload.verdict, "ACCEPT");
-  policy.generate = async () => "Reject.\n\nThe collective found no support.";
-  assert.equal((await policy.propose(view)).action.payload.verdict, "REJECT");
+  let continuedFrom;
+  policy.continueFrom = async (_messages, prefix) => {
+    continuedFrom = prefix;
+    // Prose that names a different verdict must not change the decision.
+    return "on reflection I would REJECT this after all.";
+  };
+  // REVISE wins on the length-normalised mean while REJECT wins on the raw sum;
+  // the decision must follow the mean.
+  policy.scoreVerdicts = async () => [
+    { verdict: "ACCEPT", sum: -7.2, mean: -3.6, tokens: 2 },
+    { verdict: "REVISE", sum: -2.5, mean: -0.83, tokens: 3 },
+    { verdict: "REJECT", sum: -2.1, mean: -1.06, tokens: 2 },
+  ];
+  const decision = await policy.propose(view);
+  assert.equal(decision.action.type, "META_REVIEW");
+  assert.equal(decision.action.payload.verdict, "REVISE");
+  assert.equal(continuedFrom, "REVISE: ", "the reason must continue the verdict the gate applies");
+  assert.match(decision.action.payload.text, /^REVISE: /);
+  // The receipt has to carry the scores the decision was made on.
+  assert.equal(decision.trace.decided_by, "mean_logprob");
+  assert.deepEqual(decision.trace.verdict_scores.map((s) => s.verdict), ["ACCEPT", "REVISE", "REJECT"]);
+});
+
+test("a scored meta-review always reaches a verdict", async () => {
+  const policy = new SmolLmPolicy();
+  policy.continueFrom = async () => "";
+  policy.scoreVerdicts = async () => [
+    { verdict: "ACCEPT", sum: -9, mean: -4.5, tokens: 2 },
+    { verdict: "REVISE", sum: -9, mean: -3.0, tokens: 3 },
+    { verdict: "REJECT", sum: -9, mean: -4.5, tokens: 2 },
+  ];
+  const decision = await policy.propose({
+    max_text_chars: 1200,
+    need: { id: "need-meta", kind: "META_REVIEW", attempts: 0 },
+    goal: { text: "A goal." },
+    target: { id: "proposal-1", kind: "proposal", text: "A proposal." },
+    review_fragments: [],
+  });
+  // An empty reason must not fall back to abstaining: the verdict alone is the text.
+  assert.equal(decision.action.type, "META_REVIEW");
+  assert.equal(decision.action.payload.verdict, "REVISE");
+  assert.equal(decision.action.payload.text, "REVISE");
 });
 
 test("instruction-tuned cells are prompted through the chat template", async () => {

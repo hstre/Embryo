@@ -12,12 +12,17 @@ function bullets(items) {
   return items.map((item) => `- ${item.text}`);
 }
 
-// The meta-reviewer is asked for the verdict first, so only the first line counts.
-// A verdict buried in prose is not a decision the collective actually reached.
-function reviewVerdict(text) {
-  const head = text.toUpperCase().trimStart().split(/\r?\n/, 1)[0];
-  const body = head.replace(/^\W*(?:VERDICT|META[- ]REVIEW)\W*/, "");
-  return body.match(/^\W*(ACCEPT|REVISE|REJECT)\b/)?.[1] ?? null;
+const VERDICTS = Object.freeze(["ACCEPT", "REVISE", "REJECT"]);
+
+// Log-probability of one token at one position, read straight off the logits.
+function tokenLogProb(logits, position, tokenId) {
+  const vocab = logits.dims.at(-1);
+  const row = logits.data.subarray(position * vocab, (position + 1) * vocab);
+  let max = -Infinity;
+  for (let i = 0; i < row.length; i += 1) if (row[i] > max) max = row[i];
+  let sum = 0;
+  for (let i = 0; i < row.length; i += 1) sum += Math.exp(row[i] - max);
+  return row[tokenId] - max - Math.log(sum);
 }
 
 // The attempt count belongs to the need, not to the cell reading it: cells are
@@ -38,7 +43,7 @@ export class SmolLmPolicy {
     this.metaModel = options.metaModel ?? DEFAULT_META_MODEL;
     this.metaRevision = options.metaRevision ?? DEFAULT_META_REVISION;
     this.metaDtype = options.metaDtype ?? this.dtype;
-    this.name = `${this.model}@${this.revision}:${this.dtype}+meta:${this.metaModel}@${this.metaRevision}:${this.metaDtype}:review-collective-v5-chat`;
+    this.name = `${this.model}@${this.revision}:${this.dtype}+meta:${this.metaModel}@${this.metaRevision}:${this.metaDtype}:review-collective-v6-scored`;
     this.generators = new Map();
   }
 
@@ -69,6 +74,59 @@ export class SmolLmPolicy {
     if (Array.isArray(generated)) return generated.at(-1)?.content ?? "";
     if (typeof generated === "string") return generated;
     return String(generated ?? "");
+  }
+
+  // The verdict is read off the model's own distribution instead of being
+  // generated and parsed back out of prose. REVISE and REJECT share their first
+  // token ("RE"), so a single-token argmax cannot separate them; each verdict is
+  // scored as the summed log-probability of its whole token sequence under
+  // teacher forcing. The decision uses the length-normalised mean, because
+  // REVISE happens to tokenise into three pieces where the others take two —
+  // an artefact of the tokeniser, not a property of the judgement. Both figures
+  // go into the receipt so the rule can be re-examined from the ledger.
+  async scoreVerdicts(messages, role = "meta") {
+    const generator = await this.load(role);
+    const { Tensor } = await import("@huggingface/transformers");
+    const { tokenizer, model } = generator;
+    const prompt = tokenizer.apply_chat_template(messages, { tokenize: false, add_generation_prompt: true });
+    const promptIds = tokenizer.encode(prompt, { add_special_tokens: false });
+    const scored = [];
+    for (const verdict of VERDICTS) {
+      const verdictIds = tokenizer.encode(verdict, { add_special_tokens: false });
+      const ids = [...promptIds, ...verdictIds];
+      const { logits } = await model({
+        input_ids: new Tensor("int64", BigInt64Array.from(ids, BigInt), [1, ids.length]),
+        attention_mask: new Tensor("int64", new BigInt64Array(ids.length).fill(1n), [1, ids.length]),
+      });
+      let sum = 0;
+      for (let k = 0; k < verdictIds.length; k += 1) {
+        sum += tokenLogProb(logits, promptIds.length - 1 + k, verdictIds[k]);
+      }
+      scored.push({
+        verdict,
+        sum: Number(sum.toFixed(4)),
+        mean: Number((sum / verdictIds.length).toFixed(4)),
+        tokens: verdictIds.length,
+      });
+    }
+    return scored;
+  }
+
+  // Continues an assistant turn that already begins with the scored verdict, so
+  // the recorded reason belongs to the decision the gate actually applies. The
+  // chat template is applied by hand here; the pipeline's string path must not
+  // apply it a second time.
+  async continueFrom(messages, prefix, maxNewTokens = 96, role = "cell") {
+    const generator = await this.load(role);
+    const prompt = generator.tokenizer.apply_chat_template(messages, { tokenize: false, add_generation_prompt: true });
+    const output = await generator(`${prompt}${prefix}`, {
+      max_new_tokens: maxNewTokens,
+      do_sample: false,
+      repetition_penalty: 1.08,
+      return_full_text: false,
+    });
+    const generated = output?.[0]?.generated_text;
+    return typeof generated === "string" ? generated : String(generated ?? "");
   }
 
   async propose(view) {
@@ -162,27 +220,37 @@ export class SmolLmPolicy {
     }
 
     if (need.kind === "META_REVIEW") {
-      const text = await ask(
-        [
-          "You are the meta-reviewer. Judge the work after reading all independent review notes.",
-          "Your first word must be ACCEPT, REVISE or REJECT. Then give one concise reason.",
-        ].join("\n"),
-        [
-          `Goal: ${view.goal.text}`,
-          ...(view.question ? [`Question: ${view.question.text}`] : []),
-          `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
-          "Review collective:",
-          ...view.review_fragments.map((fragment) => `- ${fragment.perspective}: ${fragment.text}`),
-        ],
-        96,
-        "meta",
-      );
-      const verdict = reviewVerdict(text);
+      const messages = [
+        {
+          role: "system",
+          content: [
+            "You are the meta-reviewer. Judge the work after reading all independent review notes.",
+            "Answer with exactly one of ACCEPT, REVISE or REJECT, then give one concise reason.",
+            ...retry,
+          ].join("\n"),
+        },
+        {
+          role: "user",
+          content: [
+            `Goal: ${view.goal.text}`,
+            ...(view.question ? [`Question: ${view.question.text}`] : []),
+            `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+            "Review collective:",
+            ...view.review_fragments.map((fragment) => `- ${fragment.perspective}: ${fragment.text}`),
+          ].join("\n"),
+        },
+      ];
+      const scores = await this.scoreVerdicts(messages, "meta");
+      const chosen = scores.reduce((best, candidate) => (candidate.mean > best.mean ? candidate : best));
+      const reason = cleanText(await this.continueFrom(messages, `${chosen.verdict}: `, 96, "meta"), maxChars);
+      const text = reason ? cleanText(`${chosen.verdict}: ${reason}`, maxChars) : chosen.verdict;
       return {
-        action: verdict
-          ? { type: "META_REVIEW", need_id: need.id, payload: { target_id: view.target.id, verdict, text } }
-          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "meta-review did not open with a verdict" } },
-        trace: { raw_output: text },
+        action: {
+          type: "META_REVIEW",
+          need_id: need.id,
+          payload: { target_id: view.target.id, verdict: chosen.verdict, text },
+        },
+        trace: { decided_by: "mean_logprob", verdict_scores: scores, raw_output: reason },
       };
     }
 
