@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-005",
-  "generation": 7,
-  "energy_spent": 28,
-  "next_node_seq": 17,
-  "next_event_seq": 29,
-  "ledger_head": "ce641f020149f71a4ea136213488fc468fc931b5a2e3272277386491bd0a71c1",
+  "generation": 8,
+  "energy_spent": 32,
+  "next_node_seq": 21,
+  "next_event_seq": 33,
+  "ledger_head": "926299ce58e02edc982082b0e2fed7bec8ffd496a8ecef8046afcd59c9a13f99",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -160,6 +160,40 @@
       "source": "reviewer-cell",
       "perspective": "coherence",
       "created_event": 25
+    },
+    {
+      "id": "question-0017",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What is the best way to approach this problem?\n- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres,",
+      "source": "questioner-cell",
+      "created_event": 29
+    },
+    {
+      "id": "proposal-0018",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "1) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n2) Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfn",
+      "source": "proposer-cell",
+      "created_event": 30
+    },
+    {
+      "id": "review-fragment-0019",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Entwickel eine philosophische Projekte, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekte, die den besonderen",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 31
+    },
+    {
+      "id": "review-fragment-0020",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "1) Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres,\n3) Entwickel eine philosophische Projekt, die den besonderen Menschen auf e",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 32
     }
   ],
   "edges": [
@@ -274,6 +308,34 @@
       "to": "proposal-0013",
       "relation": "reviews",
       "created_event": 25
+    },
+    {
+      "id": "edge-0017",
+      "from": "question-0017",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0018",
+      "from": "proposal-0018",
+      "to": "question-0017",
+      "relation": "answers",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0019",
+      "from": "review-fragment-0019",
+      "to": "proposal-0018",
+      "relation": "reviews",
+      "created_event": 31
+    },
+    {
+      "id": "edge-0020",
+      "from": "review-fragment-0020",
+      "to": "proposal-0018",
+      "relation": "reviews",
+      "created_event": 32
     }
   ],
   "needs": [
@@ -474,11 +536,50 @@
       "id": "need-question-f3a289b94427",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 6,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-e02662361fd7",
+      "kind": "PROPOSE",
+      "target_id": "question-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-55e71863bb89",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0018",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-11c68308663c",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0018",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-c176b3a8d6d0",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0018",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 2
     }
   ]
 }
