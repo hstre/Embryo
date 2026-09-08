@@ -311,7 +311,9 @@ test("the meta-review verdict is scored, not parsed out of prose", async () => {
   assert.equal(decision.action.type, "META_REVIEW");
   assert.equal(decision.action.payload.verdict, "REVISE");
   assert.equal(continuedFrom, "REVISE: ", "the reason must continue the verdict the gate applies");
-  assert.match(decision.action.payload.text, /^REVISE: /);
+  // The verdict must not be repeated inside the text: the proposing cell reads
+  // that text as the review to address and copies the label into its revision.
+  assert.equal(decision.action.payload.text, "on reflection I would REJECT this after all.");
   // The receipt has to carry the scores the decision was made on.
   assert.equal(decision.trace.decided_by, "mean_logprob");
   assert.deepEqual(decision.trace.verdict_scores.map((s) => s.verdict), ["ACCEPT", "REVISE", "REJECT"]);

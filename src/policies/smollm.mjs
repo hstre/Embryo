@@ -243,7 +243,11 @@ export class SmolLmPolicy {
       const scores = await this.scoreVerdicts(messages, "meta");
       const chosen = scores.reduce((best, candidate) => (candidate.mean > best.mean ? candidate : best));
       const reason = cleanText(await this.continueFrom(messages, `${chosen.verdict}: `, 96, "meta"), maxChars);
-      const text = reason ? cleanText(`${chosen.verdict}: ${reason}`, maxChars) : chosen.verdict;
+      // The verdict is already structured data — it sits in the payload and in the
+      // edge relation the gate draws. Repeating it inside the recorded text made
+      // the proposing cell copy the label into its revision, because that text is
+      // what the local view hands it as the review to address.
+      const text = reason || chosen.verdict;
       return {
         action: {
           type: "META_REVIEW",
