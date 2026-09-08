@@ -65,7 +65,7 @@ npm run validate
 npm run replay
 ```
 
-Run actual cells with the pinned `SmolLM2-135M-Instruct` revision:
+Run actual cells with pinned SmolLM2 revisions. Questioner, proposer, reviewers and synthesizer use `SmolLM2-135M-Instruct`; only the meta-reviewer uses `SmolLM2-360M-Instruct`:
 
 ```bash
 npm run step -- --backend smollm --max-cells 4
@@ -111,6 +111,6 @@ The `GITHUB_TOKEN` has only `contents: write` and `actions: write`. Generated mo
 
 Version 0.1 establishes the experimental substrate. The next research stage is a blinded benchmark against a single cell, best-of-N independent cells, fixed-role communicating agents and the growing stigmergic condition.
 
-## Experiment 004
+## Experiment 005
 
-The fourth embryo begins with one open goal and no supplied observations or examples. Questioner and proposer cells leave work in the tissue. Every proposal recruits an ephemeral review organ: adversarial, charitable and coherence reviewers each leave unconstrained prose from different local slices. Only then does a meta-reviewer see the three traces and attempt `ACCEPT`, `REVISE` or `REJECT`. Failed and superseded work remains visible as inhibition, while exhausted meta-review causes deterministic rejection and reframing rather than an endless loop.
+The fifth embryo repeats Experiment 004 with one controlled change. It begins with the same open goal, configuration, prompts and empty observation set. Questioner, proposer, adversarial reviewer, charitable reviewer, coherence reviewer and synthesizer still use the pinned 135M model. Only the meta-reviewer, which must integrate the three review traces and emit `ACCEPT`, `REVISE` or `REJECT`, uses the pinned 360M model. This tests whether a slightly larger integrator is enough to turn the reviewer collective into actionable collective judgment.

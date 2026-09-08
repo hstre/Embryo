@@ -42,6 +42,8 @@ jobs:
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       CELL_MODEL: HuggingFaceTB/SmolLM2-135M-Instruct
       CELL_MODEL_REVISION: 12fd25f77366fa6b3b4b768ec3050bf629380bac
+      META_MODEL: HuggingFaceTB/SmolLM2-360M-Instruct
+      META_MODEL_REVISION: a10cc1512eabd3dde888204e902eca88bddb4951
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -68,7 +70,7 @@ jobs:
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ${{ env.HF_HOME }}
-          key: smollm2-135m-${{ env.CELL_MODEL_REVISION }}
+          key: smollm2-${{ env.CELL_MODEL_REVISION }}-${{ env.META_MODEL_REVISION }}
 
       - run: npm ci
       - run: npm test
@@ -85,6 +87,9 @@ jobs:
           --model "$CELL_MODEL"
           --revision "$CELL_MODEL_REVISION"
           --dtype q4
+          --meta-model "$META_MODEL"
+          --meta-revision "$META_MODEL_REVISION"
+          --meta-dtype q4
 
       - run: npm run validate
       - run: npm run replay

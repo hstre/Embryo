@@ -1,5 +1,7 @@
 const DEFAULT_MODEL = "HuggingFaceTB/SmolLM2-135M-Instruct";
 const DEFAULT_REVISION = "12fd25f77366fa6b3b4b768ec3050bf629380bac";
+const DEFAULT_META_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct";
+const DEFAULT_META_REVISION = "a10cc1512eabd3dde888204e902eca88bddb4951";
 
 function cleanText(text, max = 1200) {
   return text.trim().replace(/^```(?:json|text)?\s*/i, "").replace(/```\s*$/, "").slice(0, max).trim();
@@ -19,20 +21,28 @@ export class SmolLmPolicy {
     this.model = options.model ?? DEFAULT_MODEL;
     this.revision = options.revision ?? DEFAULT_REVISION;
     this.dtype = options.dtype ?? "q4";
-    this.name = `${this.model}@${this.revision}:${this.dtype}:review-collective-v3`;
-    this.generator = null;
+    this.metaModel = options.metaModel ?? DEFAULT_META_MODEL;
+    this.metaRevision = options.metaRevision ?? DEFAULT_META_REVISION;
+    this.metaDtype = options.metaDtype ?? this.dtype;
+    this.name = `${this.model}@${this.revision}:${this.dtype}+meta:${this.metaModel}@${this.metaRevision}:${this.metaDtype}:review-collective-v4`;
+    this.generators = new Map();
   }
 
-  async load() {
-    if (this.generator) return;
+  async load(role = "cell") {
+    if (this.generators.has(role)) return this.generators.get(role);
     const { pipeline, env } = await import("@huggingface/transformers");
     if (process.env.HF_HOME) env.cacheDir = process.env.HF_HOME;
-    this.generator = await pipeline("text-generation", this.model, { revision: this.revision, dtype: this.dtype });
+    const model = role === "meta" ? this.metaModel : this.model;
+    const revision = role === "meta" ? this.metaRevision : this.revision;
+    const dtype = role === "meta" ? this.metaDtype : this.dtype;
+    const generator = await pipeline("text-generation", model, { revision, dtype });
+    this.generators.set(role, generator);
+    return generator;
   }
 
-  async generate(prompt, maxNewTokens = 64) {
-    await this.load();
-    const output = await this.generator(prompt, {
+  async generate(prompt, maxNewTokens = 64, role = "cell") {
+    const generator = await this.load(role);
+    const output = await generator(prompt, {
       max_new_tokens: maxNewTokens,
       do_sample: false,
       repetition_penalty: 1.08,
@@ -123,7 +133,7 @@ export class SmolLmPolicy {
         ...view.review_fragments.map((fragment) => `- ${fragment.perspective}: ${fragment.text}`),
         "Meta-review:",
       ].join("\n");
-      const text = cleanText(await this.generate(prompt, 96));
+      const text = cleanText(await this.generate(prompt, 96, "meta"));
       const verdict = reviewVerdict(text);
       return {
         action: verdict
@@ -159,4 +169,9 @@ export class SmolLmPolicy {
   }
 }
 
-export const smolLmDefaults = { model: DEFAULT_MODEL, revision: DEFAULT_REVISION };
+export const smolLmDefaults = {
+  model: DEFAULT_MODEL,
+  revision: DEFAULT_REVISION,
+  metaModel: DEFAULT_META_MODEL,
+  metaRevision: DEFAULT_META_REVISION,
+};

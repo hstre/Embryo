@@ -105,7 +105,14 @@ async function main() {
       throw new Error("backend must be smollm or deterministic");
     }
     const policy = options.backend === "smollm"
-      ? new SmolLmPolicy({ model: options.model, revision: options.revision, dtype: options.dtype })
+      ? new SmolLmPolicy({
+          model: options.model,
+          revision: options.revision,
+          dtype: options.dtype,
+          metaModel: options.meta_model,
+          metaRevision: options.meta_revision,
+          metaDtype: options.meta_dtype,
+        })
       : new DeterministicPolicy();
     const result = await runGeneration({
       state,
