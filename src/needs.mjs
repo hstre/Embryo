@@ -72,8 +72,13 @@ function ensureNeed(state, kind, targetId, discriminator = "0") {
 
 function ensureFreshNeed(state, kind, targetId, stage) {
   if (state.needs.some((need) => need.kind === kind && need.status === "open")) return;
-  const previous = state.needs.filter((need) => need.kind === kind && need.target_id === targetId).length;
-  const need = ensureNeed(state, kind, targetId, `${stage}:${previous}`);
+  // Only a need that produced work advances the discriminator. An exhausted need
+  // therefore keeps its id and stays exhausted, so repeated invalid output inhibits
+  // this gradient instead of minting an identical need under a fresh hash forever.
+  const completed = state.needs.filter(
+    (need) => need.kind === kind && need.target_id === targetId && need.status === "resolved",
+  ).length;
+  const need = ensureNeed(state, kind, targetId, `${stage}:${completed}`);
   need.stage = stage;
 }
 

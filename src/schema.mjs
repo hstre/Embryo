@@ -39,17 +39,9 @@ function hasOnlyKeys(object, allowed) {
 export function validateSeed(seed) {
   invariant(seed && typeof seed === "object" && !Array.isArray(seed), "seed must be an object");
   invariant(isNonEmptyString(seed.embryo_id, 80), "seed.embryo_id is required");
-  invariant(isNonEmptyString(seed.goal, 2000), "seed.goal is required");
   invariant(Array.isArray(seed.observations), "seed.observations must be an array");
-  const ids = new Set();
-  for (const observation of seed.observations) {
-    invariant(isNonEmptyString(observation.id, 80), "every observation needs an id");
-    invariant(!ids.has(observation.id), `duplicate observation id: ${observation.id}`);
-    ids.add(observation.id);
-    invariant(isNonEmptyString(observation.text, 4000), `observation ${observation.id} needs text`);
-    invariant(isNonEmptyString(observation.source, 1000), `observation ${observation.id} needs source`);
-  }
   const config = seed.config ?? {};
+  const effective = {};
   for (const [key, fallback] of Object.entries({
     target_proposals: 4,
     max_attempts_per_need: 3,
@@ -61,6 +53,24 @@ export function validateSeed(seed) {
   })) {
     const value = config[key] ?? fallback;
     invariant(Number.isInteger(value) && value > 0, `config.${key} must be a positive integer`);
+    effective[key] = value;
+  }
+  // A synthesis must cite target_proposals accepted proposals, but a cell only ever
+  // sees local_context_limit of them, so a larger target can never be satisfied.
+  invariant(
+    effective.target_proposals <= effective.local_context_limit,
+    "config.target_proposals must not exceed config.local_context_limit",
+  );
+  // Seed text becomes state text, which the gate caps at max_text_chars. Checking the
+  // same bound here keeps a schema-valid seed from failing later inside createState.
+  invariant(isNonEmptyString(seed.goal, effective.max_text_chars), `seed.goal is required and must not exceed config.max_text_chars (${effective.max_text_chars})`);
+  const ids = new Set();
+  for (const observation of seed.observations) {
+    invariant(isNonEmptyString(observation.id, 80), "every observation needs an id");
+    invariant(!ids.has(observation.id), `duplicate observation id: ${observation.id}`);
+    ids.add(observation.id);
+    invariant(isNonEmptyString(observation.text, effective.max_text_chars), `observation ${observation.id} needs text within config.max_text_chars (${effective.max_text_chars})`);
+    invariant(isNonEmptyString(observation.source, 1000), `observation ${observation.id} needs source`);
   }
 }
 
@@ -133,6 +143,9 @@ export function validateActionShape(action, maxTextChars) {
   if (Object.hasOwn(payload, "proposal_ids")) {
     invariant(Array.isArray(payload.proposal_ids), "payload.proposal_ids must be an array");
     invariant(payload.proposal_ids.every((value) => isNonEmptyString(value, 80)), "payload.proposal_ids contains an invalid id");
+    // Matches uniqueItems in schemas/action.schema.json: citing one proposal N times
+    // is not the same as gathering N proposals.
+    invariant(new Set(payload.proposal_ids).size === payload.proposal_ids.length, "payload.proposal_ids contains a duplicate id");
   }
   return true;
 }

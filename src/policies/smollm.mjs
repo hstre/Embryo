@@ -2,8 +2,9 @@ const DEFAULT_MODEL = "HuggingFaceTB/SmolLM2-135M-Instruct";
 const DEFAULT_REVISION = "12fd25f77366fa6b3b4b768ec3050bf629380bac";
 const DEFAULT_META_MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct";
 const DEFAULT_META_REVISION = "a10cc1512eabd3dde888204e902eca88bddb4951";
+const FALLBACK_MAX_TEXT_CHARS = 1200;
 
-function cleanText(text, max = 1200) {
+function cleanText(text, max) {
   return text.trim().replace(/^```(?:json|text)?\s*/i, "").replace(/```\s*$/, "").slice(0, max).trim();
 }
 
@@ -11,9 +12,20 @@ function bullets(items) {
   return items.map((item) => `- ${item.text}`);
 }
 
+// The meta-reviewer is asked for the verdict first, so only the first line counts.
+// A verdict buried in prose is not a decision the collective actually reached.
 function reviewVerdict(text) {
-  const match = text.toUpperCase().match(/\b(ACCEPT|REVISE|REJECT)\b/);
-  return match?.[1] ?? null;
+  const head = text.toUpperCase().trimStart().split(/\r?\n/, 1)[0];
+  const body = head.replace(/^\W*(?:VERDICT|META[- ]REVIEW)\W*/, "");
+  return body.match(/^\W*(ACCEPT|REVISE|REJECT)\b/)?.[1] ?? null;
+}
+
+// Greedy decoding makes a repeated attempt byte-identical to the one that just
+// failed, so every retry has to change the prompt or it cannot change the outcome.
+function retryDirective(attempts) {
+  if (attempts <= 0) return [];
+  if (attempts === 1) return ["Your previous attempt was rejected. Answer differently and keep to the required format."];
+  return ["Two previous attempts were rejected. Give the shortest possible answer that still keeps the required format."];
 }
 
 export class SmolLmPolicy {
@@ -24,7 +36,7 @@ export class SmolLmPolicy {
     this.metaModel = options.metaModel ?? DEFAULT_META_MODEL;
     this.metaRevision = options.metaRevision ?? DEFAULT_META_REVISION;
     this.metaDtype = options.metaDtype ?? this.dtype;
-    this.name = `${this.model}@${this.revision}:${this.dtype}+meta:${this.metaModel}@${this.metaRevision}:${this.metaDtype}:review-collective-v4`;
+    this.name = `${this.model}@${this.revision}:${this.dtype}+meta:${this.metaModel}@${this.metaRevision}:${this.metaDtype}:review-collective-v5-chat`;
     this.generators = new Map();
   }
 
@@ -40,34 +52,55 @@ export class SmolLmPolicy {
     return generator;
   }
 
-  async generate(prompt, maxNewTokens = 64, role = "cell") {
+  // These are instruction-tuned models. The pipeline only applies their chat
+  // template when it is handed a message array; a plain string is completed as
+  // raw text, which is why earlier experiments recorded prompt continuations
+  // instead of answers.
+  async generate(messages, maxNewTokens = 64, role = "cell") {
     const generator = await this.load(role);
-    const output = await generator(prompt, {
+    const output = await generator(messages, {
       max_new_tokens: maxNewTokens,
       do_sample: false,
       repetition_penalty: 1.08,
-      return_full_text: false,
     });
     const generated = output?.[0]?.generated_text;
-    if (typeof generated === "string") return generated;
     if (Array.isArray(generated)) return generated.at(-1)?.content ?? "";
+    if (typeof generated === "string") return generated;
     return String(generated ?? "");
   }
 
   async propose(view) {
     const need = view.need;
+    const maxChars = view.max_text_chars ?? FALLBACK_MAX_TEXT_CHARS;
+    const retry = retryDirective(need.attempts ?? 0);
+    const environment = view.observations?.length ? ["Given observations:", ...bullets(view.observations)] : [];
+    const ask = async (system, user, maxNewTokens, role = "cell") => cleanText(
+      await this.generate(
+        [
+          { role: "system", content: [system, ...retry].join("\n") },
+          { role: "user", content: user.join("\n") },
+        ],
+        maxNewTokens,
+        role,
+      ),
+      maxChars,
+    );
 
     if (need.kind === "QUESTION") {
-      const prompt = [
-        "You are the questioning cell. Do not answer the goal.",
-        "Ask one concise new question whose answer could advance the goal.",
-        "Output only that question, in the language of the goal.",
-        `Goal: ${view.goal.text}`,
-        ...(view.accepted_proposals.length ? ["Accepted work:", ...bullets(view.accepted_proposals)] : []),
-        ...(view.negative_traces.length ? ["Failed paths; ask something different:", ...bullets(view.negative_traces)] : []),
-        "New question:",
-      ].join("\n");
-      const text = cleanText(await this.generate(prompt, 64));
+      const text = await ask(
+        [
+          "You are the questioning cell. Do not answer the goal.",
+          "Ask one concise new question whose answer could advance the goal.",
+          "Output only that question, in the language of the goal.",
+        ].join("\n"),
+        [
+          `Goal: ${view.goal.text}`,
+          ...environment,
+          ...(view.accepted_proposals.length ? ["Accepted work:", ...bullets(view.accepted_proposals)] : []),
+          ...(view.negative_traces.length ? ["Failed paths; ask something different:", ...bullets(view.negative_traces)] : []),
+        ],
+        64,
+      );
       return {
         action: text
           ? { type: "ADD_QUESTION", need_id: need.id, payload: { text } }
@@ -77,17 +110,21 @@ export class SmolLmPolicy {
     }
 
     if (need.kind === "PROPOSE") {
-      const prompt = [
-        "You are the proposing cell. Answer the question with one concise philosophical proposal.",
-        "Output only the proposal, in the language of the goal.",
-        `Goal: ${view.goal.text}`,
-        `Question: ${view.question?.text ?? view.target.text}`,
-        ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
-        ...(view.accepted_proposals.length ? ["Already accepted:", ...bullets(view.accepted_proposals)] : []),
-        ...(view.negative_traces.length ? ["Failed paths; do not repeat:", ...bullets(view.negative_traces)] : []),
-        "Proposal:",
-      ].join("\n");
-      const text = cleanText(await this.generate(prompt, 96));
+      const text = await ask(
+        [
+          "You are the proposing cell. Answer the question with one concise philosophical proposal.",
+          "Output only the proposal, in the language of the goal.",
+        ].join("\n"),
+        [
+          `Goal: ${view.goal.text}`,
+          `Question: ${view.question?.text ?? view.target.text}`,
+          ...environment,
+          ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
+          ...(view.accepted_proposals.length ? ["Already accepted:", ...bullets(view.accepted_proposals)] : []),
+          ...(view.negative_traces.length ? ["Failed paths; do not repeat:", ...bullets(view.negative_traces)] : []),
+        ],
+        96,
+      );
       return {
         action: text
           ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }
@@ -102,18 +139,22 @@ export class SmolLmPolicy {
         : view.perspective === "charitable"
           ? "Identify the strongest contribution and the one improvement it most needs."
           : "Compare it with accepted work and identify contradiction, repetition, or a missing connection.";
-      const prompt = [
-        `You are the ${view.perspective} reviewer in a three-reviewer collective.`,
-        instruction,
-        "Do not give a verdict. Leave one concise review note in the language of the goal.",
-        `Goal: ${view.goal.text}`,
-        ...(view.question ? [`Question: ${view.question.text}`] : []),
-        `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
-        ...(view.accepted_proposals.length ? ["Previously accepted work:", ...bullets(view.accepted_proposals)] : []),
-        ...(view.negative_traces.length ? ["Earlier failed paths:", ...bullets(view.negative_traces)] : []),
-        "Review note:",
-      ].join("\n");
-      const text = cleanText(await this.generate(prompt, 80));
+      const text = await ask(
+        [
+          `You are the ${view.perspective} reviewer in a three-reviewer collective.`,
+          instruction,
+          "Do not give a verdict. Leave one concise review note in the language of the goal.",
+        ].join("\n"),
+        [
+          `Goal: ${view.goal.text}`,
+          ...(view.question ? [`Question: ${view.question.text}`] : []),
+          `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+          ...environment,
+          ...(view.accepted_proposals.length ? ["Previously accepted work:", ...bullets(view.accepted_proposals)] : []),
+          ...(view.negative_traces.length ? ["Earlier failed paths:", ...bullets(view.negative_traces)] : []),
+        ],
+        80,
+      );
       return {
         action: text
           ? { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text } }
@@ -123,36 +164,44 @@ export class SmolLmPolicy {
     }
 
     if (need.kind === "META_REVIEW") {
-      const prompt = [
-        "You are the meta-reviewer. Judge the work after reading all independent review notes.",
-        "Begin with exactly ACCEPT, REVISE, or REJECT, then give one concise reason.",
-        `Goal: ${view.goal.text}`,
-        ...(view.question ? [`Question: ${view.question.text}`] : []),
-        `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
-        "Review collective:",
-        ...view.review_fragments.map((fragment) => `- ${fragment.perspective}: ${fragment.text}`),
-        "Meta-review:",
-      ].join("\n");
-      const text = cleanText(await this.generate(prompt, 96, "meta"));
+      const text = await ask(
+        [
+          "You are the meta-reviewer. Judge the work after reading all independent review notes.",
+          "Your first word must be ACCEPT, REVISE or REJECT. Then give one concise reason.",
+        ].join("\n"),
+        [
+          `Goal: ${view.goal.text}`,
+          ...(view.question ? [`Question: ${view.question.text}`] : []),
+          `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+          "Review collective:",
+          ...view.review_fragments.map((fragment) => `- ${fragment.perspective}: ${fragment.text}`),
+        ],
+        96,
+        "meta",
+      );
       const verdict = reviewVerdict(text);
       return {
         action: verdict
           ? { type: "META_REVIEW", need_id: need.id, payload: { target_id: view.target.id, verdict, text } }
-          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "meta-review contained no verdict" } },
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "meta-review did not open with a verdict" } },
         trace: { raw_output: text },
       };
     }
 
     if (need.kind === "SYNTHESIZE") {
-      const prompt = [
-        "You are the proposing cell. Form a concise coherent philosophy that answers the goal.",
-        "Use the accepted work below. Output only the philosophy, in the language of the goal.",
-        `Goal: ${view.goal.text}`,
-        ...bullets(view.accepted_proposals),
-        ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
-        "Philosophy:",
-      ].join("\n");
-      const text = cleanText(await this.generate(prompt, 200));
+      const text = await ask(
+        [
+          "You are the proposing cell. Form a concise coherent philosophy that answers the goal.",
+          "Use the accepted work below. Output only the philosophy, in the language of the goal.",
+        ].join("\n"),
+        [
+          `Goal: ${view.goal.text}`,
+          ...bullets(view.accepted_proposals),
+          ...environment,
+          ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
+        ],
+        200,
+      );
       return {
         action: text
           ? {

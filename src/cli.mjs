@@ -91,7 +91,7 @@ async function main() {
   if (command === "replay") {
     const seed = await readJson(seedPath);
     const receipts = await readReceipts(eventsPath);
-    const rebuilt = replay(seed, receipts);
+    const rebuilt = replay(seed, receipts, state.generation);
     if (stateDigest(rebuilt) !== stateDigest(state)) throw new Error("replayed state differs from persisted state");
     console.log(JSON.stringify({ replay_stable: true, events: receipts.length, state_digest: stateDigest(state) }, null, 2));
     return;

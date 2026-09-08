@@ -50,6 +50,7 @@ export function buildLocalView(state, need) {
   const view = {
     embryo_id: state.embryo_id,
     generation: state.generation,
+    max_text_chars: state.config.max_text_chars,
     role: need.kind === "QUESTION"
       ? "questioner"
       : need.kind === "REVIEW_FRAGMENT"
@@ -60,6 +61,10 @@ export function buildLocalView(state, need) {
     perspective,
     need: { id: need.id, kind: need.kind, target_id: need.target_id, attempts: need.attempts },
     goal: { id: goal.id, text: goal.text },
+    observations: state.nodes
+      .filter((node) => node.kind === "observation")
+      .slice(0, limit)
+      .map(({ id, text, source }) => ({ id, text, source })),
     target: { id: target.id, kind: target.kind, status: target.status, text: target.text },
     question: question ? { id: question.id, status: question.status, text: question.text } : null,
     reviews: reviewsFor(state, target.id).slice(-limit).map(({ id, text }) => ({ id, text })),

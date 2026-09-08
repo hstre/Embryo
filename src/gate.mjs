@@ -144,7 +144,7 @@ export function applyProposal(state, proposal, eventSeq) {
     if (sourceProposals.some((node) => node?.kind !== "proposal" || node.status !== "accepted")) {
       return reject("UNACCEPTED_PROPOSAL", "synthesis may use accepted proposals only");
     }
-    if (duplicates(state, ["synthesis"], payload.text)) return reject("DUPLICATE_SYNTHESIS", "synthesis already exists, including rejected paths");
+    if (duplicates(state, ["proposal", "synthesis"], payload.text)) return reject("DUPLICATE_SYNTHESIS", "synthesis already exists, including rejected paths");
     if (target.kind === "synthesis" && target.status === "revision_requested") target.status = "superseded";
     else if (target.kind !== "goal" || target.status !== "open") return reject("TARGET_MISMATCH", "synthesis must address the goal or revise a synthesis");
     const id = nextNodeId(state, "synthesis");

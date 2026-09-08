@@ -187,3 +187,131 @@ test("only the meta-review role uses the larger pinned model", async () => {
   });
   assert.equal(selectedRole, "meta");
 });
+
+test("an exhausted gradient inhibits instead of being minted again", async () => {
+  const seed = await readJson(seedPath);
+  const state = createState(seed);
+  const dir = await mkdtemp(join(tmpdir(), "embryo-inhibition-test-"));
+  const policy = {
+    name: "stuck-questioner",
+    async propose(view) {
+      return { type: "ADD_QUESTION", need_id: view.need.id, payload: { text: "Same question?" } };
+    },
+  };
+  while (canGrow(state)) {
+    await runGeneration({ state, statePath: join(dir, "state.json"), eventsPath: join(dir, "events.jsonl"), policy, maxCells: 4 });
+  }
+  // A cell that cannot stop repeating itself must exhaust its gradient, not burn the budget.
+  assert.ok(state.energy_spent < state.config.energy_budget, `growth consumed the whole budget: ${state.energy_spent}`);
+  assert.ok(state.needs.some((need) => need.kind === "QUESTION" && need.status === "exhausted"));
+  assert.equal(deriveNeeds(state).length, 0);
+});
+
+test("a rejected synthesis cannot be retried forever", async () => {
+  const seed = await readJson(seedPath);
+  const state = createState(seed);
+  const dir = await mkdtemp(join(tmpdir(), "embryo-synthesis-test-"));
+  const base = new DeterministicPolicy();
+  const policy = {
+    name: "rejecting-meta-reviewer",
+    async propose(view) {
+      if (view.need.kind === "META_REVIEW" && view.target.kind === "synthesis") {
+        return { type: "META_REVIEW", need_id: view.need.id, payload: { target_id: view.target.id, verdict: "REJECT", text: "REJECT: not yet." } };
+      }
+      return base.propose(view);
+    },
+  };
+  while (canGrow(state)) {
+    await runGeneration({ state, statePath: join(dir, "state.json"), eventsPath: join(dir, "events.jsonl"), policy, maxCells: 4 });
+  }
+  assert.ok(state.energy_spent < state.config.energy_budget, `growth consumed the whole budget: ${state.energy_spent}`);
+  assert.equal(state.nodes.find((node) => node.kind === "synthesis").status, "rejected");
+  assert.equal(deriveNeeds(state).length, 0);
+});
+
+test("a synthesis may not cite the same proposal twice", async () => {
+  const state = await freshState();
+  addQuestion(state);
+  addProposal(state);
+  addReviewPanel(state);
+  metaReview(state, "ACCEPT");
+  const accepted = state.nodes.find((node) => node.kind === "proposal" && node.status === "accepted");
+  const need = deriveNeeds(state)[0];
+  const decision = applyProposal(
+    state,
+    { type: "ADD_SYNTHESIS", need_id: need.id, payload: { text: "One proposal, four times.", proposal_ids: Array(4).fill(accepted.id) } },
+    state.next_event_seq,
+  );
+  assert.equal(decision.code, "INVALID_SCHEMA");
+  assert.equal(state.edges.filter((edge) => edge.relation === "synthesizes").length, 0);
+});
+
+test("seed validation uses the same text budget as the gate", async () => {
+  const seed = await readJson(seedPath);
+  assert.throws(
+    () => createState({ ...seed, goal: "G".repeat(seed.config.max_text_chars + 1) }),
+    /config\.max_text_chars/,
+  );
+  assert.throws(
+    () => createState({ ...seed, config: { ...seed.config, target_proposals: seed.config.local_context_limit + 1 } }),
+    /must not exceed config\.local_context_limit/,
+  );
+});
+
+test("an interrupted generation still replays exactly", async () => {
+  const seed = await readJson(seedPath);
+  const state = createState(seed);
+  const dir = await mkdtemp(join(tmpdir(), "embryo-interrupt-test-"));
+  const eventsPath = join(dir, "events.jsonl");
+  // Two cells of a four-cell generation: the receipts are persisted, the generation
+  // counter is not, which is exactly what a timed-out run leaves behind.
+  await runGeneration({ state, statePath: join(dir, "state.json"), eventsPath, policy: new DeterministicPolicy(), maxCells: 2 });
+  state.generation -= 1;
+  const receipts = await readReceipts(eventsPath);
+  assert.equal(stateDigest(replay(seed, receipts, state.generation)), stateDigest(state));
+  assert.throws(() => replay(seed, receipts, state.generation + 5), /not reachable from the ledger/);
+});
+
+test("the meta-reviewer only counts a verdict it opens with", async () => {
+  const policy = new SmolLmPolicy();
+  const view = {
+    max_text_chars: 1200,
+    need: { id: "need-meta", kind: "META_REVIEW", attempts: 0 },
+    goal: { text: "A goal." },
+    question: { text: "A question?" },
+    target: { id: "proposal-1", kind: "proposal", text: "A proposal." },
+    review_fragments: [{ perspective: "adversarial", text: "An objection." }],
+  };
+  policy.generate = async () => "I would not REJECT this, so ACCEPT.";
+  const buried = await policy.propose(view);
+  assert.equal(buried.action.type, "ABSTAIN");
+  policy.generate = async () => "ACCEPT: sufficiently coherent.";
+  assert.equal((await policy.propose(view)).action.payload.verdict, "ACCEPT");
+  policy.generate = async () => "Reject.\n\nThe collective found no support.";
+  assert.equal((await policy.propose(view)).action.payload.verdict, "REJECT");
+});
+
+test("instruction-tuned cells are prompted through the chat template", async () => {
+  const policy = new SmolLmPolicy();
+  let seen;
+  policy.generate = async (messages) => {
+    seen = messages;
+    return "A question?";
+  };
+  await policy.propose({
+    max_text_chars: 1200,
+    need: { id: "need-question", kind: "QUESTION", attempts: 2 },
+    goal: { text: "A goal." },
+    target: { id: "goal-0001", kind: "goal", text: "A goal." },
+    accepted_proposals: [],
+    negative_traces: [],
+    observations: [{ id: "obs-1", text: "An observation.", source: "seed" }],
+  });
+  // A plain string would be completed as raw text instead of instruction-followed.
+  assert.ok(Array.isArray(seen), "policy must hand the pipeline a message array");
+  assert.deepEqual(seen.map((message) => message.role), ["system", "user"]);
+  // A repeated attempt has to differ from the one that just failed under greedy decoding.
+  assert.match(seen[0].content, /previous attempts were rejected/);
+  // Seed observations must actually reach a cell.
+  assert.match(seen[1].content, /An observation\./);
+});
