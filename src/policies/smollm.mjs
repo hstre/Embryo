@@ -19,7 +19,7 @@ export class SmolLmPolicy {
     this.model = options.model ?? DEFAULT_MODEL;
     this.revision = options.revision ?? DEFAULT_REVISION;
     this.dtype = options.dtype ?? "q4";
-    this.name = `${this.model}@${this.revision}:${this.dtype}:triad-v2`;
+    this.name = `${this.model}@${this.revision}:${this.dtype}:review-collective-v3`;
     this.generator = null;
   }
 
@@ -86,22 +86,49 @@ export class SmolLmPolicy {
       };
     }
 
-    if (need.kind === "REVIEW") {
+    if (need.kind === "REVIEW_FRAGMENT") {
+      const instruction = view.perspective === "adversarial"
+        ? "Find the strongest concrete objection or unanswered issue."
+        : view.perspective === "charitable"
+          ? "Identify the strongest contribution and the one improvement it most needs."
+          : "Compare it with accepted work and identify contradiction, repetition, or a missing connection.";
       const prompt = [
-        "You are the reviewing cell. Review the work independently.",
-        "Begin with exactly ACCEPT, REVISE, or REJECT, then give one concise reason.",
+        `You are the ${view.perspective} reviewer in a three-reviewer collective.`,
+        instruction,
+        "Do not give a verdict. Leave one concise review note in the language of the goal.",
         `Goal: ${view.goal.text}`,
         ...(view.question ? [`Question: ${view.question.text}`] : []),
         `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
         ...(view.accepted_proposals.length ? ["Previously accepted work:", ...bullets(view.accepted_proposals)] : []),
-        "Review:",
+        ...(view.negative_traces.length ? ["Earlier failed paths:", ...bullets(view.negative_traces)] : []),
+        "Review note:",
       ].join("\n");
       const text = cleanText(await this.generate(prompt, 80));
+      return {
+        action: text
+          ? { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty review fragment" } },
+        trace: { raw_output: text },
+      };
+    }
+
+    if (need.kind === "META_REVIEW") {
+      const prompt = [
+        "You are the meta-reviewer. Judge the work after reading all independent review notes.",
+        "Begin with exactly ACCEPT, REVISE, or REJECT, then give one concise reason.",
+        `Goal: ${view.goal.text}`,
+        ...(view.question ? [`Question: ${view.question.text}`] : []),
+        `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+        "Review collective:",
+        ...view.review_fragments.map((fragment) => `- ${fragment.perspective}: ${fragment.text}`),
+        "Meta-review:",
+      ].join("\n");
+      const text = cleanText(await this.generate(prompt, 96));
       const verdict = reviewVerdict(text);
       return {
         action: verdict
-          ? { type: "REVIEW", need_id: need.id, payload: { target_id: view.target.id, verdict, text } }
-          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "review contained no verdict" } },
+          ? { type: "META_REVIEW", need_id: need.id, payload: { target_id: view.target.id, verdict, text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "meta-review contained no verdict" } },
         trace: { raw_output: text },
       };
     }

@@ -1,5 +1,5 @@
 export class DeterministicPolicy {
-  name = "deterministic-triad-v2";
+  name = "deterministic-review-collective-v3";
 
   async propose(view) {
     const need = view.need;
@@ -15,11 +15,18 @@ export class DeterministicPolicy {
         payload: { text: `Proposal ${ordinal}: ${view.question?.text ?? view.target.text}` },
       };
     }
-    if (need.kind === "REVIEW") {
+    if (need.kind === "REVIEW_FRAGMENT") {
       return {
-        type: "REVIEW",
+        type: "ADD_REVIEW_FRAGMENT",
         need_id: need.id,
-        payload: { target_id: view.target.id, verdict: "ACCEPT", text: "ACCEPT: deterministic review." },
+        payload: { target_id: view.target.id, text: `${view.perspective}: deterministic review fragment.` },
+      };
+    }
+    if (need.kind === "META_REVIEW") {
+      return {
+        type: "META_REVIEW",
+        need_id: need.id,
+        payload: { target_id: view.target.id, verdict: "ACCEPT", text: "ACCEPT: deterministic collective review." },
       };
     }
     if (need.kind === "SYNTHESIZE") {

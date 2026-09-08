@@ -1,11 +1,11 @@
-const NODE_KINDS = new Set(["goal", "observation", "question", "proposal", "review", "synthesis"]);
+const NODE_KINDS = new Set(["goal", "observation", "question", "proposal", "review_fragment", "meta_review", "synthesis"]);
 const NODE_STATUSES = new Set([
   "given", "open", "under_review", "answered", "abandoned", "unreviewed",
   "accepted", "revision_requested", "rejected", "superseded", "recorded",
 ]);
-const NEED_KINDS = new Set(["QUESTION", "PROPOSE", "REVIEW", "SYNTHESIZE"]);
+const NEED_KINDS = new Set(["QUESTION", "PROPOSE", "REVIEW_FRAGMENT", "META_REVIEW", "SYNTHESIZE"]);
 const NEED_STATUSES = new Set(["open", "resolved", "exhausted"]);
-const ACTION_TYPES = new Set(["ADD_QUESTION", "ADD_PROPOSAL", "REVIEW", "ADD_SYNTHESIS", "ABSTAIN"]);
+const ACTION_TYPES = new Set(["ADD_QUESTION", "ADD_PROPOSAL", "ADD_REVIEW_FRAGMENT", "META_REVIEW", "ADD_SYNTHESIS", "ABSTAIN"]);
 const STATE_KEYS = new Set([
   "schema_version", "embryo_id", "generation", "energy_spent", "next_node_seq",
   "next_event_seq", "ledger_head", "config", "nodes", "edges", "needs",
@@ -18,7 +18,8 @@ const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
   ADD_QUESTION: { required: ["text"], allowed: ["text"] },
   ADD_PROPOSAL: { required: ["text"], allowed: ["text"] },
-  REVIEW: { required: ["target_id", "verdict", "text"], allowed: ["target_id", "verdict", "text"] },
+  ADD_REVIEW_FRAGMENT: { required: ["target_id", "text"], allowed: ["target_id", "text"] },
+  META_REVIEW: { required: ["target_id", "verdict", "text"], allowed: ["target_id", "verdict", "text"] },
   ADD_SYNTHESIS: { required: ["text", "proposal_ids"], allowed: ["text", "proposal_ids"] },
   ABSTAIN: { required: ["reason"], allowed: ["reason"] },
 });
@@ -66,7 +67,7 @@ export function validateSeed(seed) {
 export function validateState(state) {
   invariant(state && typeof state === "object" && !Array.isArray(state), "state must be an object");
   invariant(hasOnlyKeys(state, STATE_KEYS), "state contains unknown fields");
-  invariant(state?.schema_version === 2, "unsupported state schema_version");
+  invariant(state?.schema_version === 3, "unsupported state schema_version");
   invariant(isNonEmptyString(state.embryo_id, 80), "state.embryo_id is required");
   invariant(Number.isInteger(state.generation) && state.generation >= 0, "generation must be non-negative");
   invariant(Number.isInteger(state.energy_spent) && state.energy_spent >= 0, "energy_spent must be non-negative");
@@ -82,7 +83,7 @@ export function validateState(state) {
   const nodeIds = new Set();
   for (const node of state.nodes) {
     invariant(
-      hasOnlyKeys(node, new Set(["id", "kind", "status", "text", "source", "created_event", "ordinal"])),
+      hasOnlyKeys(node, new Set(["id", "kind", "status", "text", "source", "created_event", "ordinal", "perspective"])),
       `node contains unknown fields: ${node.id}`,
     );
     invariant(isNonEmptyString(node.id, 80), "node id invalid");
