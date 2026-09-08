@@ -52,6 +52,10 @@ export function buildLocalView(state, need) {
     supported_claims: state.nodes
       .filter((node) => node.kind === "claim" && node.status === "supported")
       .map(({ id, text }) => ({ id, text })),
+    negative_traces: state.nodes
+      .filter((node) => node.kind === "claim" && ["retracted", "superseded"].includes(node.status))
+      .slice(-5)
+      .map(({ id, text, status }) => ({ id, text, status })),
   };
   return { view, hash: digest(view) };
 }
