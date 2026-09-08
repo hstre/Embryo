@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "embryo_id": "stigmergy-emergence-001",
-  "generation": 3,
-  "energy_spent": 12,
-  "next_node_seq": 9,
-  "next_event_seq": 13,
-  "ledger_head": "e8ece516964b324d3da349ce96a7e95e3a3b4af345dc0c4e36a797fb05add937",
+  "generation": 4,
+  "energy_spent": 16,
+  "next_node_seq": 12,
+  "next_event_seq": 17,
+  "ledger_head": "91a79df47f516eecb4484b52f86e5baa429d572c85538ba3aa78dd15e00c6a45",
   "config": {
     "target_claims": 2,
     "max_attempts_per_need": 2,
@@ -110,10 +110,34 @@
     {
       "id": "claim-0008",
       "kind": "claim",
-      "status": "unverified",
+      "status": "retracted",
       "text": "Emergence denotes a system-level structure or behavior produced by interactions among components.",
       "source": "cell",
       "created_event": 12
+    },
+    {
+      "id": "challenge-0009",
+      "kind": "challenge",
+      "status": "open",
+      "text": "Cell found no directly supporting supplied observation.",
+      "source": "cell",
+      "created_event": 13
+    },
+    {
+      "id": "claim-0010",
+      "kind": "claim",
+      "status": "challenged",
+      "text": "Emergence denotes a system-level structure or behavior produced by interactions among components.",
+      "source": "cell",
+      "created_event": 15
+    },
+    {
+      "id": "challenge-0011",
+      "kind": "challenge",
+      "status": "open",
+      "text": "Cell found no directly supporting supplied observation.",
+      "source": "cell",
+      "created_event": 16
     }
   ],
   "edges": [
@@ -179,6 +203,27 @@
       "to": "goal-0001",
       "relation": "addresses",
       "created_event": 12
+    },
+    {
+      "id": "edge-0010",
+      "from": "challenge-0009",
+      "to": "claim-0008",
+      "relation": "challenges",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0011",
+      "from": "claim-0010",
+      "to": "goal-0001",
+      "relation": "addresses",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0012",
+      "from": "challenge-0011",
+      "to": "claim-0010",
+      "relation": "challenges",
+      "created_event": 16
     }
   ],
   "needs": [
@@ -299,10 +344,47 @@
       "id": "need-verify-37071571b985",
       "kind": "VERIFY",
       "target_id": "claim-0008",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 2,
       "priority": 30
+    },
+    {
+      "id": "need-repair-0dcff768aeba",
+      "kind": "REPAIR",
+      "target_id": "claim-0008",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40
+    },
+    {
+      "id": "need-explore-9bf1531529d5",
+      "kind": "EXPLORE",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 10,
+      "stage": 1
+    },
+    {
+      "id": "need-verify-5cea1ab6d68d",
+      "kind": "VERIFY",
+      "target_id": "claim-0010",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 30
+    },
+    {
+      "id": "need-repair-94d797764cab",
+      "kind": "REPAIR",
+      "target_id": "claim-0010",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40
     }
   ]
 }
