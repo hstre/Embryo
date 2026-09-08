@@ -29,7 +29,7 @@ The analogy is operational, not a claim that software is literally biological.
 
 1. **Work, not messages, recruits cells.** A question creates a `PROPOSE` need; a proposal creates three `REVIEW_FRAGMENT` needs; their traces create a `META_REVIEW` need.
 2. **Proposal is not consequence.** LLM output is never authoritative. The gate validates a closed action vocabulary and all referenced objects.
-3. **Cells cannot invent their environment.** The closed action vocabulary has no way to create an observation. Observations enter only through the seed and reach cells read-only in the local view.
+3. **Cells cannot invent their environment.** The closed action vocabulary has no way to create an observation. Observations enter only through the seed.
 4. **Every attempt leaves a receipt.** Receipts are append-only, hash-linked, attributable and replay-checked.
 5. **Growth is bounded.** Energy, attempts per need, cells per generation and total generations all have hard caps.
 6. **No shared transcript.** A cell receives only a deterministic local view.
@@ -117,7 +117,9 @@ Experiment 005 repeated Experiment 004 with one controlled change: every cell st
 
 It ran to quiescence on `embryo-state` and produced **no accepted proposal at all**: 64 of 64 energy units, 16 generations, 8 abandoned questions, 7 rejected proposals, goal still open. The meta-reviewer abstained in 21 of 21 attempts. The isolation of the variable was clean — the 43 non-meta receipts are byte-identical to those of Experiment 004 — but the aggregate decision counts of 004 and 005 are identical too, so the larger integrator changed the text and nothing else.
 
-The cause was a defect, not a result. `SmolLmPolicy` handed the text-generation pipeline a plain string, and the pipeline only applies a model's chat template when it receives a message array. Both arms therefore ran instruction-tuned models in raw completion mode, which is why the receipts contain prompt continuations rather than reviews. Under the same prompt, the 360M meta-reviewer opens with a verdict once the chat template is applied and produced none without it.
+What did hold is the stigmergic machinery itself. Across all 64 cells the recruitment chain resolves exactly: 9 questions, 9 `PROPOSE` needs, 23 `REVIEW_FRAGMENT` needs — seven complete three-perspective panels plus two for an eighth, unfinished proposal — and exactly seven `META_REVIEW` gradients, one per completed panel. No cell requested any of them. Invariant 1 is demonstrated; only the judgment layer failed.
+
+The cause of that failure was a defect, not a result. `SmolLmPolicy` handed the text-generation pipeline a plain string, and the pipeline only applies a model's chat template when it receives a message array. Both arms therefore ran instruction-tuned models in raw completion mode, which is why the receipts contain prompt continuations rather than reviews. Under the same prompt, the 360M meta-reviewer opens with a verdict once the chat template is applied and produced none without it.
 
 Experiments 003 to 005 are affected by this and do not answer the question they were set up to ask. Their tissue is preserved on the `archive/embryo-00N` branches; the comparison has to be run again on the repaired substrate.
 

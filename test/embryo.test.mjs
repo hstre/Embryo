@@ -305,13 +305,11 @@ test("instruction-tuned cells are prompted through the chat template", async () 
     target: { id: "goal-0001", kind: "goal", text: "A goal." },
     accepted_proposals: [],
     negative_traces: [],
-    observations: [{ id: "obs-1", text: "An observation.", source: "seed" }],
   });
   // A plain string would be completed as raw text instead of instruction-followed.
   assert.ok(Array.isArray(seen), "policy must hand the pipeline a message array");
   assert.deepEqual(seen.map((message) => message.role), ["system", "user"]);
-  // A repeated attempt has to differ from the one that just failed under greedy decoding.
-  assert.match(seen[0].content, /previous attempts were rejected/);
-  // Seed observations must actually reach a cell.
-  assert.match(seen[1].content, /An observation\./);
+  // A repeated attempt has to differ from the one that just failed under greedy
+  // decoding, and the attempts belong to the need rather than to the cell.
+  assert.match(seen[0].content, /This need carries two rejected attempts/);
 });

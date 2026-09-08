@@ -20,12 +20,14 @@ function reviewVerdict(text) {
   return body.match(/^\W*(ACCEPT|REVISE|REJECT)\b/)?.[1] ?? null;
 }
 
-// Greedy decoding makes a repeated attempt byte-identical to the one that just
-// failed, so every retry has to change the prompt or it cannot change the outcome.
+// The attempt count belongs to the need, not to the cell reading it: cells are
+// short-lived and share no memory of one another. Greedy decoding still makes an
+// unchanged prompt reproduce the output that just failed, so the state of the
+// gradient has to enter the prompt for a repeated attempt to differ at all.
 function retryDirective(attempts) {
   if (attempts <= 0) return [];
-  if (attempts === 1) return ["Your previous attempt was rejected. Answer differently and keep to the required format."];
-  return ["Two previous attempts were rejected. Give the shortest possible answer that still keeps the required format."];
+  if (attempts === 1) return ["This need carries one rejected attempt. Take a different approach and keep to the required format."];
+  return ["This need carries two rejected attempts. Give the shortest answer that still keeps the required format."];
 }
 
 export class SmolLmPolicy {
@@ -73,7 +75,6 @@ export class SmolLmPolicy {
     const need = view.need;
     const maxChars = view.max_text_chars ?? FALLBACK_MAX_TEXT_CHARS;
     const retry = retryDirective(need.attempts ?? 0);
-    const environment = view.observations?.length ? ["Given observations:", ...bullets(view.observations)] : [];
     const ask = async (system, user, maxNewTokens, role = "cell") => cleanText(
       await this.generate(
         [
@@ -95,7 +96,6 @@ export class SmolLmPolicy {
         ].join("\n"),
         [
           `Goal: ${view.goal.text}`,
-          ...environment,
           ...(view.accepted_proposals.length ? ["Accepted work:", ...bullets(view.accepted_proposals)] : []),
           ...(view.negative_traces.length ? ["Failed paths; ask something different:", ...bullets(view.negative_traces)] : []),
         ],
@@ -118,7 +118,6 @@ export class SmolLmPolicy {
         [
           `Goal: ${view.goal.text}`,
           `Question: ${view.question?.text ?? view.target.text}`,
-          ...environment,
           ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
           ...(view.accepted_proposals.length ? ["Already accepted:", ...bullets(view.accepted_proposals)] : []),
           ...(view.negative_traces.length ? ["Failed paths; do not repeat:", ...bullets(view.negative_traces)] : []),
@@ -149,7 +148,6 @@ export class SmolLmPolicy {
           `Goal: ${view.goal.text}`,
           ...(view.question ? [`Question: ${view.question.text}`] : []),
           `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
-          ...environment,
           ...(view.accepted_proposals.length ? ["Previously accepted work:", ...bullets(view.accepted_proposals)] : []),
           ...(view.negative_traces.length ? ["Earlier failed paths:", ...bullets(view.negative_traces)] : []),
         ],
@@ -197,7 +195,6 @@ export class SmolLmPolicy {
         [
           `Goal: ${view.goal.text}`,
           ...bullets(view.accepted_proposals),
-          ...environment,
           ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
         ],
         200,
