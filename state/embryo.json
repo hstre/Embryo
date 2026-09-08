@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "embryo_id": "human-llm-society-002",
-  "generation": 1,
-  "energy_spent": 4,
+  "generation": 2,
+  "energy_spent": 7,
   "next_node_seq": 2,
-  "next_event_seq": 5,
-  "ledger_head": "068fe0160cd7546f1bdbd9d112597828b3c088b81661b7e51df26c0842969072",
+  "next_event_seq": 8,
+  "ledger_head": "109ba69a550fc5923a9dcf02ae1581663014f897ae1826fd75967ba94bff4516",
   "config": {
     "target_claims": 6,
     "max_attempts_per_need": 3,
@@ -66,8 +66,8 @@
       "id": "need-explore-701fcc0bd1b2",
       "kind": "EXPLORE",
       "target_id": "goal-0001",
-      "status": "open",
-      "attempts": 0,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 0,
       "priority": 10,
       "stage": 1
