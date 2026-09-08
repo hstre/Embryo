@@ -111,7 +111,7 @@ The `GITHUB_TOKEN` has only `contents: write` and `actions: write`. Generated mo
 
 Version 0.1 establishes the experimental substrate. The next research stage is a blinded benchmark against a single cell, best-of-N independent cells, fixed-role communicating agents and the growing stigmergic condition.
 
-## Experiments 005 to 007
+## Experiments 005 to 008
 
 Experiment 005 repeated Experiment 004 with one controlled change: every cell stayed on the pinned 135M model except the meta-reviewer, which integrates the three review traces and must emit `ACCEPT`, `REVISE` or `REJECT`. That one used the pinned 360M model.
 
@@ -123,11 +123,13 @@ The cause of that failure was a defect, not a result. `SmolLmPolicy` handed the 
 
 Experiments 003 to 005 are affected by this and do not answer the question they were set up to ask. Their tissue is preserved on the `archive/embryo-00N` branches.
 
-Two counter-runs on the repaired substrate, kept under [`docs/runs/`](docs/runs), separate the causes further. Both also end with no accepted proposal, each for a different reason:
+Three counter-runs on the repaired substrate, kept under [`docs/runs/`](docs/runs), separate the causes further. All end with no accepted proposal, each for a different reason:
 
 - **006** — repaired interface, cells still on 135M. The models now follow instructions rather than continuing the prompt, but 135M produces assistant filler instead of a question or a proposal, and the substrate carries that faithfully downstream. An isolated measurement places the threshold between 135M and 360M, at the questioner and proposer rather than at the meta-reviewer.
 - **007** — every cell on 360M. The content layer works: a real question, a real proposal. Everything downstream then collapses. The three reviewer perspectives emit byte-identical text in both panels, and the meta-reviewer continues the theme instead of judging it.
 
-That last one is a result rather than a defect. The structural differentiation holds — `deriveNeeds()` recruits the right role, the local view masks per perspective, the gate enforces the closed vocabulary — but the behavioural differentiation does not follow, because the phenotypes are defined by prompt alone. At this model scale the cells are more homogeneous than intended: all of them are "continue the text". The organization forms; the differentiation does not.
+- **008** — as 007, but the verdict is read off the model's own distribution instead of being written and parsed back out. Each of `ACCEPT`, `REVISE` and `REJECT` is scored as the log-probability of its whole token sequence. The meta-reviewer then decides in three cases out of three, and the tissue runs three full revision rounds — the developmental cycle the README describes, working for the first time. But `ACCEPT` sits 2.3 to 2.5 nats behind the winner in every judgement, and a calibration against hand-written cases shows why: a proposal its three reviews unanimously praise still scores `REJECT`. The distribution carries no quality signal.
 
-The full forensic report on all seven runs, with the ledger evidence, is in [`docs/befund-001-007.md`](docs/befund-001-007.md) (German).
+The last two are results rather than defects. The structural differentiation holds — `deriveNeeds()` recruits the right role, the local view masks per perspective, the gate enforces the closed vocabulary — but the behavioural differentiation does not follow, because the phenotypes are defined by prompt alone. At this model scale the cells are more homogeneous than intended: all of them are "continue the text". Taking the decision out of generation gets past that — the model does decide once its own distribution is read directly — but the wall behind it is the judgement itself. The organization forms; the differentiation does not.
+
+The full forensic report on all eight runs, with the ledger evidence and the calibration figures, is in [`docs/befund-experimente.md`](docs/befund-experimente.md) (German).

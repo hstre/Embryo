@@ -1,12 +1,15 @@
-# Sieben Läufe ohne Urteil
+# Organisation ohne Urteil
 
-**Forschungsbericht zu den Experimenten 001–007**
+**Forschungsbericht zu den Experimenten 001–008**
+
+*Der Titel folgt dem Befund statt der Laufzahl, damit er nicht mit jedem
+weiteren Lauf veraltet.*
 
 | | |
 | --- | --- |
 | Datum | 8. September 2026 |
-| Untersucht | `archive/embryo-001` … `archive/embryo-004`, `embryo-state`, [`docs/runs/006`](runs), [`docs/runs/007`](runs) |
-| Datenbasis | 297 hash-verkettete Receipts |
+| Untersucht | `archive/embryo-001` … `archive/embryo-004`, `embryo-state`, [`docs/runs/`](runs) 006–008 |
+| Datenbasis | 323 hash-verkettete Receipts |
 | Reparatur | [PR #9](https://github.com/hstre/Embryo/pull/9) |
 | Verfasst von | Claude Opus 5 |
 
@@ -24,11 +27,14 @@ ist. Experiment 005 hat diese Lesart geprüft und den Meta-Reviewer auf 360M
 vergrößert. Das Ergebnis war identisch — bis auf die letzte Stelle der
 Entscheidungsstatistik.
 
-Zwei Gegenläufe auf dem reparierten Substrat haben die Ursachenkette danach
-weiter aufgetrennt. Beide bleiben ebenfalls bei null akzeptierten Vorschlägen,
-aber aus jeweils anderem Grund — und der letzte davon ist kein Defekt mehr,
-sondern ein Ergebnis: die Phänotypen sind ausschließlich über Prompts definiert,
-und auf dieser Modellgröße differenzieren Prompts das Verhalten nicht.
+Drei Gegenläufe auf dem reparierten Substrat haben die Ursachenkette danach
+weiter aufgetrennt. Alle bleiben bei null akzeptierten Vorschlägen, aber aus
+jeweils anderem Grund, und die letzten beiden sind keine Defekte mehr, sondern
+Ergebnisse. Die Phänotypen sind ausschließlich über Prompts definiert, und auf
+dieser Modellgröße differenzieren Prompts das Verhalten nicht. Und wenn man das
+Urteil nicht mehr generieren lässt, sondern direkt aus der Wahrscheinlichkeits-
+verteilung des Modells liest, entsteht es zwar — trägt aber kein Qualitäts-
+signal.
 
 Die stigmergische Maschinerie selbst hat dabei getragen: die Rekrutierungskette
 von der Frage über den Vorschlag zum Review-Panel und zum Meta-Review ist über
@@ -53,8 +59,9 @@ selben Prompt im ersten Versuch ein Verdikt.
 | 005 | `review-collective-v4` (360M meta) | 16 | 64/64 | 21 | keine |
 | 006 | `v5-chat`, 135M-Zellen | 12 | 47/64 | 15 | keine |
 | 007 | `v5-chat`, alle Zellen 360M | 5 | 19/64 | 6 | keine |
+| 008 | `v6-scored`, gescortes Verdikt | 7 | 26/64 | 0 | keine |
 
-006 und 007 liefen auf dem reparierten Substrat und sind unten in eigenen
+006 bis 008 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular (Behauptungen und Einwände
 statt Frage-Vorschlag-Review) und sind nur eingeschränkt vergleichbar. In 003
 bis 005 endeten 75 von 192 Zellen — 39 Prozent — in einem Abstain.
@@ -287,7 +294,7 @@ teilen keine Erinnerung. Der Prompt eines Wiederholungsversuchs benennt deshalb
 den Zustand des Gradienten und nicht eine Vergangenheit, die die Zelle gar nicht
 hat.
 
-## 10. Die Gegenläufe 006 und 007
+## 10. Die Gegenläufe 006 bis 008
 
 Der Bericht wäre unvollständig ohne die Läufe auf dem reparierten Substrat.
 Beide verwenden dasselbe Ziel, dieselbe Konfiguration und dieselben angehefteten
@@ -343,19 +350,96 @@ System-Prompt „hinterfrage", „würdige", „prüfe auf Kohärenz" oder „ur
 ACCEPT, REVISE oder REJECT" sagt, ändert nichts: es setzt den dominanten Text im
 Kontext fort.
 
-## 11. Drei Wände
+### 008 — das Verdikt wird gescort statt generiert
+
+Wenn das Modell die Aufgabe nicht wechseln kann, muss die Entscheidung aus einer
+Generierungsaufgabe herausgenommen werden. In 008 schreibt der Meta-Reviewer das
+Verdikt nicht mehr, sondern jedes der drei Verdikte wird als summierte
+Log-Wahrscheinlichkeit seiner vollständigen Tokenfolge unter Teacher Forcing
+bewertet; das Maximum entscheidet.
+
+Ein Argmax über das erste Token genügt nicht: `REVISE` und `REJECT` beginnen in
+diesem Tokenizer beide mit `RE` (Token 3256). Entschieden wird über den
+längennormierten Mittelwert, weil `REVISE` in drei Token zerfällt und die
+anderen beiden in zwei — eine Eigenschaft des Tokenizers, nicht des Urteils.
+Beide Werte und die angewandte Regel stehen im Receipt.
+
+**Der Meta-Reviewer entscheidet damit.** Drei von drei Meta-Reviews mit Verdikt,
+null Abstains — nach 005 bis 007 mit zusammen 42 Abstains und keinem einzigen
+Urteil. Und das Gewebe bewegt sich zum ersten Mal durch seinen Zustandsautomaten:
+
+```text
+meta-review-0006 -revises->    proposal-0002
+proposal-0007    -supersedes-> proposal-0002
+meta-review-0011 -revises->    proposal-0007
+proposal-0012    -supersedes-> proposal-0007
+meta-review-0016 -revises->    proposal-0012
+```
+
+Drei vollständige Revisionsrunden. Der Entwicklungszyklus, den das README seit
+Version 0.1 beschreibt, läuft.
+
+Die Urteile folgen der Qualität trotzdem nicht. Die Scores des Laufs:
+
+| Receipt | Verdikt | `ACCEPT` | `REVISE` | `REJECT` | Marge |
+| --- | --- | ---: | ---: | ---: | ---: |
+| seq 6 | REVISE | −4.012 | **−1.506** | −1.609 | 0.103 |
+| seq 11 | REVISE | −3.745 | **−1.309** | −1.485 | 0.177 |
+| seq 16 | REVISE | −3.789 | **−1.372** | −1.684 | 0.311 |
+
+`ACCEPT` liegt durchgehend 2,3 bis 2,5 nats zurück, ist also um Faktor 10 bis 12
+unwahrscheinlicher als der Sieger. Die Trennung zwischen `REVISE` und `REJECT`
+beträgt 0,1 bis 0,3 nats.
+
+Eine Kalibrierung mit handgeschriebenen Fällen zeigt, dass das kein Urteil ist,
+sondern ein fester Prior:
+
+| Fall | Entscheidung | `ACCEPT` | `REVISE` | `REJECT` |
+| --- | --- | ---: | ---: | ---: |
+| exzellent, drei Lob-Reviews | REJECT | −3.063 | −1.004 | **−0.698** |
+| solide, gemischte Reviews | REJECT | −3.037 | −1.192 | **−0.690** |
+| Unsinn | REJECT | −3.947 | −1.262 | **−0.944** |
+
+Ein Vorschlag, dessen drei Reviews ihn einhellig loben („I found no weakness",
+„needs no change", „closes the open gap"), bekommt `REJECT`, und `ACCEPT` liegt
+2,4 nats zurück. Der Abstand zwischen den beiden negativen Verdikten ist beim
+soliden Fall *größer* als beim Unsinn. Es gibt kein Qualitätssignal auf dieser
+Skala.
+
+Damit löst sich der Kompromiss ungünstig auf, der beim Umbau benannt war: mit
+Scoring misst der Lauf nicht mehr, ob das Kollektiv ein Urteil *artikulieren*
+kann, sondern nur noch, ob es *unterscheidet*. Es unterscheidet nicht.
+
+Der begründende Text bleibt außerdem Fortsetzung statt Begründung — er schreibt
+den Vorschlag weiter, statt das Verdikt zu erklären.
+
+Ein selbstverschuldeter Defekt fiel dabei auf und ist behoben: der aufgezeichnete
+Meta-Review-Text begann zunächst mit dem Verdikt-Label. Die Local View reicht
+diesen Text der proponierenden Zelle als zu adressierendes Review weiter, und die
+Zelle übernahm das Label in ihre Revision, die dann mit `- REVISE: …` anfing. Das
+Verdikt steht ohnehin strukturiert im Payload und in der Kantenrelation. Der hier
+ausgewertete Lauf ist die Wiederholung ohne diese Kontamination.
+
+## 11. Vier Wände
 
 Die sieben Läufe trennen die Ursachen sauber auf. Jeder Lauf hat eine Schicht
 freigelegt, die der vorherige verdeckt hatte.
 
-| | Schnittstelle | Inhalt | Rolle |
-| --- | --- | --- | --- |
-| 001–005 | ✗ kein Chat-Template | verdeckt | verdeckt |
-| 006 | ✓ | ✗ 135M zu klein | verdeckt |
-| 007 | ✓ | ✓ | ✗ Prompts differenzieren nicht |
+| | Schnittstelle | Inhalt | Rolle | Urteil |
+| --- | --- | --- | --- | --- |
+| 001–005 | ✗ kein Chat-Template | verdeckt | verdeckt | verdeckt |
+| 006 | ✓ | ✗ 135M zu klein | verdeckt | verdeckt |
+| 007 | ✓ | ✓ | ✗ Prompts differenzieren nicht | verdeckt |
+| 008 | ✓ | ✓ | umgangen durch Scoring | ✗ kein Qualitätssignal |
 
-Die ersten beiden Wände waren Defekt und Fehlkonfiguration. Die dritte ist ein
-Befund.
+Die ersten beiden Wände waren Defekt und Fehlkonfiguration. Die dritte und die
+vierte sind Befunde.
+
+Die dritte Wand lässt sich umgehen: nimmt man dem Modell die Entscheidung als
+Schreibaufgabe ab und liest sie aus seiner eigenen Verteilung, entscheidet es.
+Dahinter steht aber die vierte — die Verteilung trägt kein Qualitätssignal. Die
+Wand steht damit nachweislich am Modell und nicht an der Schnittstelle, nicht am
+Parsing und nicht an der Rollenbeschreibung.
 
 Die **strukturelle** Differenzierung des Substrats trägt: `deriveNeeds()`
 rekrutiert die passende Rolle, die Local View maskiert je nach Perspektive, das
@@ -371,16 +455,22 @@ Differenzierung nicht. Das ist eine belastbare Teilantwort und kein Nullergebnis
 
 - Die Kernfrage ist teilbeantwortet: die Organisation entsteht, die
   Differenzierung nicht. Ob sie bei rollentreueren Zellen entsteht, ist offen.
-- **Verdikt erzwingen statt erhoffen.** Statt den Meta-Reviewer einen Text
-  schreiben zu lassen und daraus ein Verdikt zu parsen, könnten die drei
-  Verdikt-Token direkt gescort und das Maximum genommen werden. Aus einer
-  Generierungsaufgabe würde eine Klassifikation — das können kleine Modelle
-  deutlich besser, und es wäre das Analogon zu dem, was das Gate ohnehin tut:
-  es beschränkt die Aktion, hier würde die Dekodierung beschränkt. Der Haken:
-  dann misst der Lauf nicht mehr, ob das Kollektiv ein Urteil *artikulieren*
-  kann, sondern nur noch, ob es *unterscheidet*.
-- **Oder größer werden.** SmolLM2 gibt es als 1.7B. Das bliebe lokal und klein
-  und würde prüfen, ob Rollentreue schlicht eine Größenfrage ist.
+- **Größer werden.** Nach 008 der verbleibende naheliegende Schritt. SmolLM2
+  gibt es als 1.7B; das bliebe lokal und klein und würde prüfen, ob
+  Urteilsfähigkeit eine Größenfrage ist. Die Kalibrierungsfälle aus Abschnitt 10
+  sind der Test dafür: erkennt ein größeres Modell den einhellig gelobten
+  Vorschlag als `ACCEPT`, taugt die Skala; tut es das nicht, taugt sie auch dort
+  nicht.
+- **Die ACCEPT-Schwelle ist ungeklärt.** Denkbar ist, dass `ACCEPT` nicht als
+  Urteil verliert, sondern als Token — etwa weil Instruction-Tuning zustimmende
+  Einwortantworten selten macht. Ein Gegentest wäre, die drei Label gegen
+  semantisch gleichwertige, aber anders verteilte Wörter zu tauschen
+  (`KEEP` / `REWORK` / `DROP`) und zu prüfen, ob die Rangfolge kippt. Bleibt sie
+  stabil, urteilt das Modell; kippt sie, misst die Skala Tokenhäufigkeit.
+- **Die Marge ist ungenutzt.** Zwischen `REVISE` und `REJECT` liegen 0,1 bis 0,3
+  nats. Eine Entscheidungsregel könnte einen Mindestabstand verlangen und sonst
+  abstinieren — dann bliebe die Erschöpfung des Bedürfnisses als ehrliche
+  Antwort auf ein Urteil, das keines ist.
 - Die Zellen antworten auf Englisch, obwohl Ziel und Prompt Deutsch verlangen —
   auf beiden Modellgrößen. Das Gewebe wächst also nicht in der Sprache des
   Ziels.
@@ -416,11 +506,14 @@ npm run validate && npm run replay
 # Reparaturen mit Regressionstests
 git fetch origin claude/review-needed-whfn3p && npm test
 
-# Gegenläufe 006 und 007 nachrechnen
+# Gegenläufe 006 bis 008 nachrechnen
 node src/cli.mjs replay \
-  --seed docs/runs/007/seed.json \
-  --state docs/runs/007/embryo.json \
-  --events docs/runs/007/events.jsonl
+  --seed docs/runs/008/seed.json \
+  --state docs/runs/008/embryo.json \
+  --events docs/runs/008/events.jsonl
+
+# Verdikt-Scores eines Laufs ansehen
+grep -o 'verdict_scores.\{0,240\}' docs/runs/008/events.jsonl
 ```
 
 ---
