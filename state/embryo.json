@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "embryo_id": "human-llm-society-003",
-  "generation": 8,
-  "energy_spent": 32,
-  "next_node_seq": 14,
-  "next_event_seq": 33,
-  "ledger_head": "5b5011e77e2a41b9781cbb95d44097df51921fa556f27807cd0c19ae2befe0bc",
+  "generation": 9,
+  "energy_spent": 36,
+  "next_node_seq": 16,
+  "next_event_seq": 37,
+  "ledger_head": "e6930cbe6429be46cccd3ef90b39bc32688aa36ee663726d14baff7511f21488",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -115,7 +115,7 @@
     {
       "id": "question-0012",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What is the best way to approach this problem?\nEntwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi\nBeschleunigt\n- Entwickel eine philosophische Projekt,",
       "source": "questioner-cell",
       "created_event": 30
@@ -123,10 +123,26 @@
     {
       "id": "proposal-0013",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "\"I am writing an essay on the topic of how many hours a student should spend studying for better academic performance.\"\n- I have no idea what to write about.\n- I don't know if I can make a good proposal.\n- I'm not sure if I want to write a proposal at all.\n- I don't know if I want to write a proposal or just a proposal.\n- I don't know if I want to write a proposal or",
       "source": "proposer-cell",
       "created_event": 31
+    },
+    {
+      "id": "question-0014",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What's wrong with this sentence?\n- \"There were several reasons why the company decided to hire me.\"\n- \"It seems that the company has been hiring people for some time now.\"\n- \"I had a few questions about the company.\"\n- \"I would like to thank the company for its services",
+      "source": "questioner-cell",
+      "created_event": 35
+    },
+    {
+      "id": "proposal-0015",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- What do you think about the following statement?\n- \"In general, there is a lot of evidence that shows that the amount of time spent studying is related to the quality of",
+      "source": "proposer-cell",
+      "created_event": 36
     }
   ],
   "edges": [
@@ -220,6 +236,20 @@
       "to": "question-0012",
       "relation": "answers",
       "created_event": 31
+    },
+    {
+      "id": "edge-0014",
+      "from": "question-0014",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 35
+    },
+    {
+      "id": "edge-0015",
+      "from": "proposal-0015",
+      "to": "question-0014",
+      "relation": "answers",
+      "created_event": 36
     }
   ],
   "needs": [
@@ -405,9 +435,37 @@
       "id": "need-review-828f0790444c",
       "kind": "REVIEW",
       "target_id": "proposal-0013",
-      "status": "open",
-      "attempts": 1,
+      "status": "exhausted",
+      "attempts": 3,
       "created_generation": 7,
+      "priority": 40
+    },
+    {
+      "id": "need-question-4de027ee8a3c",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-522f692a2c91",
+      "kind": "PROPOSE",
+      "target_id": "question-0014",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 30
+    },
+    {
+      "id": "need-review-965e15ba9d7b",
+      "kind": "REVIEW",
+      "target_id": "proposal-0015",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 8,
       "priority": 40
     }
   ]
