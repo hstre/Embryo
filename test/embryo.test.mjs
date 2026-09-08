@@ -28,11 +28,22 @@ function addProposal(state, text = "A provisional answer.") {
   return applyProposal(state, { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }, state.next_event_seq);
 }
 
-function review(state, verdict, text = `${verdict}: test review.`) {
-  const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW");
+function addReviewPanel(state) {
+  while (deriveNeeds(state).some((candidate) => candidate.kind === "REVIEW_FRAGMENT")) {
+    const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW_FRAGMENT");
+    applyProposal(
+      state,
+      { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: need.target_id, text: `Free review note ${need.stage}.` } },
+      state.next_event_seq,
+    );
+  }
+}
+
+function metaReview(state, verdict, text = `${verdict}: collective test review.`) {
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "META_REVIEW");
   return applyProposal(
     state,
-    { type: "REVIEW", need_id: need.id, payload: { target_id: need.target_id, verdict, text } },
+    { type: "META_REVIEW", need_id: need.id, payload: { target_id: need.target_id, verdict, text } },
     state.next_event_seq,
   );
 }
@@ -44,28 +55,43 @@ test("question work product recruits a proposing cell", async () => {
   assert.equal(deriveNeeds(state)[0].kind, "PROPOSE");
 });
 
-test("proposal work product recruits a reviewing cell", async () => {
+test("proposal work product recruits three reviewer perspectives", async () => {
   const state = await freshState();
   addQuestion(state);
   assert.equal(addProposal(state).code, "PROPOSAL_ADDED");
-  assert.equal(deriveNeeds(state)[0].kind, "REVIEW");
+  const panel = deriveNeeds(state).filter((need) => need.kind === "REVIEW_FRAGMENT");
+  assert.equal(panel.length, 3);
+  assert.deepEqual(panel.map((need) => need.stage), [0, 1, 2]);
 });
 
-test("accepted review creates the next question gradient", async () => {
+test("three free-language reviews recruit the meta-reviewer", async () => {
   const state = await freshState();
   addQuestion(state);
   addProposal(state);
-  assert.equal(review(state, "ACCEPT").code, "REVIEW_ACCEPT");
+  addReviewPanel(state);
+  const fragments = state.nodes.filter((node) => node.kind === "review_fragment");
+  assert.equal(fragments.length, 3);
+  assert.deepEqual(fragments.map((node) => node.perspective).sort(), ["adversarial", "charitable", "coherence"]);
+  assert.equal(deriveNeeds(state)[0].kind, "META_REVIEW");
+});
+
+test("accepted collective review creates the next question gradient", async () => {
+  const state = await freshState();
+  addQuestion(state);
+  addProposal(state);
+  addReviewPanel(state);
+  assert.equal(metaReview(state, "ACCEPT").code, "META_REVIEW_ACCEPT");
   assert.equal(state.nodes.find((node) => node.kind === "proposal").status, "accepted");
   assert.equal(state.nodes.find((node) => node.kind === "question").status, "answered");
   assert.equal(deriveNeeds(state)[0].kind, "QUESTION");
 });
 
-test("revision review recruits the proposing phenotype", async () => {
+test("revision by the meta-reviewer recruits the proposing phenotype", async () => {
   const state = await freshState();
   addQuestion(state);
   addProposal(state, "First answer.");
-  review(state, "REVISE", "REVISE: clarify the relation.");
+  addReviewPanel(state);
+  metaReview(state, "REVISE", "REVISE: clarify the relation.");
   const need = deriveNeeds(state)[0];
   assert.equal(need.kind, "PROPOSE");
   assert.equal(state.nodes.find((node) => node.id === need.target_id).status, "revision_requested");
@@ -73,11 +99,12 @@ test("revision review recruits the proposing phenotype", async () => {
   assert.equal(state.nodes.find((node) => node.text === "First answer.").status, "superseded");
 });
 
-test("exhausted review rejects its proposal and abandons its question", async () => {
+test("exhausted meta-review rejects its proposal and abandons its question", async () => {
   const state = await freshState();
   addQuestion(state);
   addProposal(state);
-  const need = deriveNeeds(state)[0];
+  addReviewPanel(state);
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "META_REVIEW");
   for (let attempt = 0; attempt < state.config.max_attempts_per_need; attempt += 1) {
     applyProposal(state, { type: "ABSTAIN", need_id: need.id, payload: { reason: "no verdict" } }, state.next_event_seq);
   }
@@ -86,7 +113,7 @@ test("exhausted review rejects its proposal and abandons its question", async ()
   assert.equal(deriveNeeds(state)[0].kind, "QUESTION");
 });
 
-test("bounded triad grows to reviewed synthesis and replays exactly", async () => {
+test("bounded collective grows to meta-reviewed synthesis and replays exactly", async () => {
   const seed = await readJson(seedPath);
   const state = createState(seed);
   const dir = await mkdtemp(join(tmpdir(), "embryo-triad-test-"));
@@ -112,7 +139,10 @@ test("replay mirrors duplicate rejection and exhaustion", async () => {
     async propose(view) {
       if (view.need.kind === "QUESTION") return { type: "ADD_QUESTION", need_id: view.need.id, payload: { text: "Same question?" } };
       if (view.need.kind === "PROPOSE") return { type: "ADD_PROPOSAL", need_id: view.need.id, payload: { text: "Same answer." } };
-      return { type: "REVIEW", need_id: view.need.id, payload: { target_id: view.target.id, verdict: "REJECT", text: "REJECT: insufficient." } };
+      if (view.need.kind === "REVIEW_FRAGMENT") {
+        return { type: "ADD_REVIEW_FRAGMENT", need_id: view.need.id, payload: { target_id: view.target.id, text: `${view.perspective} note.` } };
+      }
+      return { type: "META_REVIEW", need_id: view.need.id, payload: { target_id: view.target.id, verdict: "REJECT", text: "REJECT: insufficient." } };
     },
   };
   await runGeneration({ state, statePath, eventsPath, policy, maxCells: 4 });

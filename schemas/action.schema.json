@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/hstre/Embryo/schemas/action.schema.json",
-  "title": "Embryo triad cell proposal",
+  "title": "Embryo collective-review cell proposal",
   "type": "object",
   "required": ["type", "need_id", "payload"],
   "additionalProperties": false,
   "properties": {
-    "type": { "enum": ["ADD_QUESTION", "ADD_PROPOSAL", "REVIEW", "ADD_SYNTHESIS", "ABSTAIN"] },
+    "type": { "enum": ["ADD_QUESTION", "ADD_PROPOSAL", "ADD_REVIEW_FRAGMENT", "META_REVIEW", "ADD_SYNTHESIS", "ABSTAIN"] },
     "need_id": { "$ref": "#/$defs/id" },
     "payload": { "type": "object" }
   },
@@ -14,28 +14,29 @@
     {
       "properties": {
         "type": { "const": "ADD_QUESTION" },
-        "payload": {
-          "type": "object",
-          "required": ["text"],
-          "additionalProperties": false,
-          "properties": { "text": { "$ref": "#/$defs/text" } }
-        }
+        "payload": { "type": "object", "required": ["text"], "additionalProperties": false, "properties": { "text": { "$ref": "#/$defs/text" } } }
       }
     },
     {
       "properties": {
         "type": { "const": "ADD_PROPOSAL" },
+        "payload": { "type": "object", "required": ["text"], "additionalProperties": false, "properties": { "text": { "$ref": "#/$defs/text" } } }
+      }
+    },
+    {
+      "properties": {
+        "type": { "const": "ADD_REVIEW_FRAGMENT" },
         "payload": {
           "type": "object",
-          "required": ["text"],
+          "required": ["target_id", "text"],
           "additionalProperties": false,
-          "properties": { "text": { "$ref": "#/$defs/text" } }
+          "properties": { "target_id": { "$ref": "#/$defs/id" }, "text": { "$ref": "#/$defs/text" } }
         }
       }
     },
     {
       "properties": {
-        "type": { "const": "REVIEW" },
+        "type": { "const": "META_REVIEW" },
         "payload": {
           "type": "object",
           "required": ["target_id", "verdict", "text"],
@@ -55,33 +56,20 @@
           "type": "object",
           "required": ["text", "proposal_ids"],
           "additionalProperties": false,
-          "properties": {
-            "text": { "$ref": "#/$defs/text" },
-            "proposal_ids": { "$ref": "#/$defs/idArray" }
-          }
+          "properties": { "text": { "$ref": "#/$defs/text" }, "proposal_ids": { "$ref": "#/$defs/idArray" } }
         }
       }
     },
     {
       "properties": {
         "type": { "const": "ABSTAIN" },
-        "payload": {
-          "type": "object",
-          "required": ["reason"],
-          "additionalProperties": false,
-          "properties": { "reason": { "$ref": "#/$defs/text" } }
-        }
+        "payload": { "type": "object", "required": ["reason"], "additionalProperties": false, "properties": { "reason": { "$ref": "#/$defs/text" } } }
       }
     }
   ],
   "$defs": {
     "id": { "type": "string", "minLength": 1, "maxLength": 120 },
     "text": { "type": "string", "minLength": 1, "maxLength": 1200 },
-    "idArray": {
-      "type": "array",
-      "minItems": 1,
-      "uniqueItems": true,
-      "items": { "$ref": "#/$defs/id" }
-    }
+    "idArray": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
   }
 }

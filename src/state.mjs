@@ -35,7 +35,7 @@ export function createState(seed) {
     })),
   ];
   const state = {
-    schema_version: 2,
+    schema_version: 3,
     embryo_id: seed.embryo_id,
     generation: 0,
     energy_spent: 0,

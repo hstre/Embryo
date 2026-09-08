@@ -49,6 +49,8 @@ function summary(state) {
     nodes: state.nodes.length,
     questions: state.nodes.filter((node) => node.kind === "question").length,
     proposals: state.nodes.filter((node) => node.kind === "proposal").length,
+    review_fragments: state.nodes.filter((node) => node.kind === "review_fragment").length,
+    meta_reviews: state.nodes.filter((node) => node.kind === "meta_review").length,
     accepted_proposals: state.nodes.filter((node) => node.kind === "proposal" && node.status === "accepted").length,
     open_needs: openNeeds.map((need) => ({ id: need.id, kind: need.kind, target_id: need.target_id })),
     can_grow: canGrow(state),

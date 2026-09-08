@@ -1,11 +1,32 @@
 import { digest } from "./canonical.mjs";
 import { nodeById } from "./state.mjs";
 
-const PRIORITY = Object.freeze({ REVIEW: 40, PROPOSE: 30, SYNTHESIZE: 20, QUESTION: 10 });
+const PRIORITY = Object.freeze({ REVIEW_FRAGMENT: 40, META_REVIEW: 35, PROPOSE: 30, SYNTHESIZE: 20, QUESTION: 10 });
+const PERSPECTIVES = Object.freeze(["adversarial", "charitable", "coherence"]);
+
+export function reviewPerspective(stage) {
+  return PERSPECTIVES[stage] ?? null;
+}
 
 function linkedQuestion(state, proposalId) {
   const edge = state.edges.find((candidate) => candidate.from === proposalId && candidate.relation === "answers");
   return edge ? nodeById(state, edge.to) : null;
+}
+
+function reviewFragments(state, targetId) {
+  const ids = new Set(
+    state.edges.filter((edge) => edge.to === targetId && edge.relation === "reviews").map((edge) => edge.from),
+  );
+  return state.nodes.filter((node) => ids.has(node.id) && node.kind === "review_fragment");
+}
+
+function panelNeeds(state, targetId) {
+  return state.needs.filter((need) => need.kind === "REVIEW_FRAGMENT" && need.target_id === targetId);
+}
+
+function panelComplete(state, targetId) {
+  const panel = panelNeeds(state, targetId);
+  return panel.length === PERSPECTIVES.length && panel.every((need) => need.status !== "open");
 }
 
 function conditionStillHolds(state, need) {
@@ -19,8 +40,14 @@ function conditionStillHolds(state, need) {
     return (target.kind === "question" && target.status === "open")
       || (target.kind === "proposal" && target.status === "revision_requested");
   }
-  if (need.kind === "REVIEW") {
-    return ["proposal", "synthesis"].includes(target.kind) && target.status === "unreviewed";
+  if (need.kind === "REVIEW_FRAGMENT") {
+    const perspective = reviewPerspective(need.stage);
+    return ["proposal", "synthesis"].includes(target.kind)
+      && target.status === "unreviewed"
+      && !reviewFragments(state, target.id).some((fragment) => fragment.perspective === perspective);
+  }
+  if (need.kind === "META_REVIEW") {
+    return ["proposal", "synthesis"].includes(target.kind) && target.status === "unreviewed" && panelComplete(state, target.id);
   }
   if (need.kind === "SYNTHESIZE") {
     if (target.kind === "synthesis") return target.status === "revision_requested";
@@ -38,15 +65,7 @@ function ensureNeed(state, kind, targetId, discriminator = "0") {
   const id = makeNeedId(kind, targetId, discriminator);
   const existing = state.needs.find((need) => need.id === id);
   if (existing) return existing;
-  const need = {
-    id,
-    kind,
-    target_id: targetId,
-    status: "open",
-    attempts: 0,
-    created_generation: state.generation,
-    priority: PRIORITY[kind],
-  };
+  const need = { id, kind, target_id: targetId, status: "open", attempts: 0, created_generation: state.generation, priority: PRIORITY[kind] };
   state.needs.push(need);
   return need;
 }
@@ -56,6 +75,13 @@ function ensureFreshNeed(state, kind, targetId, stage) {
   const previous = state.needs.filter((need) => need.kind === kind && need.target_id === targetId).length;
   const need = ensureNeed(state, kind, targetId, `${stage}:${previous}`);
   need.stage = stage;
+}
+
+function ensureReviewPanel(state, targetId) {
+  for (let stage = 0; stage < PERSPECTIVES.length; stage += 1) {
+    const need = ensureNeed(state, "REVIEW_FRAGMENT", targetId, String(stage));
+    need.stage = stage;
+  }
 }
 
 export function registerAttemptFailure(state, need) {
@@ -80,7 +106,7 @@ export function registerAttemptFailure(state, need) {
     }
   }
 
-  if (need.kind === "REVIEW" && target?.status === "unreviewed") {
+  if (need.kind === "META_REVIEW" && target?.status === "unreviewed") {
     target.status = "rejected";
     mutations.push(`node:${target.id}`);
     if (target.kind === "proposal") {
@@ -106,17 +132,12 @@ export function deriveNeeds(state) {
 
   for (const node of state.nodes) {
     if (["proposal", "synthesis"].includes(node.kind) && node.status === "unreviewed") {
-      ensureNeed(state, "REVIEW", node.id);
+      ensureReviewPanel(state, node.id);
+      if (panelComplete(state, node.id)) ensureNeed(state, "META_REVIEW", node.id);
     }
-    if (node.kind === "proposal" && node.status === "revision_requested") {
-      ensureFreshNeed(state, "PROPOSE", node.id, node.created_event);
-    }
-    if (node.kind === "synthesis" && node.status === "revision_requested") {
-      ensureFreshNeed(state, "SYNTHESIZE", node.id, node.created_event);
-    }
-    if (node.kind === "question" && node.status === "open") {
-      ensureNeed(state, "PROPOSE", node.id);
-    }
+    if (node.kind === "proposal" && node.status === "revision_requested") ensureFreshNeed(state, "PROPOSE", node.id, node.created_event);
+    if (node.kind === "synthesis" && node.status === "revision_requested") ensureFreshNeed(state, "SYNTHESIZE", node.id, node.created_event);
+    if (node.kind === "question" && node.status === "open") ensureNeed(state, "PROPOSE", node.id);
   }
 
   const goal = state.nodes.find((node) => node.kind === "goal");
@@ -128,16 +149,13 @@ export function deriveNeeds(state) {
   );
 
   if (!synthesisAccepted && !active) {
-    if (accepted.length >= state.config.target_proposals) {
-      ensureFreshNeed(state, "SYNTHESIZE", goal.id, accepted.length);
-    } else {
-      ensureFreshNeed(state, "QUESTION", goal.id, accepted.length);
-    }
+    if (accepted.length >= state.config.target_proposals) ensureFreshNeed(state, "SYNTHESIZE", goal.id, accepted.length);
+    else ensureFreshNeed(state, "QUESTION", goal.id, accepted.length);
   }
 
   return state.needs
     .filter((need) => need.status === "open")
-    .sort((a, b) => b.priority - a.priority || a.id.localeCompare(b.id));
+    .sort((a, b) => b.priority - a.priority || (a.stage ?? 0) - (b.stage ?? 0) || a.id.localeCompare(b.id));
 }
 
 export function canGrow(state) {

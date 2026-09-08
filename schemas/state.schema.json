@@ -6,7 +6,7 @@
   "required": ["schema_version", "embryo_id", "generation", "energy_spent", "next_node_seq", "next_event_seq", "ledger_head", "config", "nodes", "edges", "needs"],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "const": 2 },
+    "schema_version": { "const": 3 },
     "embryo_id": { "type": "string", "minLength": 1, "maxLength": 80 },
     "generation": { "$ref": "#/$defs/nonNegativeInteger" },
     "energy_spent": { "$ref": "#/$defs/nonNegativeInteger" },
@@ -41,12 +41,13 @@
       "additionalProperties": false,
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "kind": { "enum": ["goal", "observation", "question", "proposal", "review", "synthesis"] },
+        "kind": { "enum": ["goal", "observation", "question", "proposal", "review_fragment", "meta_review", "synthesis"] },
         "status": { "enum": ["given", "open", "under_review", "answered", "abandoned", "unreviewed", "accepted", "revision_requested", "rejected", "superseded", "recorded"] },
         "text": { "type": "string", "minLength": 1 },
         "source": { "type": "string", "minLength": 1 },
         "created_event": { "$ref": "#/$defs/nonNegativeInteger" },
-        "ordinal": { "$ref": "#/$defs/nonNegativeInteger" }
+        "ordinal": { "$ref": "#/$defs/nonNegativeInteger" },
+        "perspective": { "enum": ["adversarial", "charitable", "coherence"] }
       }
     },
     "edge": {
@@ -57,7 +58,7 @@
         "id": { "$ref": "#/$defs/id" },
         "from": { "$ref": "#/$defs/id" },
         "to": { "$ref": "#/$defs/id" },
-        "relation": { "enum": ["investigates", "answers", "accepts", "revises", "rejects", "supersedes", "synthesizes"] },
+        "relation": { "enum": ["investigates", "answers", "reviews", "accepts", "revises", "rejects", "supersedes", "synthesizes"] },
         "created_event": { "$ref": "#/$defs/nonNegativeInteger" }
       }
     },
@@ -67,7 +68,7 @@
       "additionalProperties": false,
       "properties": {
         "id": { "$ref": "#/$defs/id" },
-        "kind": { "enum": ["QUESTION", "PROPOSE", "REVIEW", "SYNTHESIZE"] },
+        "kind": { "enum": ["QUESTION", "PROPOSE", "REVIEW_FRAGMENT", "META_REVIEW", "SYNTHESIZE"] },
         "target_id": { "$ref": "#/$defs/id" },
         "status": { "enum": ["open", "resolved", "exhausted"] },
         "attempts": { "$ref": "#/$defs/nonNegativeInteger" },

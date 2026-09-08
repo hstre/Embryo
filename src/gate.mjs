@@ -1,11 +1,12 @@
 import { validateActionShape } from "./schema.mjs";
-import { registerAttemptFailure } from "./needs.mjs";
+import { registerAttemptFailure, reviewPerspective } from "./needs.mjs";
 import { nextNodeId, nodeById } from "./state.mjs";
 
 const ALLOWED = Object.freeze({
   QUESTION: new Set(["ADD_QUESTION", "ABSTAIN"]),
   PROPOSE: new Set(["ADD_PROPOSAL", "ABSTAIN"]),
-  REVIEW: new Set(["REVIEW", "ABSTAIN"]),
+  REVIEW_FRAGMENT: new Set(["ADD_REVIEW_FRAGMENT", "ABSTAIN"]),
+  META_REVIEW: new Set(["META_REVIEW", "ABSTAIN"]),
   SYNTHESIZE: new Set(["ADD_SYNTHESIS", "ABSTAIN"]),
 });
 const VERDICTS = new Set(["ACCEPT", "REVISE", "REJECT"]);
@@ -88,20 +89,41 @@ export function applyProposal(state, proposal, eventSeq) {
     return { accepted: true, code: "PROPOSAL_ADDED", message: id, mutations };
   }
 
-  if (proposal.type === "REVIEW") {
+  if (proposal.type === "ADD_REVIEW_FRAGMENT") {
+    if (payload.target_id !== target.id) return reject("TARGET_MISMATCH", "review fragment target must match need target");
+    if (!["proposal", "synthesis"].includes(target.kind) || target.status !== "unreviewed") return reject("TARGET_NOT_REVIEWABLE", "target is not reviewable");
+    if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "review fragment text required");
+    const perspective = reviewPerspective(need.stage);
+    if (!perspective) return reject("PERSPECTIVE_MISSING", "review need has no valid perspective");
+    const id = nextNodeId(state, "review-fragment");
+    state.nodes.push({
+      id,
+      kind: "review_fragment",
+      status: "recorded",
+      text: payload.text.trim(),
+      source: "reviewer-cell",
+      perspective,
+      created_event: eventSeq,
+    });
+    const edgeId = addEdge(state, id, target.id, "reviews", eventSeq);
+    need.status = "resolved";
+    return { accepted: true, code: "REVIEW_FRAGMENT_ADDED", message: id, mutations: [`node:${id}`, `edge:${edgeId}`, `need:${need.id}`] };
+  }
+
+  if (proposal.type === "META_REVIEW") {
     if (payload.target_id !== target.id) return reject("TARGET_MISMATCH", "review target must match need target");
     if (!["proposal", "synthesis"].includes(target.kind) || target.status !== "unreviewed") return reject("TARGET_NOT_REVIEWABLE", "target is not reviewable");
     if (!VERDICTS.has(payload.verdict)) return reject("INVALID_VERDICT", "verdict must be ACCEPT, REVISE or REJECT");
     if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "review text required");
-    const id = nextNodeId(state, "review");
-    state.nodes.push({ id, kind: "review", status: "recorded", text: payload.text.trim(), source: "reviewer-cell", created_event: eventSeq });
+    const question = target.kind === "proposal" ? linkedQuestion(state, target.id) : null;
+    if (target.kind === "proposal" && !question) return reject("QUESTION_MISSING", "reviewed proposal has no linked question");
+    const id = nextNodeId(state, "meta-review");
+    state.nodes.push({ id, kind: "meta_review", status: "recorded", text: payload.text.trim(), source: "meta-reviewer-cell", created_event: eventSeq });
     const relation = payload.verdict === "ACCEPT" ? "accepts" : payload.verdict === "REVISE" ? "revises" : "rejects";
     const edgeId = addEdge(state, id, target.id, relation, eventSeq);
     const mutations = [`node:${id}`, `edge:${edgeId}`, `node:${target.id}`, `need:${need.id}`];
     target.status = payload.verdict === "ACCEPT" ? "accepted" : payload.verdict === "REVISE" ? "revision_requested" : "rejected";
     if (target.kind === "proposal") {
-      const question = linkedQuestion(state, target.id);
-      if (!question) return reject("QUESTION_MISSING", "reviewed proposal has no linked question");
       question.status = payload.verdict === "ACCEPT" ? "answered" : payload.verdict === "REJECT" ? "abandoned" : "under_review";
       mutations.push(`node:${question.id}`);
     } else if (payload.verdict === "ACCEPT") {
@@ -110,7 +132,7 @@ export function applyProposal(state, proposal, eventSeq) {
       mutations.push(`node:${goal.id}`);
     }
     need.status = "resolved";
-    return { accepted: true, code: `REVIEW_${payload.verdict}`, message: target.id, mutations };
+    return { accepted: true, code: `META_REVIEW_${payload.verdict}`, message: target.id, mutations };
   }
 
   if (proposal.type === "ADD_SYNTHESIS") {

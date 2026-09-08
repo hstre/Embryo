@@ -1,6 +1,6 @@
 {
-  "schema_version": 2,
-  "embryo_id": "human-llm-society-003",
+  "schema_version": 3,
+  "embryo_id": "human-llm-society-004",
   "generation": 0,
   "energy_spent": 0,
   "next_node_seq": 1,
