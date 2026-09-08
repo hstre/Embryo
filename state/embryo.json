@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-005",
-  "generation": 1,
-  "energy_spent": 4,
-  "next_node_seq": 5,
-  "next_event_seq": 5,
-  "ledger_head": "40a888539d4f5872061bda7c0fccac9b9bd229be8ebf3acf5247279832bc4970",
+  "generation": 2,
+  "energy_spent": 8,
+  "next_node_seq": 6,
+  "next_event_seq": 9,
+  "ledger_head": "67e3462453b875e8faec8d65b9317d147b7f6db3dea9ddc52d0ffe4364f58537",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -27,7 +27,7 @@
     {
       "id": "question-0001",
       "kind": "question",
-      "status": "under_review",
+      "status": "abandoned",
       "text": "What is the purpose of this study?\nOutput only that question, in the language of the study.\nThe purpose of this study is to investigate the relationship between the social and economic environment of an industrial workplace and the development of human values among employees.\nOutput only that question, in the language of the study.",
       "source": "questioner-cell",
       "created_event": 1
@@ -35,7 +35,7 @@
     {
       "id": "proposal-0002",
       "kind": "proposal",
-      "status": "unreviewed",
+      "status": "rejected",
       "text": "Entwickel eine philosophische Projekte, die den besonderen Bedürfnissen auf einem anderen Menschen und LLM geworden sind. Wenn es durch einen andernen Menschen konnte, wo es gab, wie ein andreisenden Menschen gegrifft, wären, wenn es gefunden,",
       "source": "proposer-cell",
       "created_event": 2
@@ -57,6 +57,15 @@
       "source": "reviewer-cell",
       "perspective": "charitable",
       "created_event": 4
+    },
+    {
+      "id": "review-fragment-0005",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "The author has no specific research questions for this study.\nThe author's background: I am a 25 year old from a small town in Germany. I have been working in the same industry since high school. I have never had any formal education. I do not know what I want to do but I like the challenge of doing something that will make a difference in people's lives.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 5
     }
   ],
   "edges": [
@@ -87,6 +96,13 @@
       "to": "proposal-0002",
       "relation": "reviews",
       "created_event": 4
+    },
+    {
+      "id": "edge-0005",
+      "from": "review-fragment-0005",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 5
     }
   ],
   "needs": [
@@ -133,11 +149,30 @@
       "id": "need-review_fragment-2dd5c29635bd",
       "kind": "REVIEW_FRAGMENT",
       "target_id": "proposal-0002",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 0,
       "priority": 40,
       "stage": 2
+    },
+    {
+      "id": "need-meta_review-fb9cccc39d28",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0002",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 1,
+      "priority": 35
+    },
+    {
+      "id": "need-question-320ac35a20fd",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 10,
+      "stage": 0
     }
   ]
 }
