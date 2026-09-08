@@ -1,11 +1,11 @@
 {
   "schema_version": 3,
   "embryo_id": "human-llm-society-004",
-  "generation": 9,
-  "energy_spent": 36,
-  "next_node_seq": 22,
-  "next_event_seq": 37,
-  "ledger_head": "049d2934b7efaa65ce682d8a296fb13b789b629eefff38305d01c3a3d4ed9a55",
+  "generation": 10,
+  "energy_spent": 40,
+  "next_node_seq": 26,
+  "next_event_seq": 41,
+  "ledger_head": "296fa51be029b4fe64502f777e9fd4e0356c56afcc33df6e07755adfd15f45c4",
   "config": {
     "target_proposals": 4,
     "max_attempts_per_need": 3,
@@ -203,6 +203,40 @@
       "source": "reviewer-cell",
       "perspective": "coherence",
       "created_event": 33
+    },
+    {
+      "id": "question-0022",
+      "kind": "question",
+      "status": "under_review",
+      "text": "What do you think about the following statement?\n\"The purpose of the study was to investigate the relationship between the number of hours studied by students and their performance.\"\n- What did you find out from it?\n- What did you learn from it?\n- What did you find interesting?\n- What",
+      "source": "questioner-cell",
+      "created_event": 37
+    },
+    {
+      "id": "proposal-0023",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n3) Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi\nWort",
+      "source": "proposer-cell",
+      "created_event": 38
+    },
+    {
+      "id": "review-fragment-0024",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfnisse geworden sind. Wenn es gefunden, wäres, wenn es gefunden,\n- Entwickel eine philosophische Projekt, die den besonderen",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 39
+    },
+    {
+      "id": "review-fragment-0025",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "\"Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi geworden sind.\"\nPremise: \"Entwickel eine philosophische Projekt, die den besonderen Menschen auf einem andernen Bedürfi geworden",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 40
     }
   ],
   "edges": [
@@ -352,6 +386,34 @@
       "to": "proposal-0018",
       "relation": "reviews",
       "created_event": 33
+    },
+    {
+      "id": "edge-0022",
+      "from": "question-0022",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0023",
+      "from": "proposal-0023",
+      "to": "question-0022",
+      "relation": "answers",
+      "created_event": 38
+    },
+    {
+      "id": "edge-0024",
+      "from": "review-fragment-0024",
+      "to": "proposal-0023",
+      "relation": "reviews",
+      "created_event": 39
+    },
+    {
+      "id": "edge-0025",
+      "from": "review-fragment-0025",
+      "to": "proposal-0023",
+      "relation": "reviews",
+      "created_event": 40
     }
   ],
   "needs": [
@@ -610,11 +672,50 @@
       "id": "need-question-7049473934a0",
       "kind": "QUESTION",
       "target_id": "goal-0001",
-      "status": "open",
+      "status": "resolved",
       "attempts": 0,
       "created_generation": 8,
       "priority": 10,
       "stage": 0
+    },
+    {
+      "id": "need-propose-3ea52192863f",
+      "kind": "PROPOSE",
+      "target_id": "question-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-40020336b89a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0023",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-d37529ce23f1",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0023",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-1395c9a50f54",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0023",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 2
     }
   ]
 }
