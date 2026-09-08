@@ -1,29 +1,13 @@
 {
-  "embryo_id": "stigmergy-emergence-001",
-  "goal": "Explain the distinction between stigmergy and emergence using only the supplied observations.",
-  "observations": [
-    {
-      "id": "observation-01",
-      "text": "In stigmergy, the result of an action changes a shared environment and that changed environment influences later action.",
-      "source": "experiment seed"
-    },
-    {
-      "id": "observation-02",
-      "text": "Emergence denotes a system-level structure or behavior produced by interactions among components.",
-      "source": "experiment seed"
-    },
-    {
-      "id": "observation-03",
-      "text": "A partially built termite mound changes where later building activity occurs; the work product helps organize continuation of the work.",
-      "source": "experiment seed"
-    }
-  ],
+  "embryo_id": "human-llm-society-002",
+  "goal": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
+  "observations": [],
   "config": {
-    "target_claims": 2,
-    "max_attempts_per_need": 2,
+    "target_claims": 6,
+    "max_attempts_per_need": 3,
     "max_cells_per_generation": 4,
-    "max_generations": 12,
-    "energy_budget": 32,
+    "max_generations": 16,
+    "energy_budget": 64,
     "max_text_chars": 1200,
     "local_observation_limit": 3
   }

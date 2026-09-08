@@ -14,8 +14,19 @@ import { stateDigest } from "../src/canonical.mjs";
 
 const seedPath = new URL("../examples/seed.json", import.meta.url);
 
+function withObservations(seed) {
+  return {
+    ...seed,
+    observations: [
+      { id: "observation-01", text: "First test observation.", source: "test" },
+      { id: "observation-02", text: "Second test observation.", source: "test" },
+    ],
+    config: { ...seed.config, target_claims: 2 },
+  };
+}
+
 test("work product creates further needs", async () => {
-  const seed = JSON.parse(await readFile(seedPath, "utf8"));
+  const seed = withObservations(JSON.parse(await readFile(seedPath, "utf8")));
   const state = createState(seed);
   const firstNeed = deriveNeeds(state)[0];
   assert.equal(firstNeed.kind, "EXPLORE");
@@ -56,7 +67,10 @@ test("bounded generations grow to quiescence and replay exactly", async () => {
   }
   const synthesis = state.nodes.find((node) => node.kind === "synthesis");
   assert.ok(synthesis);
-  assert.equal(state.nodes.filter((node) => node.kind === "claim" && node.status === "supported").length, 2);
+  assert.equal(
+    state.nodes.filter((node) => node.kind === "claim" && node.status === "supported").length,
+    seed.config.target_claims,
+  );
   assert.ok(state.energy_spent <= state.config.energy_budget);
   const receipts = await readReceipts(eventsPath);
   assert.equal(validateLedger(receipts, state.ledger_head), true);
@@ -65,7 +79,7 @@ test("bounded generations grow to quiescence and replay exactly", async () => {
 });
 
 test("energy budget stops growth", async () => {
-  const seed = JSON.parse(await readFile(seedPath, "utf8"));
+  const seed = withObservations(JSON.parse(await readFile(seedPath, "utf8")));
   seed.config.energy_budget = 1;
   const state = createState(seed);
   state.energy_spent = 1;
@@ -74,7 +88,7 @@ test("energy budget stops growth", async () => {
 });
 
 test("retraction recreates a previously satisfied exploration gradient", async () => {
-  const seed = JSON.parse(await readFile(seedPath, "utf8"));
+  const seed = withObservations(JSON.parse(await readFile(seedPath, "utf8")));
   const state = createState(seed);
   let explore = deriveNeeds(state)[0];
   applyProposal(state, { type: "ADD_CLAIM", need_id: explore.id, payload: { text: seed.observations[0].text } }, 1);
@@ -97,4 +111,11 @@ test("retraction recreates a previously satisfied exploration gradient", async (
   const regenerated = deriveNeeds(state).filter((need) => need.kind === "EXPLORE" && need.status === "open");
   assert.equal(regenerated.length, 1);
   assert.notEqual(regenerated[0].id, explore.id);
+  const duplicate = applyProposal(
+    state,
+    { type: "ADD_CLAIM", need_id: regenerated[0].id, payload: { text: "unsupported" } },
+    6,
+  );
+  assert.equal(duplicate.accepted, false);
+  assert.equal(duplicate.code, "DUPLICATE_CLAIM");
 });

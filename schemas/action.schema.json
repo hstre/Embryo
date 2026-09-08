@@ -27,11 +27,15 @@
         "type": { "const": "SUPPORT" },
         "payload": {
           "type": "object",
-          "required": ["target_id", "observation_ids"],
+          "required": ["target_id"],
           "additionalProperties": false,
           "properties": {
             "target_id": { "$ref": "#/$defs/id" },
-            "observation_ids": { "$ref": "#/$defs/idArray" },
+            "observation_ids": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/id" }
+            },
             "rationale": { "$ref": "#/$defs/text" }
           }
         }

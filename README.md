@@ -97,7 +97,7 @@ The `GITHUB_TOKEN` has only `contents: write` and `actions: write`. Generated mo
 
 ## State and audit files
 
-- `examples/seed.json` — immutable starting conditions for the first experiment
+- `examples/seed.json` — starting conditions for the current experiment
 - `state/embryo.json` — authoritative current tissue
 - `state/events.jsonl` — canonical hash-chained receipts
 - `schemas/` — public closed schemas
@@ -113,3 +113,7 @@ The `GITHUB_TOKEN` has only `contents: write` and `actions: write`. Generated mo
 - Schema-valid evidence references are not the same as semantic entailment.
 
 Version 0.1 establishes the experimental substrate. The next research stage is a blinded benchmark against a single cell, best-of-N independent cells, fixed-role communicating agents and the growing stigmergic condition.
+
+## Experiment 002
+
+The second embryo begins with one open goal and no supplied observations. Exploration cells may leave new propositions; separate local cells provisionally support, challenge, revise or retract them. Retracted and superseded propositions remain visible as negative traces, and the deterministic gate refuses their exact reintroduction.

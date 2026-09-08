@@ -16,6 +16,10 @@ function normalize(text) {
   return text.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
+function duplicatesClaim(state, text) {
+  return state.nodes.some((node) => node.kind === "claim" && normalize(node.text) === normalize(text));
+}
+
 function addEdge(state, from, to, relation, eventSeq) {
   const id = `edge-${String(state.edges.length + 1).padStart(4, "0")}`;
   state.edges.push({ id, from, to, relation, created_event: eventSeq });
@@ -46,10 +50,9 @@ export function applyProposal(state, proposal, eventSeq) {
 
   if (proposal.type === "ADD_CLAIM") {
     if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "claim text required");
-    const duplicate = state.nodes.some(
-      (node) => node.kind === "claim" && !["retracted", "superseded"].includes(node.status) && normalize(node.text) === normalize(payload.text),
-    );
-    if (duplicate) return reject("DUPLICATE_CLAIM", "equivalent claim already exists");
+    if (duplicatesClaim(state, payload.text)) {
+      return reject("DUPLICATE_CLAIM", "claim already exists, including in negative traces");
+    }
     const id = nextNodeId(state, "claim");
     state.nodes.push({
       id,
@@ -66,10 +69,12 @@ export function applyProposal(state, proposal, eventSeq) {
 
   if (proposal.type === "SUPPORT") {
     if (payload.target_id !== target.id) return reject("TARGET_MISMATCH", "support target must match need target");
-    if (!Array.isArray(payload.observation_ids) || payload.observation_ids.length === 0) {
-      return reject("OBSERVATION_REQUIRED", "support requires at least one observation id");
+    const observationIds = payload.observation_ids ?? [];
+    if (!Array.isArray(observationIds)) return reject("INVALID_OBSERVATIONS", "observation_ids must be an array");
+    if (observationIds.length === 0 && (typeof payload.rationale !== "string" || !payload.rationale.trim())) {
+      return reject("SUPPORT_BASIS_REQUIRED", "support requires observations or a peer rationale");
     }
-    const observations = payload.observation_ids.map((id) => nodeById(state, id));
+    const observations = observationIds.map((id) => nodeById(state, id));
     if (observations.some((node) => node?.kind !== "observation")) {
       return reject("UNKNOWN_OBSERVATION", "support references a non-observation or missing node");
     }
@@ -100,6 +105,9 @@ export function applyProposal(state, proposal, eventSeq) {
   if (proposal.type === "REVISE") {
     if (payload.target_id !== target.id) return reject("TARGET_MISMATCH", "revision target must match need target");
     if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "revision text required");
+    if (duplicatesClaim(state, payload.text)) {
+      return reject("DUPLICATE_CLAIM", "revision already exists, including in negative traces");
+    }
     const id = nextNodeId(state, "claim");
     state.nodes.push({
       id,

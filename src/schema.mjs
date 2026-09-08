@@ -31,7 +31,7 @@ const CONFIG_KEYS = new Set([
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
   ADD_CLAIM: { required: ["text"], allowed: ["text"] },
-  SUPPORT: { required: ["target_id", "observation_ids"], allowed: ["target_id", "observation_ids", "rationale"] },
+  SUPPORT: { required: ["target_id"], allowed: ["target_id", "observation_ids", "rationale"] },
   CHALLENGE: { required: ["target_id", "reason"], allowed: ["target_id", "reason"] },
   REVISE: { required: ["target_id", "text"], allowed: ["target_id", "text"] },
   RETRACT: { required: ["target_id"], allowed: ["target_id"] },
@@ -55,7 +55,7 @@ export function validateSeed(seed) {
   invariant(seed && typeof seed === "object" && !Array.isArray(seed), "seed must be an object");
   invariant(isNonEmptyString(seed.embryo_id, 80), "seed.embryo_id is required");
   invariant(isNonEmptyString(seed.goal, 2000), "seed.goal is required");
-  invariant(Array.isArray(seed.observations) && seed.observations.length > 0, "seed.observations must be non-empty");
+  invariant(Array.isArray(seed.observations), "seed.observations must be an array");
   const ids = new Set();
   for (const observation of seed.observations) {
     invariant(isNonEmptyString(observation.id, 80), "every observation needs an id");

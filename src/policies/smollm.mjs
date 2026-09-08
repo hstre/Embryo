@@ -21,7 +21,7 @@ export class SmolLmPolicy {
     this.model = options.model ?? DEFAULT_MODEL;
     this.revision = options.revision ?? DEFAULT_REVISION;
     this.dtype = options.dtype ?? "q4";
-    this.name = `${this.model}@${this.revision}:${this.dtype}:adapter-v1`;
+    this.name = `${this.model}@${this.revision}:${this.dtype}:adapter-v2`;
     this.generator = null;
   }
 
@@ -52,36 +52,44 @@ export class SmolLmPolicy {
   async propose(view) {
     const need = view.need;
     if (need.kind === "EXPLORE") {
-      const used = new Set(view.supported_claims.map((claim) => claim.text.trim().toLowerCase()));
-      const candidates = view.observations.filter((item) => !used.has(item.text.trim().toLowerCase()));
-      if (candidates.length === 0) {
-        return { action: { type: "ABSTAIN", need_id: need.id, payload: { reason: "no local candidate" } }, trace: null };
-      }
       const prompt = [
-        "Choose one observation useful for the goal.",
-        "Output only its number.",
+        "Formulate one new, concise philosophical proposition that advances the goal.",
+        "Do not merely restate the goal or any previous proposition.",
+        "Output only the proposition, in the language of the goal.",
         `Goal: ${view.goal.text}`,
-        numbered(candidates),
-        "Number:",
+        ...(view.supported_claims.length ? ["Existing propositions:", ...view.supported_claims.map((claim) => `- ${claim.text}`)] : []),
+        ...(view.negative_traces.length ? ["Rejected paths; do not repeat them:", ...view.negative_traces.map((claim) => `- ${claim.text}`)] : []),
+        "Proposition:",
       ].join("\n");
-      const raw = await this.generate(prompt, 20);
-      const choice = parseChoice(raw, candidates.length);
-      const action = choice && choice > 0
-        ? { type: "ADD_CLAIM", need_id: need.id, payload: { text: candidates[choice - 1].text } }
-        : { type: "ABSTAIN", need_id: need.id, payload: { reason: "unparseable observation choice" } };
-      return { action, trace: { raw_output: cleanText(raw) } };
+      const raw = await this.generate(prompt, 80);
+      const text = cleanText(raw);
+      const action = text
+        ? { type: "ADD_CLAIM", need_id: need.id, payload: { text } }
+        : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty proposition" } };
+      return { action, trace: { raw_output: text } };
     }
 
     if (need.kind === "VERIFY") {
-      const prompt = [
-        "Which observation directly supports the claim?",
-        "Output only its number, or 0 if none supports it.",
-        `Claim: ${view.target.text}`,
-        numbered(view.observations),
-        "Number:",
-      ].join("\n");
+      const evidenceMode = view.observations.length > 0;
+      const prompt = evidenceMode
+        ? [
+            "Which observation directly supports the claim?",
+            "Output only its number, or 0 if none supports it.",
+            `Claim: ${view.target.text}`,
+            numbered(view.observations),
+            "Number:",
+          ].join("\n")
+        : [
+            "Judge this philosophical proposition independently.",
+            "Does it meaningfully advance the goal without merely restating it or a rejected path?",
+            "Output only 1 to provisionally support it or 0 to challenge it.",
+            `Goal: ${view.goal.text}`,
+            `Proposition: ${view.target.text}`,
+            ...(view.negative_traces.length ? ["Rejected paths:", ...view.negative_traces.map((claim) => `- ${claim.text}`)] : []),
+            "Decision:",
+          ].join("\n");
       const raw = await this.generate(prompt, 20);
-      const choice = parseChoice(raw, view.observations.length);
+      const choice = parseChoice(raw, evidenceMode ? view.observations.length : 1);
       let action;
       if (choice === 0) {
         action = {
@@ -89,7 +97,7 @@ export class SmolLmPolicy {
           need_id: need.id,
           payload: { target_id: view.target.id, reason: "Cell found no directly supporting supplied observation." },
         };
-      } else if (choice) {
+      } else if (choice && evidenceMode) {
         action = {
           type: "SUPPORT",
           need_id: need.id,
@@ -99,6 +107,15 @@ export class SmolLmPolicy {
             rationale: "Observation selected by local cell.",
           },
         };
+      } else if (choice === 1) {
+        action = {
+          type: "SUPPORT",
+          need_id: need.id,
+          payload: {
+            target_id: view.target.id,
+            rationale: "Independent local cell provisionally accepted the proposition.",
+          },
+        };
       } else {
         action = { type: "ABSTAIN", need_id: need.id, payload: { reason: "unparseable verification choice" } };
       }
@@ -106,14 +123,31 @@ export class SmolLmPolicy {
     }
 
     if (need.kind === "REPAIR") {
-      const prompt = [
-        "Choose an observation that can replace the challenged claim.",
-        "Output only its number, or 0 to retract the claim.",
-        `Challenged claim: ${view.target.text}`,
-        numbered(view.observations),
-        "Number:",
-      ].join("\n");
-      const raw = await this.generate(prompt, 20);
+      const prompt = view.observations.length > 0
+        ? [
+            "Choose an observation that can replace the challenged claim.",
+            "Output only its number, or 0 to retract the claim.",
+            `Challenged claim: ${view.target.text}`,
+            numbered(view.observations),
+            "Number:",
+          ].join("\n")
+        : [
+            "Replace the challenged proposition with one better proposition that advances the goal.",
+            "Do not repeat the challenged proposition or rejected paths.",
+            "Output only the replacement, in the language of the goal.",
+            `Goal: ${view.goal.text}`,
+            `Challenged proposition: ${view.target.text}`,
+            ...(view.negative_traces.length ? ["Rejected paths:", ...view.negative_traces.map((claim) => `- ${claim.text}`)] : []),
+            "Replacement:",
+          ].join("\n");
+      const raw = await this.generate(prompt, view.observations.length > 0 ? 20 : 80);
+      if (view.observations.length === 0) {
+        const text = cleanText(raw);
+        const action = text
+          ? { type: "REVISE", need_id: need.id, payload: { target_id: view.target.id, text } }
+          : { type: "RETRACT", need_id: need.id, payload: { target_id: view.target.id } };
+        return { action, trace: { raw_output: text } };
+      }
       const choice = parseChoice(raw, view.observations.length);
       const action = choice && choice > 0
         ? {
