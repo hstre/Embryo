@@ -2,7 +2,7 @@ import { writeFile } from "node:fs/promises";
 import { applyProposal } from "./gate.mjs";
 import { makeReceipt, appendReceipt } from "./ledger.mjs";
 import { buildLocalView } from "./local-view.mjs";
-import { canGrow, deriveNeeds } from "./needs.mjs";
+import { canGrow, deriveNeeds, registerAttemptFailure } from "./needs.mjs";
 import { validateState } from "./schema.mjs";
 import { writeState } from "./state.mjs";
 
@@ -41,8 +41,7 @@ export async function runGeneration({ state, statePath, eventsPath, policy, maxC
     const eventSeq = state.next_event_seq;
     const decision = applyProposal(state, proposal, eventSeq);
     if (!decision.accepted) {
-      need.attempts += 1;
-      if (need.attempts >= state.config.max_attempts_per_need) need.status = "exhausted";
+      decision.mutations.push(...registerAttemptFailure(state, need));
     }
     state.energy_spent += 1;
     deriveNeeds(state);

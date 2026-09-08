@@ -1,19 +1,17 @@
 const DEFAULT_MODEL = "HuggingFaceTB/SmolLM2-135M-Instruct";
 const DEFAULT_REVISION = "12fd25f77366fa6b3b4b768ec3050bf629380bac";
 
-function numbered(items) {
-  return items.map((item, index) => `${index + 1}. [${item.id}] ${item.text}`).join("\n");
-}
-
-function parseChoice(text, itemCount) {
-  const match = text.match(/(?:^|\D)(\d+)(?:\D|$)/);
-  if (!match) return null;
-  const choice = Number(match[1]);
-  return Number.isInteger(choice) && choice >= 0 && choice <= itemCount ? choice : null;
-}
-
 function cleanText(text, max = 1200) {
   return text.trim().replace(/^```(?:json|text)?\s*/i, "").replace(/```\s*$/, "").slice(0, max).trim();
+}
+
+function bullets(items) {
+  return items.map((item) => `- ${item.text}`);
+}
+
+function reviewVerdict(text) {
+  const match = text.toUpperCase().match(/\b(ACCEPT|REVISE|REJECT)\b/);
+  return match?.[1] ?? null;
 }
 
 export class SmolLmPolicy {
@@ -21,7 +19,7 @@ export class SmolLmPolicy {
     this.model = options.model ?? DEFAULT_MODEL;
     this.revision = options.revision ?? DEFAULT_REVISION;
     this.dtype = options.dtype ?? "q4";
-    this.name = `${this.model}@${this.revision}:${this.dtype}:adapter-v2`;
+    this.name = `${this.model}@${this.revision}:${this.dtype}:triad-v2`;
     this.generator = null;
   }
 
@@ -29,18 +27,15 @@ export class SmolLmPolicy {
     if (this.generator) return;
     const { pipeline, env } = await import("@huggingface/transformers");
     if (process.env.HF_HOME) env.cacheDir = process.env.HF_HOME;
-    this.generator = await pipeline("text-generation", this.model, {
-      revision: this.revision,
-      dtype: this.dtype,
-    });
+    this.generator = await pipeline("text-generation", this.model, { revision: this.revision, dtype: this.dtype });
   }
 
-  async generate(prompt, maxNewTokens = 32) {
+  async generate(prompt, maxNewTokens = 64) {
     await this.load();
     const output = await this.generator(prompt, {
       max_new_tokens: maxNewTokens,
       do_sample: false,
-      repetition_penalty: 1.05,
+      repetition_penalty: 1.08,
       return_full_text: false,
     });
     const generated = output?.[0]?.generated_text;
@@ -51,134 +46,86 @@ export class SmolLmPolicy {
 
   async propose(view) {
     const need = view.need;
-    if (need.kind === "EXPLORE") {
+
+    if (need.kind === "QUESTION") {
       const prompt = [
-        "Formulate one new, concise philosophical proposition that advances the goal.",
-        "Do not merely restate the goal or any previous proposition.",
-        "Output only the proposition, in the language of the goal.",
+        "You are the questioning cell. Do not answer the goal.",
+        "Ask one concise new question whose answer could advance the goal.",
+        "Output only that question, in the language of the goal.",
         `Goal: ${view.goal.text}`,
-        ...(view.supported_claims.length ? ["Existing propositions:", ...view.supported_claims.map((claim) => `- ${claim.text}`)] : []),
-        ...(view.negative_traces.length ? ["Rejected paths; do not repeat them:", ...view.negative_traces.map((claim) => `- ${claim.text}`)] : []),
-        "Proposition:",
+        ...(view.accepted_proposals.length ? ["Accepted work:", ...bullets(view.accepted_proposals)] : []),
+        ...(view.negative_traces.length ? ["Failed paths; ask something different:", ...bullets(view.negative_traces)] : []),
+        "New question:",
       ].join("\n");
-      const raw = await this.generate(prompt, 80);
-      const text = cleanText(raw);
-      const action = text
-        ? { type: "ADD_CLAIM", need_id: need.id, payload: { text } }
-        : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty proposition" } };
-      return { action, trace: { raw_output: text } };
+      const text = cleanText(await this.generate(prompt, 64));
+      return {
+        action: text
+          ? { type: "ADD_QUESTION", need_id: need.id, payload: { text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty question" } },
+        trace: { raw_output: text },
+      };
     }
 
-    if (need.kind === "VERIFY") {
-      const evidenceMode = view.observations.length > 0;
-      const prompt = evidenceMode
-        ? [
-            "Which observation directly supports the claim?",
-            "Output only its number, or 0 if none supports it.",
-            `Claim: ${view.target.text}`,
-            numbered(view.observations),
-            "Number:",
-          ].join("\n")
-        : [
-            "Judge this philosophical proposition independently.",
-            "Does it meaningfully advance the goal without merely restating it or a rejected path?",
-            "Output only 1 to provisionally support it or 0 to challenge it.",
-            `Goal: ${view.goal.text}`,
-            `Proposition: ${view.target.text}`,
-            ...(view.negative_traces.length ? ["Rejected paths:", ...view.negative_traces.map((claim) => `- ${claim.text}`)] : []),
-            "Decision:",
-          ].join("\n");
-      const raw = await this.generate(prompt, 20);
-      const choice = parseChoice(raw, evidenceMode ? view.observations.length : 1);
-      let action;
-      if (choice === 0) {
-        action = {
-          type: "CHALLENGE",
-          need_id: need.id,
-          payload: { target_id: view.target.id, reason: "Cell found no directly supporting supplied observation." },
-        };
-      } else if (choice && evidenceMode) {
-        action = {
-          type: "SUPPORT",
-          need_id: need.id,
-          payload: {
-            target_id: view.target.id,
-            observation_ids: [view.observations[choice - 1].id],
-            rationale: "Observation selected by local cell.",
-          },
-        };
-      } else if (choice === 1) {
-        action = {
-          type: "SUPPORT",
-          need_id: need.id,
-          payload: {
-            target_id: view.target.id,
-            rationale: "Independent local cell provisionally accepted the proposition.",
-          },
-        };
-      } else {
-        action = { type: "ABSTAIN", need_id: need.id, payload: { reason: "unparseable verification choice" } };
-      }
-      return { action, trace: { raw_output: cleanText(raw) } };
+    if (need.kind === "PROPOSE") {
+      const prompt = [
+        "You are the proposing cell. Answer the question with one concise philosophical proposal.",
+        "Output only the proposal, in the language of the goal.",
+        `Goal: ${view.goal.text}`,
+        `Question: ${view.question?.text ?? view.target.text}`,
+        ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
+        ...(view.accepted_proposals.length ? ["Already accepted:", ...bullets(view.accepted_proposals)] : []),
+        ...(view.negative_traces.length ? ["Failed paths; do not repeat:", ...bullets(view.negative_traces)] : []),
+        "Proposal:",
+      ].join("\n");
+      const text = cleanText(await this.generate(prompt, 96));
+      return {
+        action: text
+          ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty proposal" } },
+        trace: { raw_output: text },
+      };
     }
 
-    if (need.kind === "REPAIR") {
-      const prompt = view.observations.length > 0
-        ? [
-            "Choose an observation that can replace the challenged claim.",
-            "Output only its number, or 0 to retract the claim.",
-            `Challenged claim: ${view.target.text}`,
-            numbered(view.observations),
-            "Number:",
-          ].join("\n")
-        : [
-            "Replace the challenged proposition with one better proposition that advances the goal.",
-            "Do not repeat the challenged proposition or rejected paths.",
-            "Output only the replacement, in the language of the goal.",
-            `Goal: ${view.goal.text}`,
-            `Challenged proposition: ${view.target.text}`,
-            ...(view.negative_traces.length ? ["Rejected paths:", ...view.negative_traces.map((claim) => `- ${claim.text}`)] : []),
-            "Replacement:",
-          ].join("\n");
-      const raw = await this.generate(prompt, view.observations.length > 0 ? 20 : 80);
-      if (view.observations.length === 0) {
-        const text = cleanText(raw);
-        const action = text
-          ? { type: "REVISE", need_id: need.id, payload: { target_id: view.target.id, text } }
-          : { type: "RETRACT", need_id: need.id, payload: { target_id: view.target.id } };
-        return { action, trace: { raw_output: text } };
-      }
-      const choice = parseChoice(raw, view.observations.length);
-      const action = choice && choice > 0
-        ? {
-            type: "REVISE",
-            need_id: need.id,
-            payload: { target_id: view.target.id, text: view.observations[choice - 1].text },
-          }
-        : choice === 0
-          ? { type: "RETRACT", need_id: need.id, payload: { target_id: view.target.id } }
-          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "unparseable repair choice" } };
-      return { action, trace: { raw_output: cleanText(raw) } };
+    if (need.kind === "REVIEW") {
+      const prompt = [
+        "You are the reviewing cell. Review the work independently.",
+        "Begin with exactly ACCEPT, REVISE, or REJECT, then give one concise reason.",
+        `Goal: ${view.goal.text}`,
+        ...(view.question ? [`Question: ${view.question.text}`] : []),
+        `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+        ...(view.accepted_proposals.length ? ["Previously accepted work:", ...bullets(view.accepted_proposals)] : []),
+        "Review:",
+      ].join("\n");
+      const text = cleanText(await this.generate(prompt, 80));
+      const verdict = reviewVerdict(text);
+      return {
+        action: verdict
+          ? { type: "REVIEW", need_id: need.id, payload: { target_id: view.target.id, verdict, text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "review contained no verdict" } },
+        trace: { raw_output: text },
+      };
     }
 
     if (need.kind === "SYNTHESIZE") {
       const prompt = [
-        "Answer the goal using only the supported claims.",
-        "Output one concise answer and nothing else.",
+        "You are the proposing cell. Form a concise coherent philosophy that answers the goal.",
+        "Use the accepted work below. Output only the philosophy, in the language of the goal.",
         `Goal: ${view.goal.text}`,
-        ...view.supported_claims.map((claim) => `- ${claim.text}`),
-        "Answer:",
+        ...bullets(view.accepted_proposals),
+        ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
+        "Philosophy:",
       ].join("\n");
-      const raw = await this.generate(prompt, 160);
-      const text = cleanText(raw);
-      const action = text
-        ? {
-            type: "SYNTHESIZE",
-            need_id: need.id,
-            payload: { text, claim_ids: view.supported_claims.map((claim) => claim.id) },
-          }
-        : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty synthesis" } };
-      return { action, trace: { raw_output: text } };
+      const text = cleanText(await this.generate(prompt, 200));
+      return {
+        action: text
+          ? {
+              type: "ADD_SYNTHESIS",
+              need_id: need.id,
+              payload: { text, proposal_ids: view.accepted_proposals.map((proposal) => proposal.id) },
+            }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty synthesis" } },
+        trace: { raw_output: text },
+      };
     }
 
     return { action: { type: "ABSTAIN", need_id: need.id, payload: { reason: "unknown need" } }, trace: null };

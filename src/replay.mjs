@@ -1,7 +1,7 @@
 import { applyProposal } from "./gate.mjs";
 import { makeReceipt, validateLedger } from "./ledger.mjs";
 import { buildLocalView } from "./local-view.mjs";
-import { deriveNeeds } from "./needs.mjs";
+import { deriveNeeds, registerAttemptFailure } from "./needs.mjs";
 import { createState } from "./state.mjs";
 
 export function replay(seed, receipts) {
@@ -16,8 +16,7 @@ export function replay(seed, receipts) {
     if (localViewHash !== recorded.local_view_hash) throw new Error(`local view mismatch at event ${recorded.seq}`);
     const decision = applyProposal(state, recorded.proposal, state.next_event_seq);
     if (!decision.accepted) {
-      need.attempts += 1;
-      if (need.attempts >= state.config.max_attempts_per_need) need.status = "exhausted";
+      decision.mutations.push(...registerAttemptFailure(state, need));
     }
     state.energy_spent += 1;
     deriveNeeds(state);

@@ -26,13 +26,13 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "target_claims": { "type": "integer", "minimum": 1 },
+        "target_proposals": { "type": "integer", "minimum": 1 },
         "max_attempts_per_need": { "type": "integer", "minimum": 1 },
         "max_cells_per_generation": { "type": "integer", "minimum": 1 },
         "max_generations": { "type": "integer", "minimum": 1 },
         "energy_budget": { "type": "integer", "minimum": 1 },
         "max_text_chars": { "type": "integer", "minimum": 1 },
-        "local_observation_limit": { "type": "integer", "minimum": 1 }
+        "local_context_limit": { "type": "integer", "minimum": 1 }
       }
     }
   }

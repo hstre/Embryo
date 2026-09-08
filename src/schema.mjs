@@ -1,41 +1,25 @@
-const NODE_KINDS = new Set(["goal", "observation", "claim", "challenge", "synthesis"]);
+const NODE_KINDS = new Set(["goal", "observation", "question", "proposal", "review", "synthesis"]);
 const NODE_STATUSES = new Set([
-  "given",
-  "open",
-  "unverified",
-  "supported",
-  "challenged",
-  "superseded",
-  "retracted",
-  "accepted",
+  "given", "open", "under_review", "answered", "abandoned", "unreviewed",
+  "accepted", "revision_requested", "rejected", "superseded", "recorded",
 ]);
-const NEED_KINDS = new Set(["EXPLORE", "VERIFY", "REPAIR", "SYNTHESIZE"]);
+const NEED_KINDS = new Set(["QUESTION", "PROPOSE", "REVIEW", "SYNTHESIZE"]);
 const NEED_STATUSES = new Set(["open", "resolved", "exhausted"]);
-const ACTION_TYPES = new Set([
-  "ADD_CLAIM",
-  "SUPPORT",
-  "CHALLENGE",
-  "REVISE",
-  "RETRACT",
-  "SYNTHESIZE",
-  "ABSTAIN",
-]);
+const ACTION_TYPES = new Set(["ADD_QUESTION", "ADD_PROPOSAL", "REVIEW", "ADD_SYNTHESIS", "ABSTAIN"]);
 const STATE_KEYS = new Set([
   "schema_version", "embryo_id", "generation", "energy_spent", "next_node_seq",
   "next_event_seq", "ledger_head", "config", "nodes", "edges", "needs",
 ]);
 const CONFIG_KEYS = new Set([
-  "target_claims", "max_attempts_per_need", "max_cells_per_generation", "max_generations",
-  "energy_budget", "max_text_chars", "local_observation_limit",
+  "target_proposals", "max_attempts_per_need", "max_cells_per_generation", "max_generations",
+  "energy_budget", "max_text_chars", "local_context_limit",
 ]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
-  ADD_CLAIM: { required: ["text"], allowed: ["text"] },
-  SUPPORT: { required: ["target_id"], allowed: ["target_id", "observation_ids", "rationale"] },
-  CHALLENGE: { required: ["target_id", "reason"], allowed: ["target_id", "reason"] },
-  REVISE: { required: ["target_id", "text"], allowed: ["target_id", "text"] },
-  RETRACT: { required: ["target_id"], allowed: ["target_id"] },
-  SYNTHESIZE: { required: ["text", "claim_ids"], allowed: ["text", "claim_ids"] },
+  ADD_QUESTION: { required: ["text"], allowed: ["text"] },
+  ADD_PROPOSAL: { required: ["text"], allowed: ["text"] },
+  REVIEW: { required: ["target_id", "verdict", "text"], allowed: ["target_id", "verdict", "text"] },
+  ADD_SYNTHESIS: { required: ["text", "proposal_ids"], allowed: ["text", "proposal_ids"] },
   ABSTAIN: { required: ["reason"], allowed: ["reason"] },
 });
 
@@ -66,13 +50,13 @@ export function validateSeed(seed) {
   }
   const config = seed.config ?? {};
   for (const [key, fallback] of Object.entries({
-    target_claims: 2,
-    max_attempts_per_need: 2,
+    target_proposals: 4,
+    max_attempts_per_need: 3,
     max_cells_per_generation: 4,
-    max_generations: 12,
-    energy_budget: 32,
+    max_generations: 16,
+    energy_budget: 64,
     max_text_chars: 1200,
-    local_observation_limit: 3,
+    local_context_limit: 6,
   })) {
     const value = config[key] ?? fallback;
     invariant(Number.isInteger(value) && value > 0, `config.${key} must be a positive integer`);
@@ -82,7 +66,7 @@ export function validateSeed(seed) {
 export function validateState(state) {
   invariant(state && typeof state === "object" && !Array.isArray(state), "state must be an object");
   invariant(hasOnlyKeys(state, STATE_KEYS), "state contains unknown fields");
-  invariant(state?.schema_version === 1, "unsupported state schema_version");
+  invariant(state?.schema_version === 2, "unsupported state schema_version");
   invariant(isNonEmptyString(state.embryo_id, 80), "state.embryo_id is required");
   invariant(Number.isInteger(state.generation) && state.generation >= 0, "generation must be non-negative");
   invariant(Number.isInteger(state.energy_spent) && state.energy_spent >= 0, "energy_spent must be non-negative");
@@ -93,9 +77,8 @@ export function validateState(state) {
   invariant(Array.isArray(state.needs), "needs must be an array");
   invariant(state.config && typeof state.config === "object" && !Array.isArray(state.config), "config must be an object");
   invariant(hasOnlyKeys(state.config, CONFIG_KEYS), "config contains unknown fields");
-  for (const key of CONFIG_KEYS) {
-    invariant(Number.isInteger(state.config[key]) && state.config[key] > 0, `config.${key} must be a positive integer`);
-  }
+  for (const key of CONFIG_KEYS) invariant(Number.isInteger(state.config[key]) && state.config[key] > 0, `config.${key} must be a positive integer`);
+
   const nodeIds = new Set();
   for (const node of state.nodes) {
     invariant(
@@ -146,16 +129,11 @@ export function validateActionShape(action, maxTextChars) {
   for (const [key, value] of Object.entries(payload)) {
     if (typeof value === "string") invariant(value.length <= maxTextChars, `payload.${key} is too long`);
   }
-  for (const key of ["observation_ids", "claim_ids"]) {
-    if (Object.hasOwn(payload, key)) {
-      invariant(Array.isArray(payload[key]), `payload.${key} must be an array`);
-      invariant(payload[key].every((value) => isNonEmptyString(value, 80)), `payload.${key} contains an invalid id`);
-    }
+  if (Object.hasOwn(payload, "proposal_ids")) {
+    invariant(Array.isArray(payload.proposal_ids), "payload.proposal_ids must be an array");
+    invariant(payload.proposal_ids.every((value) => isNonEmptyString(value, 80)), "payload.proposal_ids contains an invalid id");
   }
   return true;
 }
 
-export const enums = {
-  actionTypes: [...ACTION_TYPES],
-  needKinds: [...NEED_KINDS],
-};
+export const enums = { actionTypes: [...ACTION_TYPES], needKinds: [...NEED_KINDS] };

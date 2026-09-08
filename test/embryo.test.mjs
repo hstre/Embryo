@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile } from "node:fs/promises";
+import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createState, readJson } from "../src/state.mjs";
@@ -14,135 +14,119 @@ import { stateDigest } from "../src/canonical.mjs";
 
 const seedPath = new URL("../examples/seed.json", import.meta.url);
 
-function withObservations(seed) {
-  return {
-    ...seed,
-    observations: [
-      { id: "observation-01", text: "First test observation.", source: "test" },
-      { id: "observation-02", text: "Second test observation.", source: "test" },
-    ],
-    config: { ...seed.config, target_claims: 2 },
-  };
+async function freshState() {
+  return createState(await readJson(seedPath));
 }
 
-test("work product creates further needs", async () => {
-  const seed = withObservations(JSON.parse(await readFile(seedPath, "utf8")));
-  const state = createState(seed);
-  const firstNeed = deriveNeeds(state)[0];
-  assert.equal(firstNeed.kind, "EXPLORE");
-  const result = applyProposal(
+function addQuestion(state, text = "What remains unresolved?") {
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "QUESTION");
+  return applyProposal(state, { type: "ADD_QUESTION", need_id: need.id, payload: { text } }, state.next_event_seq);
+}
+
+function addProposal(state, text = "A provisional answer.") {
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "PROPOSE");
+  return applyProposal(state, { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }, state.next_event_seq);
+}
+
+function review(state, verdict, text = `${verdict}: test review.`) {
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW");
+  return applyProposal(
     state,
-    { type: "ADD_CLAIM", need_id: firstNeed.id, payload: { text: seed.observations[0].text } },
-    1,
+    { type: "REVIEW", need_id: need.id, payload: { target_id: need.target_id, verdict, text } },
+    state.next_event_seq,
   );
-  assert.equal(result.accepted, true);
-  const kinds = deriveNeeds(state).map((need) => need.kind);
-  assert.deepEqual(kinds, ["VERIFY", "EXPLORE"]);
+}
+
+test("question work product recruits a proposing cell", async () => {
+  const state = await freshState();
+  assert.equal(deriveNeeds(state)[0].kind, "QUESTION");
+  assert.equal(addQuestion(state).code, "QUESTION_ADDED");
+  assert.equal(deriveNeeds(state)[0].kind, "PROPOSE");
 });
 
-test("gate refuses unsupported evidence references", async () => {
-  const seed = JSON.parse(await readFile(seedPath, "utf8"));
-  const state = createState(seed);
-  const explore = deriveNeeds(state)[0];
-  applyProposal(state, { type: "ADD_CLAIM", need_id: explore.id, payload: { text: "A claim" } }, 1);
-  const verify = deriveNeeds(state).find((need) => need.kind === "VERIFY");
-  const result = applyProposal(
-    state,
-    { type: "SUPPORT", need_id: verify.id, payload: { target_id: verify.target_id, observation_ids: ["missing"] } },
-    2,
-  );
-  assert.equal(result.accepted, false);
-  assert.equal(result.code, "UNKNOWN_OBSERVATION");
+test("proposal work product recruits a reviewing cell", async () => {
+  const state = await freshState();
+  addQuestion(state);
+  assert.equal(addProposal(state).code, "PROPOSAL_ADDED");
+  assert.equal(deriveNeeds(state)[0].kind, "REVIEW");
 });
 
-test("bounded generations grow to quiescence and replay exactly", async () => {
+test("accepted review creates the next question gradient", async () => {
+  const state = await freshState();
+  addQuestion(state);
+  addProposal(state);
+  assert.equal(review(state, "ACCEPT").code, "REVIEW_ACCEPT");
+  assert.equal(state.nodes.find((node) => node.kind === "proposal").status, "accepted");
+  assert.equal(state.nodes.find((node) => node.kind === "question").status, "answered");
+  assert.equal(deriveNeeds(state)[0].kind, "QUESTION");
+});
+
+test("revision review recruits the proposing phenotype", async () => {
+  const state = await freshState();
+  addQuestion(state);
+  addProposal(state, "First answer.");
+  review(state, "REVISE", "REVISE: clarify the relation.");
+  const need = deriveNeeds(state)[0];
+  assert.equal(need.kind, "PROPOSE");
+  assert.equal(state.nodes.find((node) => node.id === need.target_id).status, "revision_requested");
+  assert.equal(addProposal(state, "Revised answer.").code, "PROPOSAL_ADDED");
+  assert.equal(state.nodes.find((node) => node.text === "First answer.").status, "superseded");
+});
+
+test("exhausted review rejects its proposal and abandons its question", async () => {
+  const state = await freshState();
+  addQuestion(state);
+  addProposal(state);
+  const need = deriveNeeds(state)[0];
+  for (let attempt = 0; attempt < state.config.max_attempts_per_need; attempt += 1) {
+    applyProposal(state, { type: "ABSTAIN", need_id: need.id, payload: { reason: "no verdict" } }, state.next_event_seq);
+  }
+  assert.equal(state.nodes.find((node) => node.kind === "proposal").status, "rejected");
+  assert.equal(state.nodes.find((node) => node.kind === "question").status, "abandoned");
+  assert.equal(deriveNeeds(state)[0].kind, "QUESTION");
+});
+
+test("bounded triad grows to reviewed synthesis and replays exactly", async () => {
   const seed = await readJson(seedPath);
   const state = createState(seed);
-  const dir = await mkdtemp(join(tmpdir(), "embryo-test-"));
+  const dir = await mkdtemp(join(tmpdir(), "embryo-triad-test-"));
   const statePath = join(dir, "state.json");
   const eventsPath = join(dir, "events.jsonl");
   const policy = new DeterministicPolicy();
-  while (canGrow(state)) {
-    await runGeneration({ state, statePath, eventsPath, policy, maxCells: 4 });
-  }
-  const synthesis = state.nodes.find((node) => node.kind === "synthesis");
-  assert.ok(synthesis);
-  assert.equal(
-    state.nodes.filter((node) => node.kind === "claim" && node.status === "supported").length,
-    seed.config.target_claims,
-  );
-  assert.ok(state.energy_spent <= state.config.energy_budget);
+  while (canGrow(state)) await runGeneration({ state, statePath, eventsPath, policy, maxCells: 4 });
+  assert.equal(state.nodes.filter((node) => node.kind === "proposal" && node.status === "accepted").length, seed.config.target_proposals);
+  assert.equal(state.nodes.find((node) => node.kind === "synthesis").status, "accepted");
   const receipts = await readReceipts(eventsPath);
   assert.equal(validateLedger(receipts, state.ledger_head), true);
-  const rebuilt = replay(seed, receipts);
-  assert.equal(stateDigest(rebuilt), stateDigest(state));
+  assert.equal(stateDigest(replay(seed, receipts)), stateDigest(state));
 });
 
-test("energy budget stops growth", async () => {
-  const seed = withObservations(JSON.parse(await readFile(seedPath, "utf8")));
-  seed.config.energy_budget = 1;
-  const state = createState(seed);
-  state.energy_spent = 1;
-  deriveNeeds(state);
-  assert.equal(canGrow(state), false);
-});
-
-test("retraction recreates a previously satisfied exploration gradient", async () => {
-  const seed = withObservations(JSON.parse(await readFile(seedPath, "utf8")));
-  const state = createState(seed);
-  let explore = deriveNeeds(state)[0];
-  applyProposal(state, { type: "ADD_CLAIM", need_id: explore.id, payload: { text: seed.observations[0].text } }, 1);
-  let verify = deriveNeeds(state).find((need) => need.kind === "VERIFY");
-  applyProposal(
-    state,
-    { type: "SUPPORT", need_id: verify.id, payload: { target_id: verify.target_id, observation_ids: ["observation-01"] } },
-    2,
-  );
-  explore = deriveNeeds(state).find((need) => need.kind === "EXPLORE");
-  applyProposal(state, { type: "ADD_CLAIM", need_id: explore.id, payload: { text: "unsupported" } }, 3);
-  verify = deriveNeeds(state).find((need) => need.kind === "VERIFY");
-  applyProposal(
-    state,
-    { type: "CHALLENGE", need_id: verify.id, payload: { target_id: verify.target_id, reason: "not observed" } },
-    4,
-  );
-  const repair = deriveNeeds(state).find((need) => need.kind === "REPAIR");
-  applyProposal(state, { type: "RETRACT", need_id: repair.id, payload: { target_id: repair.target_id } }, 5);
-  const regenerated = deriveNeeds(state).filter((need) => need.kind === "EXPLORE" && need.status === "open");
-  assert.equal(regenerated.length, 1);
-  assert.notEqual(regenerated[0].id, explore.id);
-  const duplicate = applyProposal(
-    state,
-    { type: "ADD_CLAIM", need_id: regenerated[0].id, payload: { text: "unsupported" } },
-    6,
-  );
-  assert.equal(duplicate.accepted, false);
-  assert.equal(duplicate.code, "DUPLICATE_CLAIM");
-});
-
-test("replay mirrors rejected duplicate attempts", async () => {
+test("replay mirrors duplicate rejection and exhaustion", async () => {
   const seed = await readJson(seedPath);
   const state = createState(seed);
   const dir = await mkdtemp(join(tmpdir(), "embryo-rejection-test-"));
   const statePath = join(dir, "state.json");
   const eventsPath = join(dir, "events.jsonl");
   const policy = {
-    name: "repeating-test-policy",
+    name: "repeating-triad-policy",
     async propose(view) {
-      if (view.need.kind === "EXPLORE") {
-        return { type: "ADD_CLAIM", need_id: view.need.id, payload: { text: "The same proposition." } };
-      }
-      return {
-        type: "SUPPORT",
-        need_id: view.need.id,
-        payload: { target_id: view.target.id, rationale: "Accepted in test." },
-      };
+      if (view.need.kind === "QUESTION") return { type: "ADD_QUESTION", need_id: view.need.id, payload: { text: "Same question?" } };
+      if (view.need.kind === "PROPOSE") return { type: "ADD_PROPOSAL", need_id: view.need.id, payload: { text: "Same answer." } };
+      return { type: "REVIEW", need_id: view.need.id, payload: { target_id: view.target.id, verdict: "REJECT", text: "REJECT: insufficient." } };
     },
   };
   await runGeneration({ state, statePath, eventsPath, policy, maxCells: 4 });
   await runGeneration({ state, statePath, eventsPath, policy, maxCells: 4 });
   const receipts = await readReceipts(eventsPath);
-  const rebuilt = replay(seed, receipts);
-  assert.equal(stateDigest(rebuilt), stateDigest(state));
-  assert.ok(receipts.some((receipt) => receipt.decision.code === "DUPLICATE_CLAIM"));
+  assert.ok(receipts.some((receipt) => receipt.decision.code === "DUPLICATE_QUESTION"));
+  assert.equal(stateDigest(replay(seed, receipts)), stateDigest(state));
+});
+
+test("energy budget stops growth", async () => {
+  const seed = await readJson(seedPath);
+  seed.config.energy_budget = 1;
+  const state = createState(seed);
+  state.energy_spent = 1;
+  deriveNeeds(state);
+  assert.equal(canGrow(state), false);
 });
