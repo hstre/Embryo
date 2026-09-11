@@ -453,14 +453,82 @@ Differenzierung nicht. Das ist eine belastbare Teilantwort und kein Nullergebnis
 
 ## 12. Was offen bleibt
 
+### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
+
+Alle Läufe seit 003 verlangen von einer einzelnen Zelle einen einzelnen
+Urteilsakt: ein Meta-Review liest drei Fragmente und emittiert ein Verdikt.
+Lauf 008 zeigt, dass diese Zelle das nicht leisten kann — weder generierend noch
+über ihre eigene Wahrscheinlichkeitsverteilung.
+
+Die stigmergische Alternative verlegt das Urteil dorthin, wo in diesem Projekt
+ohnehin alle Zustandsübergänge herkommen: ins Substrat. Nicht eine Zelle
+entscheidet, sondern eine deterministische Regel liest ab, was sich über mehrere
+Runden an Spuren angesammelt hat — so wie `deriveNeeds()` heute schon
+Bedürfnisse aus dem Gewebe ableitet, statt sie erfragen zu lassen. Drei Formen,
+nach Tragfähigkeit geordnet:
+
+**Wiederholte unabhängige Stichproben.** Mehrere Meta-Zellen urteilen, die
+Mehrheit gilt. Billig umzusetzen, verlangt aber Sampling statt Greedy-Decoding —
+und mittelt nur Rauschen, wenn das Einzelurteil kein Signal trägt. Genau das
+legen die Kalibrierungszahlen nahe. Die schwächste der drei.
+
+**Akkumulation über Runden.** Zustimmung und Einwand werden getrennte Marker;
+ein Vorschlag wird angenommen, wenn die Bilanz eine Schwelle überschreitet. Das
+ist näher an der biologischen Analogie — Konzentration überschreitet Schwellwert,
+niemand entscheidet — aber die Marker sind weiterhin Meinungen derselben Zellen,
+die schon jetzt keine Qualität erkennen.
+
+**Nachprüfbare Relation zur Umgebung.** Ein Vorschlag gilt nicht als gut, weil
+eine Zelle ihn gut findet, sondern weil eine überprüfbare Beziehung zu etwas
+besteht, das im Substrat liegt und nicht von derselben Zelle stammt. Die Zelle
+sucht und findet oder enthält sich; ob das reicht, entscheidet das Gate.
+
+Der dritte Weg ist der einzige, für den dieses Projekt bereits Daten hat — und
+zwar aus dem ersten Experiment. In 001 war `SUPPORT` kein Urteil, sondern eine
+Prüfung. Der protokollierte Grund einer Ablehnung lautet wörtlich:
+
+```text
+"Cell found no directly supporting supplied observation."
+```
+
+001 arbeitete mit `ADD_CLAIM`, `SUPPORT`, `CHALLENGE` und `RETRACT` gegen einen
+Seed mit drei Beobachtungen. Von elf Behauptungen hielt eine, zehn wurden
+zurückgenommen. Das ist der einzige Lauf des Projekts, in dem je etwas die
+Prüfung überstanden hat, und die Entscheidung darüber fiel mechanisch: gibt es
+eine gelieferte Beobachtung, die diese Behauptung stützt, oder nicht.
+
+Mit dem Umbau auf Frage–Vorschlag–Review verschwand diese Relation. Das
+Aktionsvokabular trägt seither keine Evidenz mehr, und die Observation-Menge des
+Seeds ist seit 005 leer. Damit wurde eine überprüfbare Beziehung durch eine
+Meinung ersetzt — und seither hat kein Vorschlag mehr gehalten. Invariante 3 des
+README verlangt weiterhin, dass Evidenz in der Umgebung existiert; der
+Mechanismus, der das erzwang, ist nicht mehr da.
+
+Ein unabhängiger Hinweis in dieselbe Richtung kommt von außen. [PARSER][parser]
+(CUHK, September 2026) teilt Langkontext-Reasoning in genau diese beiden
+Schichten: eingefrorene Subagenten, die je einen Chunk lesen und *Evidenz finden
+oder sich enthalten*, und einen Lead-Agenten, der integriert. Die findende
+Schicht sättigt dort bei 4B und braucht kein Training; die integrierende kostet
+rund zehn Punkte Reinforcement Learning. Die Arbeitsteilung, die PARSER
+architektonisch setzt, ist dieselbe Grenze, an der Embryo empirisch steht — mit
+dem Unterschied, dass PARSER sie durch Gewichtsänderung im Lead-Agenten
+überwindet, was Embryo v0.1 ausdrücklich ausschließt.
+
+Damit stehen zwei Wege offen, und sie schließen einander nicht aus: ein größeres
+Modell für die urteilende Rolle, oder die Urteilsfähigkeit aus dem Substrat
+holen statt aus der Zelle. Der zweite wäre die stigmergische Antwort und ist im
+Rahmen der bestehenden Invarianten zu haben.
+
+[parser]: https://arxiv.org/abs/2609.06702
+
+### Weitere offene Punkte
+
 - Die Kernfrage ist teilbeantwortet: die Organisation entsteht, die
   Differenzierung nicht. Ob sie bei rollentreueren Zellen entsteht, ist offen.
-- **Größer werden.** Nach 008 der verbleibende naheliegende Schritt. SmolLM2
-  gibt es als 1.7B; das bliebe lokal und klein und würde prüfen, ob
-  Urteilsfähigkeit eine Größenfrage ist. Die Kalibrierungsfälle aus Abschnitt 10
-  sind der Test dafür: erkennt ein größeres Modell den einhellig gelobten
-  Vorschlag als `ACCEPT`, taugt die Skala; tut es das nicht, taugt sie auch dort
-  nicht.
+- **Größer werden**, als Gegenprobe zum Weg oben. SmolLM2 gibt es als 1.7B; das
+  bliebe lokal und klein. Die Kalibrierungsfälle aus Abschnitt 10 sind der Test
+  dafür: erkennt ein größeres Modell den einhellig gelobten Vorschlag als
+  `ACCEPT`, taugt die Skala; tut es das nicht, taugt sie auch dort nicht.
 - **Die ACCEPT-Schwelle ist ungeklärt.** Denkbar ist, dass `ACCEPT` nicht als
   Urteil verliert, sondern als Token — etwa weil Instruction-Tuning zustimmende
   Einwortantworten selten macht. Ein Gegentest wäre, die drei Label gegen
