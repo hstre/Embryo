@@ -1,6 +1,6 @@
 # Organisation ohne Urteil
 
-**Forschungsbericht zu den Experimenten 001–010**
+**Forschungsbericht zu den Experimenten 001–011**
 
 *Der Titel folgt dem Befund statt der Laufzahl, damit er nicht mit jedem
 weiteren Lauf veraltet.*
@@ -8,8 +8,8 @@ weiteren Lauf veraltet.*
 | | |
 | --- | --- |
 | Datum | 8. September 2026 |
-| Untersucht | `archive/embryo-001` … `archive/embryo-004`, `embryo-state`, [`docs/runs/`](runs) 006–010 |
-| Datenbasis | 374 hash-verkettete Receipts |
+| Untersucht | `archive/embryo-001` … `archive/embryo-004`, `embryo-state`, [`docs/runs/`](runs) 006–011 |
+| Datenbasis | 399 hash-verkettete Receipts |
 | Reparatur | [PR #9](https://github.com/hstre/Embryo/pull/9) |
 | Verfasst von | Claude Opus 5 |
 
@@ -62,6 +62,7 @@ selben Prompt im ersten Versuch ein Verdikt.
 | 008 | `v6-scored`, gescortes Verdikt | 7 | 26/64 | 0 | keine |
 | 009 | `v7-cited`, Annahme aus Zitaten | 7 | 25/64 | 18 | keine |
 | 010 | Kontrollarm, Annahme per Verdikt | 7 | 26/64 | 0 | keine |
+| 011 | wie 009, Zitat gescort statt generiert | 7 | 25/64 | 0 | keine |
 
 006 bis 010 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular (Behauptungen und Einwände
@@ -505,6 +506,60 @@ In 008 kam er mit vollständigen Panels zu denselben drei `REVISE`. Das gescorte
 Verdikt ist unempfindlich gegen die Evidenz, die es integrieren soll, und
 bestätigt den Kalibrierungsbefund aus Abschnitt 10 von einer zweiten Seite.
 
+### 011 — das Zitat wird gescort statt generiert
+
+Wenn die Zelle keine ID schreiben kann, wird die Referenz wie zuvor das Verdikt
+aus der Verteilung gelesen. Zwei Stufen: erst über die sechs Observations
+ranken, welche den Vorschlag betrifft, dann für die Gewinnerin `SUPPORTS`,
+`CONTRADICTS` oder `UNRELATED` scoren. `UNRELATED` bleibt als echte Option
+bestehen, denn ein Ranking hat immer ein Maximum — ohne diesen Ausweg könnte
+der Mechanismus nie festhalten, dass nichts passt. Gate und Annahmeregel sind
+unverändert; gegenüber 009 unterscheidet sich allein, wie die Zelle zu ihrer
+Referenz kommt.
+
+**Der Mechanismus arbeitet.** Neun Fragmente aufgenommen, zwei `PANEL_REVISE`,
+ein `PANEL_REJECT`, ein überarbeiteter Vorschlag. Zum ersten Mal produziert der
+Zitat-Pfad Gewebe.
+
+**Die Zitate sind leer.** Über alle neun Reviewer-Zellen, vier verschiedene
+Vorschläge und drei Perspektiven hinweg gewinnt ausnahmslos `observation-01`.
+Die Haltung ist Münzwurf — die Marge zwischen `SUPPORTS` und `CONTRADICTS`
+schwankt symmetrisch um null:
+
+```text
++0.112  +0.027  −0.020  +0.137  +0.052  +0.105  −0.053  −0.101  −0.115
+```
+
+Fünf zu vier. Beide Überarbeitungen wurden von einer Marge unter 0,12 nats
+ausgelöst. `UNRELATED` liegt in allen neun Fällen 0,63 bis 0,79 nats zurück und
+ist damit unerreichbar: die Zelle kann nicht sagen, dass nichts passt.
+
+Eine Kontrolle klärt, was die Skala stattdessen misst. Derselbe Vorschlag,
+dieselbe Frage, nur die Reihenfolge der Observations im Prompt permutiert:
+
+| Listenreihenfolge | Sieger | Position des Siegers |
+| --- | --- | --- |
+| `01 … 06` | `observation-06` | letzte |
+| `06 … 01` | `observation-01` | letzte |
+| `04 05 06 01 02 03` | `observation-03` | letzte |
+
+Dreimal die zuletzt genannte. Innerhalb eines festen Prompts ist die Wahl
+unabhängig vom Inhalt, und bei festem Inhalt folgt sie der Position. Das ist die
+Signatur von *kein Relevanzsignal*. Damit ist die Frage beantwortet, die 008
+offen gelassen hatte: die Verteilung trägt weder Qualitäts- noch Relevanzsignal.
+
+### Was die Konstruktion trotzdem geleistet hat
+
+Das `PANEL_REJECT` in 011 kam zustande, weil alle drei Reviewer dieselbe
+Observation zitiert haben — also nur **ein** verschiedener Beleg statt der
+geforderten zwei. Die Regel hat den flachen Prior selbst abgefangen.
+
+Damit hat der Mechanismus zweimal nachweislich verweigert, statt vorzutäuschen:
+gegen Fortsetzungstext (009 gegen 010) und gegen einen konstanten Prior (011).
+Für eine Regel, die semantisches Entailment nicht prüfen kann, ist das mehr als
+zu erwarten war. Was sie nicht kann, ist aus einem Modell ohne Relevanzsignal
+eines herausholen.
+
 ## 12. Vier Wände
 
 Die sieben Läufe trennen die Ursachen sauber auf. Jeder Lauf hat eine Schicht
@@ -518,6 +573,7 @@ freigelegt, die der vorherige verdeckt hatte.
 | 008 | ✓ | ✓ | umgangen durch Scoring | ✗ kein Qualitätssignal |
 | 009 | ✓ | ✓ | ✗ zitiert nicht | nie erreicht |
 | 010 | ✓ | ✓ | ✗ Fortsetzung gilt als Review | ✗ unempfindlich gegen das Panel |
+| 011 | ✓ | ✓ | umgangen durch Scoring | ✗ kein Relevanzsignal |
 
 Die ersten beiden Wände waren Defekt und Fehlkonfiguration. Die dritte und die
 vierte sind Befunde.

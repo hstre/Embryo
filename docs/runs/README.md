@@ -12,6 +12,7 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `008` | wie 007, Verdikt gescort statt generiert | 26 | 26/64 | 0 |
 | `009` | Annahme aus zitierten Belegen, Seed mit sechs Observations | 25 | 25/64 | 0 |
 | `010` | Kontrollarm zu 009: identischer Seed, Annahme per Verdikt | 26 | 26/64 | 0 |
+| `011` | wie 009, Zitat aus der Verteilung gelesen statt geschrieben | 25 | 25/64 | 0 |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
