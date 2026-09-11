@@ -671,16 +671,17 @@ Modell für die urteilende Rolle, oder die Urteilsfähigkeit aus dem Substrat
 holen statt aus der Zelle. Der zweite ist die stigmergische Antwort und im Rahmen
 der bestehenden Invarianten zu haben.
 
-Er ist inzwischen gebaut und in 009 gegen einen Kontrollarm gelaufen; Abschnitt
-11 wertet das aus. Offen bleibt daran das Entscheidende: der Mechanismus hat nie
-Evidenz zu sehen bekommen, weil keine Zelle je eine geliefert hat. Der
-naheliegende nächste Schritt ist derselbe Zug, der beim Verdikt geholfen hat —
-**das Zitat scoren statt generieren**. Nicht das Modell bitten, eine ID zu
-nennen, sondern für jede Observation die Wahrscheinlichkeit berechnen, dass sie
-den Vorschlag stützt, und die höchste nehmen. Das prüft eine neue Frage: 008 hat
-gezeigt, dass die Verteilung kein *Qualitätssignal* trägt — ob sie ein
-*Relevanzsignal* trägt, ist damit nicht entschieden, und genau das ist die
-Fähigkeit, die PARSER kleinen eingefrorenen Modellen zuschreibt.
+Er ist inzwischen gebaut und in 009, 010 und 011 geprüft; Abschnitt 11 wertet
+das aus. Beide Wege, an die Referenz zu kommen, sind damit durchgespielt: das
+Zitat schreiben zu lassen (009) und es aus der Verteilung zu lesen (011). Im
+ersten Fall kommt keine Referenz zustande, im zweiten eine formal gültige ohne
+Inhalt.
+
+Damit ist auch die Frage beantwortet, die 008 offen gelassen hatte. Die
+Verteilung des Modells trägt weder ein *Qualitäts*- noch ein *Relevanzsignal* —
+die Fähigkeit, die PARSER kleinen eingefrorenen Modellen zuschreibt, ist auf
+dieser Größe nicht vorhanden. Offen ist nach 011 nicht mehr der Mechanismus,
+sondern die Zelle.
 
 [parser]: https://arxiv.org/abs/2609.06702
 
@@ -688,10 +689,12 @@ Fähigkeit, die PARSER kleinen eingefrorenen Modellen zuschreibt.
 
 - Die Kernfrage ist teilbeantwortet: die Organisation entsteht, die
   Differenzierung nicht. Ob sie bei rollentreueren Zellen entsteht, ist offen.
-- **Größer werden**, als Gegenprobe zum Weg oben. SmolLM2 gibt es als 1.7B; das
-  bliebe lokal und klein. Die Kalibrierungsfälle aus Abschnitt 10 sind der Test
-  dafür: erkennt ein größeres Modell den einhellig gelobten Vorschlag als
-  `ACCEPT`, taugt die Skala; tut es das nicht, taugt sie auch dort nicht.
+- **Größer werden** ist nach 011 nicht mehr eine Option unter mehreren, sondern
+  die verbleibende. SmolLM2 gibt es als 1.7B; das bliebe lokal und klein. Zwei
+  Tests stehen bereit: die Kalibrierungsfälle aus Abschnitt 10 — erkennt ein
+  größeres Modell den einhellig gelobten Vorschlag als `ACCEPT`? — und die
+  Positionskontrolle aus Abschnitt 11: folgt seine Wahl dem Inhalt statt der
+  Listenposition? Fällt beides negativ aus, liegt es nicht an der Größe.
 - **Die ACCEPT-Schwelle ist ungeklärt.** Denkbar ist, dass `ACCEPT` nicht als
   Urteil verliert, sondern als Token — etwa weil Instruction-Tuning zustimmende
   Einwortantworten selten macht. Ein Gegentest wäre, die drei Label gegen
