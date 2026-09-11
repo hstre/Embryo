@@ -473,6 +473,7 @@ test("the citing reviewer only cites an id the model itself wrote", async () => 
     accepted_proposals: [],
     negative_traces: [],
   };
+  view.acceptance_mode = "citation";
   policy.generate = async () => "observation-02 CONTRADICTS — the proposal ignores this.";
   const cited = await policy.propose(view);
   assert.equal(cited.action.type, "ADD_REVIEW_FRAGMENT");

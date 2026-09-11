@@ -1,5 +1,6 @@
 import { digest } from "./canonical.mjs";
 import { reviewPerspective } from "./needs.mjs";
+import { acceptanceMode } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 function linkedQuestion(state, proposal) {
@@ -64,8 +65,11 @@ export function buildLocalView(state, need) {
     perspective,
     need: { id: need.id, kind: need.kind, target_id: need.target_id, attempts: need.attempts },
     goal: { id: goal.id, text: goal.text },
-    // Present only when the seed supplies an environment, so a run without one keeps
+    // Both are present only where they apply, so a run without an environment keeps
     // the view — and therefore the local-view hash — it had before citations existed.
+    // A cell has to know which kind of contribution the gate will accept: asking for
+    // a citation the gate would refuse is a different experiment, not a control.
+    ...(acceptanceMode(state) === "citation" ? { acceptance_mode: "citation" } : {}),
     ...(observations.length ? { observations } : {}),
     target: { id: target.id, kind: target.kind, status: target.status, text: target.text },
     question: question ? { id: question.id, status: question.status, text: question.text } : null,

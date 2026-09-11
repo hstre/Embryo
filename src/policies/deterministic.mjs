@@ -17,7 +17,7 @@ export class DeterministicPolicy {
     }
     if (need.kind === "REVIEW_FRAGMENT") {
       const payload = { target_id: view.target.id, text: `${view.perspective}: deterministic review fragment.` };
-      if (view.observations?.length) {
+      if (view.acceptance_mode === "citation" && view.observations?.length) {
         // One distinct observation per perspective, so a complete panel accumulates
         // as many separate citations as it has reviewers.
         const stage = ["adversarial", "charitable", "coherence"].indexOf(view.perspective);

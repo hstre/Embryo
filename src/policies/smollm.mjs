@@ -207,7 +207,7 @@ export class SmolLmPolicy {
         : view.perspective === "charitable"
           ? "Identify the strongest contribution and the one improvement it most needs."
           : "Compare it with accepted work and identify contradiction, repetition, or a missing connection.";
-      const citing = Boolean(view.observations?.length);
+      const citing = view.acceptance_mode === "citation" && Boolean(view.observations?.length);
       const text = await ask(
         [
           `You are the ${view.perspective} reviewer in a three-reviewer collective.`,
