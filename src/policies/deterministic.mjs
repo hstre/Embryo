@@ -16,11 +16,16 @@ export class DeterministicPolicy {
       };
     }
     if (need.kind === "REVIEW_FRAGMENT") {
-      return {
-        type: "ADD_REVIEW_FRAGMENT",
-        need_id: need.id,
-        payload: { target_id: view.target.id, text: `${view.perspective}: deterministic review fragment.` },
-      };
+      const payload = { target_id: view.target.id, text: `${view.perspective}: deterministic review fragment.` };
+      if (view.observations?.length) {
+        // One distinct observation per perspective, so a complete panel accumulates
+        // as many separate citations as it has reviewers.
+        const stage = ["adversarial", "charitable", "coherence"].indexOf(view.perspective);
+        const observation = view.observations[Math.max(stage, 0) % view.observations.length];
+        payload.observation_ids = [observation.id];
+        payload.stance = "supports";
+      }
+      return { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload };
     }
     if (need.kind === "META_REVIEW") {
       return {

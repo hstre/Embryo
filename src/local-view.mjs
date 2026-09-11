@@ -28,6 +28,9 @@ function reviewFragmentsFor(state, targetId) {
 
 export function buildLocalView(state, need) {
   const goal = state.nodes.find((node) => node.kind === "goal");
+  const observations = state.nodes
+    .filter((node) => node.kind === "observation")
+    .map(({ id, text, source }) => ({ id, text, source }));
   const target = nodeById(state, need.target_id);
   const limit = state.config.local_context_limit;
   const question = linkedQuestion(state, target);
@@ -61,6 +64,9 @@ export function buildLocalView(state, need) {
     perspective,
     need: { id: need.id, kind: need.kind, target_id: need.target_id, attempts: need.attempts },
     goal: { id: goal.id, text: goal.text },
+    // Present only when the seed supplies an environment, so a run without one keeps
+    // the view — and therefore the local-view hash — it had before citations existed.
+    ...(observations.length ? { observations } : {}),
     target: { id: target.id, kind: target.kind, status: target.status, text: target.text },
     question: question ? { id: question.id, status: question.status, text: question.text } : null,
     reviews: reviewsFor(state, target.id).slice(-limit).map(({ id, text }) => ({ id, text })),

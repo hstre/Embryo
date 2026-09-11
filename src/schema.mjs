@@ -10,15 +10,20 @@ const STATE_KEYS = new Set([
   "schema_version", "embryo_id", "generation", "energy_spent", "next_node_seq",
   "next_event_seq", "ledger_head", "config", "nodes", "edges", "needs",
 ]);
-const CONFIG_KEYS = new Set([
+const REQUIRED_CONFIG_KEYS = new Set([
   "target_proposals", "max_attempts_per_need", "max_cells_per_generation", "max_generations",
   "energy_budget", "max_text_chars", "local_context_limit",
 ]);
+// Optional, so that states written before the citation mechanism existed stay
+// valid and keep their digest. A seed opts in by setting them.
+const ACCEPTANCE_MODES = new Set(["verdict", "citation"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support"]);
+const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
   ADD_QUESTION: { required: ["text"], allowed: ["text"] },
   ADD_PROPOSAL: { required: ["text"], allowed: ["text"] },
-  ADD_REVIEW_FRAGMENT: { required: ["target_id", "text"], allowed: ["target_id", "text"] },
+  ADD_REVIEW_FRAGMENT: { required: ["target_id", "text"], allowed: ["target_id", "text", "observation_ids", "stance"] },
   META_REVIEW: { required: ["target_id", "verdict", "text"], allowed: ["target_id", "verdict", "text"] },
   ADD_SYNTHESIS: { required: ["text", "proposal_ids"], allowed: ["text", "proposal_ids"] },
   ABSTAIN: { required: ["reason"], allowed: ["reason"] },
@@ -34,6 +39,26 @@ function isNonEmptyString(value, max = Infinity) {
 
 function hasOnlyKeys(object, allowed) {
   return Object.keys(object).every((key) => allowed.has(key));
+}
+
+function validateOptionalConfig(config) {
+  if (Object.hasOwn(config, "acceptance_mode")) {
+    invariant(ACCEPTANCE_MODES.has(config.acceptance_mode), "config.acceptance_mode must be verdict or citation");
+  }
+  if (Object.hasOwn(config, "required_support")) {
+    invariant(Number.isInteger(config.required_support) && config.required_support > 0, "config.required_support must be a positive integer");
+  }
+}
+
+// Acceptance is decided either by a cell emitting a verdict, or by the gate
+// reading the citations a review panel has accumulated. The mode is part of the
+// recorded state so a run says for itself which mechanism produced its tissue.
+export function acceptanceMode(state) {
+  return state.config.acceptance_mode ?? "verdict";
+}
+
+export function requiredSupport(state) {
+  return state.config.required_support ?? 2;
 }
 
 export function validateSeed(seed) {
@@ -55,6 +80,7 @@ export function validateSeed(seed) {
     invariant(Number.isInteger(value) && value > 0, `config.${key} must be a positive integer`);
     effective[key] = value;
   }
+  validateOptionalConfig(config);
   // A synthesis must cite target_proposals accepted proposals, but a cell only ever
   // sees local_context_limit of them, so a larger target can never be satisfied.
   invariant(
@@ -88,12 +114,13 @@ export function validateState(state) {
   invariant(Array.isArray(state.needs), "needs must be an array");
   invariant(state.config && typeof state.config === "object" && !Array.isArray(state.config), "config must be an object");
   invariant(hasOnlyKeys(state.config, CONFIG_KEYS), "config contains unknown fields");
-  for (const key of CONFIG_KEYS) invariant(Number.isInteger(state.config[key]) && state.config[key] > 0, `config.${key} must be a positive integer`);
+  for (const key of REQUIRED_CONFIG_KEYS) invariant(Number.isInteger(state.config[key]) && state.config[key] > 0, `config.${key} must be a positive integer`);
+  validateOptionalConfig(state.config);
 
   const nodeIds = new Set();
   for (const node of state.nodes) {
     invariant(
-      hasOnlyKeys(node, new Set(["id", "kind", "status", "text", "source", "created_event", "ordinal", "perspective"])),
+      hasOnlyKeys(node, new Set(["id", "kind", "status", "text", "source", "created_event", "ordinal", "perspective", "stance"])),
       `node contains unknown fields: ${node.id}`,
     );
     invariant(isNonEmptyString(node.id, 80), "node id invalid");
@@ -139,6 +166,12 @@ export function validateActionShape(action, maxTextChars) {
   for (const key of spec.required) invariant(Object.hasOwn(payload, key), `payload.${key} is required for ${action.type}`);
   for (const [key, value] of Object.entries(payload)) {
     if (typeof value === "string") invariant(value.length <= maxTextChars, `payload.${key} is too long`);
+  }
+  if (Object.hasOwn(payload, "stance")) invariant(STANCES.has(payload.stance), "payload.stance must be supports or contradicts");
+  if (Object.hasOwn(payload, "observation_ids")) {
+    invariant(Array.isArray(payload.observation_ids) && payload.observation_ids.length > 0, "payload.observation_ids must be a non-empty array");
+    invariant(payload.observation_ids.every((value) => isNonEmptyString(value, 80)), "payload.observation_ids contains an invalid id");
+    invariant(new Set(payload.observation_ids).size === payload.observation_ids.length, "payload.observation_ids contains a duplicate id");
   }
   if (Object.hasOwn(payload, "proposal_ids")) {
     invariant(Array.isArray(payload.proposal_ids), "payload.proposal_ids must be an array");

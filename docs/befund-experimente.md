@@ -483,26 +483,35 @@ eine Zelle ihn gut findet, sondern weil eine überprüfbare Beziehung zu etwas
 besteht, das im Substrat liegt und nicht von derselben Zelle stammt. Die Zelle
 sucht und findet oder enthält sich; ob das reicht, entscheidet das Gate.
 
-Der dritte Weg ist der einzige, für den dieses Projekt bereits Daten hat — und
-zwar aus dem ersten Experiment. In 001 war `SUPPORT` kein Urteil, sondern eine
-Prüfung. Der protokollierte Grund einer Ablehnung lautet wörtlich:
-
-```text
-"Cell found no directly supporting supplied observation."
-```
+Der dritte Weg ist der einzige, für den dieses Projekt je ein Vokabular hatte.
+Geprüft wurde er nie — auch nicht in 001, entgegen dem, was eine frühere Fassung
+dieses Berichts behauptet hat.
 
 001 arbeitete mit `ADD_CLAIM`, `SUPPORT`, `CHALLENGE` und `RETRACT` gegen einen
-Seed mit drei Beobachtungen. Von elf Behauptungen hielt eine, zehn wurden
-zurückgenommen. Das ist der einzige Lauf des Projekts, in dem je etwas die
-Prüfung überstanden hat, und die Entscheidung darüber fiel mechanisch: gibt es
-eine gelieferte Beobachtung, die diese Behauptung stützt, oder nicht.
+Seed mit drei Beobachtungen, und `SUPPORT` trug ein Feld `observation_ids`. Die
+ID darin stammte aber nicht vom Modell:
 
-Mit dem Umbau auf Frage–Vorschlag–Review verschwand diese Relation. Das
-Aktionsvokabular trägt seither keine Evidenz mehr, und die Observation-Menge des
-Seeds ist seit 005 leer. Damit wurde eine überprüfbare Beziehung durch eine
-Meinung ersetzt — und seither hat kein Vorschlag mehr gehalten. Invariante 3 des
-README verlangt weiterhin, dass Evidenz in der Umgebung existiert; der
-Mechanismus, der das erzwang, ist nicht mehr da.
+```text
+Modell-Rohausgabe:      "1\n[observation-04] In stigmergery, the effect of an"
+protokollierte Aktion:  observation_ids: ["observation-01"]
+rationale:              "Observation selected by local cell."
+```
+
+Der Adapter wertete allein das führende Zeichen aus — `1` stützt, `0` wendet ein
+— und setzte die Belegangabe selbst. Das Modell nannte `observation-04`, zitiert
+wurde `observation-01`, und die `rationale` ist eine fest verdrahtete Konstante
+des Adapters. Von elf Behauptungen hielt eine; diese Entscheidung fiel über ein
+einziges Binärtoken, unter demselben Prompting-Defekt wie alle übrigen Läufe.
+
+Daraus folgt eine schärfere Aussage als die ursprünglich notierte: **in diesem
+Projekt wurde noch nie eine Behauptung gegen die Umgebung verifiziert.** 001
+hatte das Vokabular, aber der Beleg war eine Setzung des Adapters. Ab 003
+verschwand das Vokabular ganz, und die Observation-Menge des Seeds ist seit 005
+leer. Invariante 3 des README verlangt, dass Evidenz in der Umgebung existiert.
+Sie war nie operativ.
+
+Das ist kein Argument gegen den dritten Weg. Es ist das stärkste dafür — der
+Aufbau wurde nie getestet.
 
 Ein unabhängiger Hinweis in dieselbe Richtung kommt von außen. [PARSER][parser]
 (CUHK, September 2026) teilt Langkontext-Reasoning in genau diese beiden

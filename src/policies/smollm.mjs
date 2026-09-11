@@ -29,6 +29,17 @@ function tokenLogProb(logits, position, tokenId) {
 // short-lived and share no memory of one another. Greedy decoding still makes an
 // unchanged prompt reproduce the output that just failed, so the state of the
 // gradient has to enter the prompt for a repeated attempt to differ at all.
+// The cited id has to be found in what the model actually wrote. Experiment 001
+// recorded a citation the adapter had chosen while the model named a different
+// observation; parsing from the raw output is what keeps that from recurring.
+function citationFrom(text, observations) {
+  const upper = text.toUpperCase();
+  const stance = /\bCONTRADICT/.test(upper) ? "contradicts" : /\bSUPPORT/.test(upper) ? "supports" : null;
+  const observationIds = observations.map((observation) => observation.id).filter((id) => text.includes(id));
+  if (!stance || observationIds.length === 0) return null;
+  return { stance, observation_ids: observationIds.slice(0, 3) };
+}
+
 function retryDirective(attempts) {
   if (attempts <= 0) return [];
   if (attempts === 1) return ["This need carries one rejected attempt. Take a different approach and keep to the required format."];
@@ -196,26 +207,46 @@ export class SmolLmPolicy {
         : view.perspective === "charitable"
           ? "Identify the strongest contribution and the one improvement it most needs."
           : "Compare it with accepted work and identify contradiction, repetition, or a missing connection.";
+      const citing = Boolean(view.observations?.length);
       const text = await ask(
         [
           `You are the ${view.perspective} reviewer in a three-reviewer collective.`,
           instruction,
-          "Do not give a verdict. Leave one concise review note in the language of the goal.",
+          ...(citing
+            ? [
+                "Name exactly one observation id from the list and write either SUPPORTS or CONTRADICTS.",
+                "Then give one short sentence. Do not invent an id that is not in the list.",
+                "Format: <observation-id> SUPPORTS|CONTRADICTS — <one sentence>",
+              ]
+            : ["Do not give a verdict. Leave one concise review note in the language of the goal."]),
         ].join("\n"),
         [
           `Goal: ${view.goal.text}`,
           ...(view.question ? [`Question: ${view.question.text}`] : []),
           `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+          ...(citing
+            ? ["Observations in the environment:", ...view.observations.map((o) => `- ${o.id}: ${o.text}`)]
+            : []),
           ...(view.accepted_proposals.length ? ["Previously accepted work:", ...bullets(view.accepted_proposals)] : []),
           ...(view.negative_traces.length ? ["Earlier failed paths:", ...bullets(view.negative_traces)] : []),
         ],
         80,
       );
+      if (!text) {
+        return { action: { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty review fragment" } }, trace: { raw_output: text } };
+      }
+      if (!citing) {
+        return {
+          action: { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text } },
+          trace: { raw_output: text },
+        };
+      }
+      const citation = citationFrom(text, view.observations);
       return {
-        action: text
-          ? { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text } }
-          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty review fragment" } },
-        trace: { raw_output: text },
+        action: citation
+          ? { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text, ...citation } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "review named no observation from the environment" } },
+        trace: { raw_output: text, citation },
       };
     }
 

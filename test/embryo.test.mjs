@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { createState, readJson } from "../src/state.mjs";
 import { deriveNeeds, canGrow } from "../src/needs.mjs";
 import { applyProposal } from "../src/gate.mjs";
+import { buildLocalView } from "../src/local-view.mjs";
 import { runGeneration } from "../src/engine.mjs";
 import { DeterministicPolicy } from "../src/policies/deterministic.mjs";
 import { SmolLmPolicy, smolLmDefaults } from "../src/policies/smollm.mjs";
@@ -361,4 +362,126 @@ test("instruction-tuned cells are prompted through the chat template", async () 
   // A repeated attempt has to differ from the one that just failed under greedy
   // decoding, and the attempts belong to the need rather than to the cell.
   assert.match(seen[0].content, /This need carries two rejected attempts/);
+});
+
+const groundedSeedPath = new URL("../examples/seed-grounded.json", import.meta.url);
+
+async function groundedState(overrides = {}) {
+  const seed = await readJson(groundedSeedPath);
+  return createState({ ...seed, config: { ...seed.config, ...overrides } });
+}
+
+function citeReviewPanel(state, plan) {
+  const results = [];
+  while (deriveNeeds(state).some((candidate) => candidate.kind === "REVIEW_FRAGMENT")) {
+    const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW_FRAGMENT");
+    const { view } = buildLocalView(state, need);
+    const step = plan(view);
+    results.push(applyProposal(state, { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: need.target_id, text: `${view.perspective} note.`, ...step } }, state.next_event_seq));
+  }
+  return results;
+}
+
+test("a citing embryo recruits no meta-reviewer", async () => {
+  const state = await groundedState();
+  addQuestion(state);
+  addProposal(state);
+  assert.equal(deriveNeeds(state).filter((need) => need.kind === "REVIEW_FRAGMENT").length, 3);
+  citeReviewPanel(state, (view) => ({ observation_ids: [view.observations[0].id], stance: "supports" }));
+  // No cell is asked for a verdict; the gate derived it when the panel completed.
+  assert.equal(deriveNeeds(state).some((need) => need.kind === "META_REVIEW"), false);
+  assert.equal(state.nodes.filter((node) => node.kind === "meta_review").length, 0);
+});
+
+test("distinct supporting citations accept, a single one does not", async () => {
+  const shared = await groundedState();
+  addQuestion(shared);
+  addProposal(shared);
+  // All three reviewers lean on the same observation: one distinct citation only.
+  const same = citeReviewPanel(shared, (view) => ({ observation_ids: [view.observations[0].id], stance: "supports" }));
+  assert.equal(same.at(-1).code, "PANEL_REJECT");
+  assert.equal(shared.nodes.find((node) => node.kind === "proposal").status, "rejected");
+
+  const distinct = await groundedState();
+  addQuestion(distinct);
+  addProposal(distinct);
+  const spread = citeReviewPanel(distinct, (view) => ({
+    observation_ids: [view.observations[["adversarial", "charitable", "coherence"].indexOf(view.perspective)].id],
+    stance: "supports",
+  }));
+  assert.equal(spread.at(-1).code, "PANEL_ACCEPT");
+  assert.equal(distinct.nodes.find((node) => node.kind === "proposal").status, "accepted");
+  assert.equal(distinct.nodes.find((node) => node.kind === "question").status, "answered");
+});
+
+test("one contradiction outweighs any amount of support", async () => {
+  const state = await groundedState();
+  addQuestion(state);
+  addProposal(state);
+  const results = citeReviewPanel(state, (view) => ({
+    observation_ids: [view.observations[["adversarial", "charitable", "coherence"].indexOf(view.perspective)].id],
+    stance: view.perspective === "adversarial" ? "contradicts" : "supports",
+  }));
+  assert.equal(results.at(-1).code, "PANEL_REVISE");
+  assert.equal(state.nodes.find((node) => node.kind === "proposal").status, "revision_requested");
+  assert.equal(deriveNeeds(state)[0].kind, "PROPOSE");
+});
+
+test("a cell cannot manufacture the evidence it cites", async () => {
+  const state = await groundedState();
+  addQuestion(state);
+  addProposal(state);
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW_FRAGMENT");
+  const proposalId = state.nodes.find((node) => node.kind === "proposal").id;
+  const base = { target_id: need.target_id, text: "A note." };
+
+  // Citing something that is not a supplied observation — including work the cells
+  // produced themselves — must not pass the gate.
+  for (const ids of [["observation-99"], [proposalId]]) {
+    const decision = applyProposal(state, { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { ...base, observation_ids: ids, stance: "supports" } }, state.next_event_seq);
+    assert.equal(decision.code, "CITATION_UNKNOWN");
+  }
+  const uncited = applyProposal(state, { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: base }, state.next_event_seq);
+  assert.equal(uncited.code, "STANCE_REQUIRED");
+});
+
+test("an embryo without an environment still decides by verdict", async () => {
+  const state = await freshState();
+  addQuestion(state);
+  addProposal(state);
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW_FRAGMENT");
+  const decision = applyProposal(state, {
+    type: "ADD_REVIEW_FRAGMENT",
+    need_id: need.id,
+    payload: { target_id: need.target_id, text: "A note.", observation_ids: ["observation-01"], stance: "supports" },
+  }, state.next_event_seq);
+  assert.equal(decision.code, "CITATION_NOT_ALLOWED");
+  addReviewPanel(state);
+  assert.equal(deriveNeeds(state)[0].kind, "META_REVIEW");
+});
+
+test("the citing reviewer only cites an id the model itself wrote", async () => {
+  const policy = new SmolLmPolicy();
+  const view = {
+    max_text_chars: 1200,
+    need: { id: "need-review", kind: "REVIEW_FRAGMENT", attempts: 0 },
+    perspective: "adversarial",
+    goal: { text: "A goal." },
+    question: { text: "A question?" },
+    target: { id: "proposal-1", kind: "proposal", text: "A proposal." },
+    observations: [{ id: "observation-01", text: "First." }, { id: "observation-02", text: "Second." }],
+    accepted_proposals: [],
+    negative_traces: [],
+  };
+  policy.generate = async () => "observation-02 CONTRADICTS — the proposal ignores this.";
+  const cited = await policy.propose(view);
+  assert.equal(cited.action.type, "ADD_REVIEW_FRAGMENT");
+  assert.deepEqual(cited.action.payload.observation_ids, ["observation-02"]);
+  assert.equal(cited.action.payload.stance, "contradicts");
+
+  // Naming no id from the environment is an abstention, not an adapter-chosen citation.
+  policy.generate = async () => "SUPPORTS — this seems right to me.";
+  assert.equal((await policy.propose(view)).action.type, "ABSTAIN");
+  policy.generate = async () => "observation-01 is interesting.";
+  assert.equal((await policy.propose(view)).action.type, "ABSTAIN");
 });
