@@ -1,6 +1,6 @@
 # Organisation ohne Urteil
 
-**Forschungsbericht zu den Experimenten 001–008**
+**Forschungsbericht zu den Experimenten 001–010**
 
 *Der Titel folgt dem Befund statt der Laufzahl, damit er nicht mit jedem
 weiteren Lauf veraltet.*
@@ -8,8 +8,8 @@ weiteren Lauf veraltet.*
 | | |
 | --- | --- |
 | Datum | 8. September 2026 |
-| Untersucht | `archive/embryo-001` … `archive/embryo-004`, `embryo-state`, [`docs/runs/`](runs) 006–008 |
-| Datenbasis | 323 hash-verkettete Receipts |
+| Untersucht | `archive/embryo-001` … `archive/embryo-004`, `embryo-state`, [`docs/runs/`](runs) 006–010 |
+| Datenbasis | 374 hash-verkettete Receipts |
 | Reparatur | [PR #9](https://github.com/hstre/Embryo/pull/9) |
 | Verfasst von | Claude Opus 5 |
 
@@ -60,8 +60,10 @@ selben Prompt im ersten Versuch ein Verdikt.
 | 006 | `v5-chat`, 135M-Zellen | 12 | 47/64 | 15 | keine |
 | 007 | `v5-chat`, alle Zellen 360M | 5 | 19/64 | 6 | keine |
 | 008 | `v6-scored`, gescortes Verdikt | 7 | 26/64 | 0 | keine |
+| 009 | `v7-cited`, Annahme aus Zitaten | 7 | 25/64 | 18 | keine |
+| 010 | Kontrollarm, Annahme per Verdikt | 7 | 26/64 | 0 | keine |
 
-006 bis 008 liefen auf dem reparierten Substrat und sind unten in eigenen
+006 bis 010 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular (Behauptungen und Einwände
 statt Frage-Vorschlag-Review) und sind nur eingeschränkt vergleichbar. In 003
 bis 005 endeten 75 von 192 Zellen — 39 Prozent — in einem Abstain.
@@ -294,7 +296,7 @@ teilen keine Erinnerung. Der Prompt eines Wiederholungsversuchs benennt deshalb
 den Zustand des Gradienten und nicht eine Vergangenheit, die die Zelle gar nicht
 hat.
 
-## 10. Die Gegenläufe 006 bis 008
+## 10. Die Gegenläufe 006 bis 010
 
 Der Bericht wäre unvollständig ohne die Läufe auf dem reparierten Substrat.
 Beide verwenden dasselbe Ziel, dieselbe Konfiguration und dieselben angehefteten
@@ -420,7 +422,90 @@ Zelle übernahm das Label in ihre Revision, die dann mit `- REVISE: …` anfing.
 Verdikt steht ohnehin strukturiert im Payload und in der Kantenrelation. Der hier
 ausgewertete Lauf ist die Wiederholung ohne diese Kontamination.
 
-## 11. Vier Wände
+## 11. Der kontrollierte Test des Substrat-Urteils
+
+Der in Abschnitt 13 skizzierte dritte Weg ist gebaut und gelaufen. Ein Seed kann
+jetzt `acceptance_mode: "citation"` setzen. Dann ist ein Review keine Meinung,
+sondern eine Referenz: die Zelle nennt eine Haltung und mindestens eine
+Observation, und das Gate prüft, dass die zitierten Knoten tatsächlich
+Observations sind. Beobachtungen kann keine Aktion erzeugen — die zitierende
+Zelle kann ihren Beleg also nicht selbst herstellen. Genau die Lücke von 001.
+
+Die ID wird aus der Rohausgabe des Modells geparst und nur akzeptiert, wenn sie
+dort wörtlich steht. Eine Zelle, die nichts aus der Umgebung nennt, enthält
+sich; kein Adapter setzt etwas ein.
+
+Ein `META_REVIEW`-Bedürfnis entsteht in diesem Modus gar nicht. Die Zelle, die
+008 als urteilsunfähig erwiesen hat, wird nicht verbessert, sondern entfernt.
+`citationVerdict()` leitet das Ergebnis aus dem ab, was das Panel angesammelt
+hat: ein Widerspruch erzwingt Überarbeitung, sonst nehmen zwei *verschiedene*
+stützende Observations an, zu wenig Belege verwerfen. Dass die Belege
+verschieden sein müssen, ist der Kern — keine einzelne Zelle kann einen Vorschlag
+durchbringen, es braucht Konvergenz zwischen unterschiedlich maskierten
+Perspektiven auf verschiedene Teile der Umgebung.
+
+### Aufbau
+
+Zwei Arme, identischer Seed mit sechs gesetzten Prämissen zur Mensch-LLM-
+Gesellschaft, beide Zellen auf der angehefteten 360M-Revision. Unterschied ist
+allein der Annahmemechanismus.
+
+| | 009 · Zitat | 010 · Verdikt (Kontrolle) |
+| --- | ---: | ---: |
+| Energie | 25/64 | 26/64 |
+| Review-Fragmente aufgenommen | **0** | 9 |
+| Enthaltungen der Reviewer | **18** | 0 |
+| Meta-Reviews | entfällt | 3 × `REVISE` |
+| Überarbeitete Vorschläge | 0 | 2 |
+| Akzeptierte Vorschläge | 0 | 0 |
+
+### Was der Vergleich zeigt
+
+Keiner der Arme nimmt etwas an. Aber sie scheitern verschieden, und die
+Differenz ist der Befund.
+
+Die neun Fragmente, die 010 aufgenommen hat, sind derselbe Text wie der
+Vorschlag, den sie besprechen sollen — dieselbe Fortsetzung wie in 007. Das Gate
+lässt sie durch, weil es im Verdikt-Modus nur prüft, ob überhaupt Text da ist.
+Danach läuft die Maschinerie weiter: drei Meta-Reviews, zwei ersetzte
+Vorschläge, Bewegung im Gewebe.
+
+In 009 erzeugen dieselben Zellen denselben Text, und das Zitat-Gate weist ihn
+ab. Kein Fragment kommt zustande, die Vorschläge werden mangels Belegen
+verworfen, der Lauf geht früh in Quieszenz.
+
+> Der Verdikt-Pfad nimmt eine Wiederholung des Vorschlags als dessen Review an.
+> Der Zitat-Pfad lässt sich davon nicht befriedigen.
+
+Das ist eine belegte Eigenschaft des Mechanismus und kein Nullergebnis. Die
+Bewegung, die 010 zeigt, ist Bewegung auf wertlosem Material; ohne die
+Zitatpflicht kann die Pipeline eine Prüfung nicht von einer Wiederholung des
+Geprüften unterscheiden.
+
+Was der Lauf **nicht** zeigt: ob akkumulierte echte Evidenz zu brauchbaren
+Annahmen führt. Dazu hätte es Evidenz gebraucht, und es kam nie welche zustande.
+Die Idee ist damit weder widerlegt noch bestätigt — geprüft ist bislang nur, dass
+sie sich nicht mit Fortsetzungstext erfüllen lässt.
+
+Die Wand ist dieselbe wie in 007: die Zelle wechselt die Aufgabe nicht. Zitieren
+ist dabei leichter als urteilen — eine ID aus einer Liste wiedergeben und ein
+Wort wählen ist Retrieval. Auch das gelingt nicht.
+
+### Zwei Einschränkungen in eigener Sache
+
+Der erste Durchlauf von 010 war kein Kontrollarm. Das Zitierverhalten der Policy
+hing an der Anwesenheit von Observations statt am Annahmemodus, also wurden auch
+im Verdikt-Arm Zitate verlangt, die das Gate zurückgewiesen hätte. Die Local View
+trägt jetzt `acceptance_mode`; der ausgewertete Lauf ist die Wiederholung.
+
+Dieser verworfene Durchlauf trägt aber ein Ergebnis bei, das unabhängig gilt:
+der Meta-Reviewer hat dort dreimal `REVISE` gescort, obwohl **jedes einzelne
+Review-Fragment eine Enthaltung war** — das Panel also vollständig leer blieb.
+In 008 kam er mit vollständigen Panels zu denselben drei `REVISE`. Das gescorte
+Verdikt ist unempfindlich gegen die Evidenz, die es integrieren soll, und
+bestätigt den Kalibrierungsbefund aus Abschnitt 10 von einer zweiten Seite.
+
+## 12. Vier Wände
 
 Die sieben Läufe trennen die Ursachen sauber auf. Jeder Lauf hat eine Schicht
 freigelegt, die der vorherige verdeckt hatte.
@@ -431,6 +516,8 @@ freigelegt, die der vorherige verdeckt hatte.
 | 006 | ✓ | ✗ 135M zu klein | verdeckt | verdeckt |
 | 007 | ✓ | ✓ | ✗ Prompts differenzieren nicht | verdeckt |
 | 008 | ✓ | ✓ | umgangen durch Scoring | ✗ kein Qualitätssignal |
+| 009 | ✓ | ✓ | ✗ zitiert nicht | nie erreicht |
+| 010 | ✓ | ✓ | ✗ Fortsetzung gilt als Review | ✗ unempfindlich gegen das Panel |
 
 Die ersten beiden Wände waren Defekt und Fehlkonfiguration. Die dritte und die
 vierte sind Befunde.
@@ -451,7 +538,7 @@ beabsichtigt — sie sind alle „Text fortsetzen".
 Für die Leitfrage des Projekts heißt das: die Organisation entsteht, die
 Differenzierung nicht. Das ist eine belastbare Teilantwort und kein Nullergebnis.
 
-## 12. Was offen bleibt
+## 13. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -525,8 +612,19 @@ dem Unterschied, dass PARSER sie durch Gewichtsänderung im Lead-Agenten
 
 Damit stehen zwei Wege offen, und sie schließen einander nicht aus: ein größeres
 Modell für die urteilende Rolle, oder die Urteilsfähigkeit aus dem Substrat
-holen statt aus der Zelle. Der zweite wäre die stigmergische Antwort und ist im
-Rahmen der bestehenden Invarianten zu haben.
+holen statt aus der Zelle. Der zweite ist die stigmergische Antwort und im Rahmen
+der bestehenden Invarianten zu haben.
+
+Er ist inzwischen gebaut und in 009 gegen einen Kontrollarm gelaufen; Abschnitt
+11 wertet das aus. Offen bleibt daran das Entscheidende: der Mechanismus hat nie
+Evidenz zu sehen bekommen, weil keine Zelle je eine geliefert hat. Der
+naheliegende nächste Schritt ist derselbe Zug, der beim Verdikt geholfen hat —
+**das Zitat scoren statt generieren**. Nicht das Modell bitten, eine ID zu
+nennen, sondern für jede Observation die Wahrscheinlichkeit berechnen, dass sie
+den Vorschlag stützt, und die höchste nehmen. Das prüft eine neue Frage: 008 hat
+gezeigt, dass die Verteilung kein *Qualitätssignal* trägt — ob sie ein
+*Relevanzsignal* trägt, ist damit nicht entschieden, und genau das ist die
+Fähigkeit, die PARSER kleinen eingefrorenen Modellen zuschreibt.
 
 [parser]: https://arxiv.org/abs/2609.06702
 
@@ -568,7 +666,7 @@ Rahmen der bestehenden Invarianten zu haben.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 13. Nachprüfen
+## 14. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:

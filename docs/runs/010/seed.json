@@ -1,0 +1,47 @@
+{
+  "embryo_id": "human-llm-society-010",
+  "goal": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
+  "observations": [
+    {
+      "id": "observation-01",
+      "text": "Verantwortung und Begründung fallen auseinander. Ein Modell kann eine Begründung liefern, ohne für deren Folgen einstehen zu können; ein Mensch kann einstehen, ohne die Begründung im Detail zu durchdringen.",
+      "source": "Seed: gesetzte Prämisse"
+    },
+    {
+      "id": "observation-02",
+      "text": "Modellinstanzen sind beliebig vervielfältigbar. Eine Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind, weil sie denselben Fehler gemeinsam machen.",
+      "source": "Seed: gesetzte Prämisse"
+    },
+    {
+      "id": "observation-03",
+      "text": "Die Zeitlichkeit ist asymmetrisch. Menschen erinnern sich selektiv und dauerhaft, Modelle vollständig und flüchtig. Was als gemeinsame Vergangenheit gilt, muss deshalb ausgehandelt und nicht vorausgesetzt werden.",
+      "source": "Seed: gesetzte Prämisse"
+    },
+    {
+      "id": "observation-04",
+      "text": "Nachprüfbarkeit ist teilbar, Zustimmung nicht. Eine Behauptung lässt sich gegen eine Quelle prüfen, auch wenn niemand ihr zustimmt; Zustimmung ohne Prüfmöglichkeit trägt keine Information.",
+      "source": "Seed: gesetzte Prämisse"
+    },
+    {
+      "id": "observation-05",
+      "text": "Revidierbarkeit ist eine Bedingung, keine Schwäche. Eine Ordnung, die ihre eigenen Festlegungen nicht zurücknehmen kann, kann aus Fehlern nicht lernen.",
+      "source": "Seed: gesetzte Prämisse"
+    },
+    {
+      "id": "observation-06",
+      "text": "Der Zugang zu Rechenleistung verteilt Sprechzeit ungleich. Wer mehr Instanzen betreiben kann, kann eine Debatte fluten, ohne ein einziges besseres Argument zu haben.",
+      "source": "Seed: gesetzte Prämisse"
+    }
+  ],
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 16,
+    "energy_budget": 64,
+    "max_text_chars": 1200,
+    "local_context_limit": 6,
+    "acceptance_mode": "verdict",
+    "required_support": 2
+  }
+}
