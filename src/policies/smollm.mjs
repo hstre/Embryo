@@ -54,7 +54,10 @@ export class SmolLmPolicy {
     this.metaModel = options.metaModel ?? DEFAULT_META_MODEL;
     this.metaRevision = options.metaRevision ?? DEFAULT_META_REVISION;
     this.metaDtype = options.metaDtype ?? this.dtype;
-    this.name = `${this.model}@${this.revision}:${this.dtype}+meta:${this.metaModel}@${this.metaRevision}:${this.metaDtype}:review-collective-v6-scored`;
+    // "generate" asks the reviewer to write a citation; "score" reads it off the
+    // model's distribution over the observations the environment supplies.
+    this.citationBy = options.citationBy ?? "generate";
+    this.name = `${this.model}@${this.revision}:${this.dtype}+meta:${this.metaModel}@${this.metaRevision}:${this.metaDtype}:review-collective-v7-cite-${this.citationBy}`;
     this.generators = new Map();
   }
 
@@ -95,32 +98,70 @@ export class SmolLmPolicy {
   // REVISE happens to tokenise into three pieces where the others take two —
   // an artefact of the tokeniser, not a property of the judgement. Both figures
   // go into the receipt so the rule can be re-examined from the ledger.
-  async scoreVerdicts(messages, role = "meta") {
+  // Scores each candidate continuation as the summed log-probability of its whole
+  // token sequence under teacher forcing, and reports the length-normalised mean
+  // alongside it. The candidate set is fixed by the caller; the model's own
+  // distribution decides among them, which is what separates this from an adapter
+  // picking an answer and attributing it to the cell.
+  async scoreChoices(messages, choices, role = "cell") {
     const generator = await this.load(role);
     const { Tensor } = await import("@huggingface/transformers");
     const { tokenizer, model } = generator;
     const prompt = tokenizer.apply_chat_template(messages, { tokenize: false, add_generation_prompt: true });
     const promptIds = tokenizer.encode(prompt, { add_special_tokens: false });
     const scored = [];
-    for (const verdict of VERDICTS) {
-      const verdictIds = tokenizer.encode(verdict, { add_special_tokens: false });
-      const ids = [...promptIds, ...verdictIds];
+    for (const choice of choices) {
+      const choiceIds = tokenizer.encode(choice, { add_special_tokens: false });
+      const ids = [...promptIds, ...choiceIds];
       const { logits } = await model({
         input_ids: new Tensor("int64", BigInt64Array.from(ids, BigInt), [1, ids.length]),
         attention_mask: new Tensor("int64", new BigInt64Array(ids.length).fill(1n), [1, ids.length]),
       });
       let sum = 0;
-      for (let k = 0; k < verdictIds.length; k += 1) {
-        sum += tokenLogProb(logits, promptIds.length - 1 + k, verdictIds[k]);
+      for (let k = 0; k < choiceIds.length; k += 1) {
+        sum += tokenLogProb(logits, promptIds.length - 1 + k, choiceIds[k]);
       }
       scored.push({
-        verdict,
+        choice,
         sum: Number(sum.toFixed(4)),
-        mean: Number((sum / verdictIds.length).toFixed(4)),
-        tokens: verdictIds.length,
+        mean: Number((sum / choiceIds.length).toFixed(4)),
+        tokens: choiceIds.length,
       });
     }
     return scored;
+  }
+
+  async scoreVerdicts(messages, role = "meta") {
+    const scored = await this.scoreChoices(messages, VERDICTS, role);
+    return scored.map(({ choice, ...rest }) => ({ verdict: choice, ...rest }));
+  }
+
+  // Two stages, mirroring what a citing review has to settle: which observation
+  // bears on the proposal, and in which direction. UNRELATED is kept as a real
+  // option so a cell can still decline — a ranking always has a maximum, and
+  // without that escape the mechanism could never record "nothing here applies".
+  async scoreCitation(view, context) {
+    const observations = view.observations;
+    const relevance = await this.scoreChoices(
+      [
+        { role: "system", content: `You are the ${view.perspective} reviewer. Decide which observation bears on the proposal.` },
+        { role: "user", content: [...context, "Observations:", ...observations.map((o) => `- ${o.id}: ${o.text}`), "Which observation bears on it? Answer with its id."].join("\n") },
+      ],
+      observations.map((observation) => observation.id),
+      "cell",
+    );
+    const chosen = relevance.reduce((best, candidate) => (candidate.mean > best.mean ? candidate : best));
+    const observation = observations.find((candidate) => candidate.id === chosen.choice);
+    const stance = await this.scoreChoices(
+      [
+        { role: "system", content: `You are the ${view.perspective} reviewer. Judge how the observation relates to the proposal.` },
+        { role: "user", content: [...context, `Observation ${observation.id}: ${observation.text}`, "Does it support or contradict the proposal? Answer SUPPORTS, CONTRADICTS or UNRELATED."].join("\n") },
+      ],
+      ["SUPPORTS", "CONTRADICTS", "UNRELATED"],
+      "cell",
+    );
+    const verdict = stance.reduce((best, candidate) => (candidate.mean > best.mean ? candidate : best));
+    return { observation, relevance, stance, decided: verdict.choice };
   }
 
   // Continues an assistant turn that already begins with the scored verdict, so
@@ -208,6 +249,39 @@ export class SmolLmPolicy {
           ? "Identify the strongest contribution and the one improvement it most needs."
           : "Compare it with accepted work and identify contradiction, repetition, or a missing connection.";
       const citing = view.acceptance_mode === "citation" && Boolean(view.observations?.length);
+
+      if (citing && this.citationBy === "score") {
+        const context = [
+          `Goal: ${view.goal.text}`,
+          ...(view.question ? [`Question: ${view.question.text}`] : []),
+          `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+        ];
+        const scored = await this.scoreCitation(view, context);
+        const trace = {
+          decided_by: "mean_logprob",
+          relevance: scored.relevance,
+          stance: scored.stance,
+          decided: scored.decided,
+        };
+        if (scored.decided === "UNRELATED") {
+          return { action: { type: "ABSTAIN", need_id: need.id, payload: { reason: "no observation bears on this proposal" } }, trace };
+        }
+        const stance = scored.decided === "CONTRADICTS" ? "contradicts" : "supports";
+        return {
+          action: {
+            type: "ADD_REVIEW_FRAGMENT",
+            need_id: need.id,
+            payload: {
+              target_id: view.target.id,
+              text: `${view.perspective}: ${scored.observation.id} ${stance} this proposal.`,
+              observation_ids: [scored.observation.id],
+              stance,
+            },
+          },
+          trace,
+        };
+      }
+
       const text = await ask(
         [
           `You are the ${view.perspective} reviewer in a three-reviewer collective.`,

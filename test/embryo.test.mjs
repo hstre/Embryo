@@ -486,3 +486,43 @@ test("the citing reviewer only cites an id the model itself wrote", async () => 
   policy.generate = async () => "observation-01 is interesting.";
   assert.equal((await policy.propose(view)).action.type, "ABSTAIN");
 });
+
+test("a scored citation ranks the environment and can still decline", async () => {
+  const policy = new SmolLmPolicy({ citationBy: "score" });
+  const view = {
+    max_text_chars: 1200,
+    acceptance_mode: "citation",
+    need: { id: "need-review", kind: "REVIEW_FRAGMENT", attempts: 0 },
+    perspective: "coherence",
+    goal: { text: "A goal." },
+    target: { id: "proposal-1", kind: "proposal", text: "A proposal." },
+    observations: [{ id: "observation-01", text: "First." }, { id: "observation-02", text: "Second." }],
+    accepted_proposals: [],
+    negative_traces: [],
+  };
+  const calls = [];
+  policy.scoreChoices = async (_messages, choices) => {
+    calls.push(choices);
+    if (choices[0] === "observation-01") {
+      return [{ choice: "observation-01", sum: -9, mean: -4.5, tokens: 2 }, { choice: "observation-02", sum: -2, mean: -1, tokens: 2 }];
+    }
+    return [
+      { choice: "SUPPORTS", sum: -9, mean: -3, tokens: 1 },
+      { choice: "CONTRADICTS", sum: -2, mean: -0.7, tokens: 1 },
+      { choice: "UNRELATED", sum: -9, mean: -4, tokens: 1 },
+    ];
+  };
+  const cited = await policy.propose(view);
+  // Stage one ranks the supplied observations, stage two takes a stance on the winner.
+  assert.deepEqual(calls[0], ["observation-01", "observation-02"]);
+  assert.deepEqual(calls[1], ["SUPPORTS", "CONTRADICTS", "UNRELATED"]);
+  assert.deepEqual(cited.action.payload.observation_ids, ["observation-02"]);
+  assert.equal(cited.action.payload.stance, "contradicts");
+  assert.deepEqual(cited.trace.relevance.map((r) => r.choice), ["observation-01", "observation-02"]);
+
+  // A ranking always has a maximum, so declining has to remain reachable.
+  policy.scoreChoices = async (_messages, choices) => choices.map((choice) => ({
+    choice, sum: -1, mean: choice === "UNRELATED" ? -0.1 : -1, tokens: 1,
+  }));
+  assert.equal((await policy.propose(view)).action.type, "ABSTAIN");
+});
