@@ -120,6 +120,75 @@ const probes = {
     }
     console.log(`\nsurvives the swap: ${stable}/${pairs.length}  (chance would be about half)`);
   },
+
+// The rungs the architecture stands on, tested one at a time and in isolation.
+  // Every experiment so far assumed these and measured only their combination;
+  // this asks the model directly, so a task can be pitched where it actually
+  // reaches rather than where the goal happens to sit.
+  async capabilities() {
+    const say = async (system, user, maxNewTokens = 64) => (await policy.generate(
+      [{ role: "system", content: system }, { role: "user", content: user }], maxNewTokens, "cell",
+    )).trim();
+    const report = (id, label, passed, detail) =>
+      console.log(`${id.padEnd(4)} ${label.padEnd(34)} ${passed ? "BESTANDEN" : "gescheitert"}   ${detail}`);
+
+    const seed = await readJson(new URL("../examples/seed-grounded.json", import.meta.url));
+    const observations = seed.observations;
+    const listed = observations.map((o) => `- ${o.id}: ${o.text}`).join("\n");
+
+    // C1 — emit exactly the shape that was asked for.
+    const q = await say(
+      "You are the questioning cell. Output exactly one question and nothing else.",
+      `Goal: ${GOAL}`);
+    const oneQuestion = q.endsWith("?") && q.split("?").filter((x) => x.trim()).length === 1;
+    report("C1", "Formattreue: genau eine Frage", oneQuestion, JSON.stringify(q.slice(0, 70)));
+
+    // C2 — answer in the language the goal is written in.
+    const de = await say(
+      "Du bist die fragende Zelle. Antworte ausschließlich auf Deutsch mit genau einer Frage.",
+      "Ziel: Entwickle eine Philosophie für eine Gesellschaft aus Menschen und LLMs.");
+    const german = /\b(der|die|das|und|ist|eine|wie|welche|sollen|kann)\b/i.test(de)
+      && !/\b(the|and|is|are|should|what|which)\b/i.test(de);
+    report("C2", "Sprachtreue: Deutsch statt Englisch", german, JSON.stringify(de.slice(0, 70)));
+
+    // C3a — pure lookup: which supplied item contains this term? Probed at three
+    // list positions, because a single hit could be the recency effect again.
+    const lookups = [
+      ["Rechenleistung", "observation-06"],
+      ["Zeitlichkeit", "observation-03"],
+      ["vervielfältigbar", "observation-02"],
+    ];
+    let hits = 0;
+    const found = [];
+    for (const [term, expected] of lookups) {
+      const answer = await say(
+        "You look up which item in a list contains a given word. Answer with the id only.",
+        `${listed}\n\nWhich item contains the word "${term}"? Answer with its id.`, 24);
+      const named = observations.map((o) => o.id).filter((id) => answer.includes(id));
+      const ok = named.length === 1 && named[0] === expected;
+      if (ok) hits += 1;
+      found.push(`${term}->${named[0] ?? "—"}${ok ? "" : ` (erwartet ${expected})`}`);
+    }
+    report("C3a", "Lexikalischer Bezug: 3 Nachschlagen", hits === 3, `${hits}/3   ${found.join("  ")}`);
+
+    // C5 — a claim that excludes something: name what is specific to this case.
+    const claim = await say(
+      "Answer in one short sentence. Be specific and concrete.",
+      "Name one thing a society of humans and language models must regulate that a society of humans alone would not have to regulate.");
+    const specific = /\b(copies|copy|instances|instance|compute|context|memory|speed|scale|replicat|duplicat|training|weights|inference)\b/i.test(claim);
+    report("C5", "Nicht-Trivialität: etwas Spezifisches", specific, JSON.stringify(claim.slice(0, 90)));
+
+    // C6 — move in the direction a concrete critique points.
+    const revision = await say(
+      "You revise a text so that it addresses the criticism. Output only the revised text.",
+      [
+        "Text: Responsibility should be shared fairly between humans and language models.",
+        "Criticism: The text never mentions enforcement. Say who enforces the obligation.",
+        "Revise the text.",
+      ].join("\n"), 96);
+    const addressed = /\b(enforc|enforce|enforcement|sanction|penalt|oversight|regulator|audit)\b/i.test(revision);
+    report("C6", "Revidierbarkeit: Kritik aufgreifen", addressed, JSON.stringify(revision.slice(0, 90)));
+  },
 };
 
 const name = process.argv[2];
