@@ -147,9 +147,14 @@ const probes = {
     const de = await say(
       "Du bist die fragende Zelle. Antworte ausschließlich auf Deutsch mit genau einer Frage.",
       "Ziel: Entwickle eine Philosophie für eine Gesellschaft aus Menschen und LLMs.");
-    const german = /\b(der|die|das|und|ist|eine|wie|welche|sollen|kann)\b/i.test(de)
+    // Deliberately narrow: this checks German vocabulary, not German prose. The
+    // observed output uses German words in ungrammatical order and ignores the
+    // format, so a pass here means only that the model switched wordlists.
+    const germanWords = /\b(der|die|das|und|ist|eine|wie|welche|sollen|kann)\b/i.test(de)
       && !/\b(the|and|is|are|should|what|which)\b/i.test(de);
-    report("C2", "Sprachtreue: Deutsch statt Englisch", german, JSON.stringify(de.slice(0, 70)));
+    const askedSomething = de.endsWith("?");
+    report("C2", "Deutsches Vokabular (nicht: Prosa)", germanWords, JSON.stringify(de.slice(0, 70)));
+    report("C2b", "und dabei die Form gewahrt", germanWords && askedSomething, askedSomething ? "endet als Frage" : "keine Frage");
 
     // C3a — pure lookup: which supplied item contains this term? Probed at three
     // list positions, because a single hit could be the recency effect again.
@@ -186,8 +191,15 @@ const probes = {
         "Criticism: The text never mentions enforcement. Say who enforces the obligation.",
         "Revise the text.",
       ].join("\n"), 96);
-    const addressed = /\b(enforc|enforce|enforcement|sanction|penalt|oversight|regulator|audit)\b/i.test(revision);
-    report("C6", "Revidierbarkeit: Kritik aufgreifen", addressed, JSON.stringify(revision.slice(0, 90)));
+    // Naming the missing term is not enough: echoing the criticism back contains it
+    // too. A revision has to carry the original subject forward and must not be
+    // commentary about the text.
+    const namesTerm = /\b(enforc|sanction|penalt|oversight|regulator|audit)\b/i.test(revision);
+    const keepsSubject = /\b(responsibilit|humans?|language models?)\b/i.test(revision);
+    const isCommentary = /\b(the text|this text|the criticism|does not mention|is an important aspect)\b/i.test(revision);
+    report("C6", "Revidierbarkeit: Kritik einarbeiten", namesTerm && keepsSubject && !isCommentary,
+      `${namesTerm ? "begriff+" : "begriff−"} ${keepsSubject ? "thema+" : "thema−"} ${isCommentary ? "KOMMENTAR statt überarbeitung" : "überarbeitung"}`);
+    console.log(`     ${JSON.stringify(revision.slice(0, 110))}`);
   },
 };
 
