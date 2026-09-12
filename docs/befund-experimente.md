@@ -409,6 +409,22 @@ Ein Vorschlag, dessen drei Reviews ihn einhellig loben („I found no weakness",
 soliden Fall *größer* als beim Unsinn. Es gibt kein Qualitätssignal auf dieser
 Skala.
 
+Die naheliegendste Alternativerklärung ist geprüft und widerlegt. `ACCEPT` stand
+in der Anweisung immer an erster Stelle, und Abschnitt 11 zeigt, dass gescorte
+Wahlen anderswo der Position folgen. Also wurde die Reihenfolge der drei Wörter
+im Prompt permutiert:
+
+| Reihenfolge im Prompt | Sieger | `ACCEPT` | `REVISE` | `REJECT` |
+| --- | --- | ---: | ---: | ---: |
+| `ACCEPT, REVISE, REJECT` | REJECT | −3.063 | −1.004 | **−0.698** |
+| `REJECT, REVISE, ACCEPT` | REJECT | −3.125 | −1.591 | **−0.824** |
+| `REVISE, REJECT, ACCEPT` | REJECT | −3.488 | −1.226 | **−0.980** |
+
+`ACCEPT` verbessert sich nicht, wenn es ans Ende rückt, und `REJECT` gewinnt
+auch von der ersten Position aus. Der Prior gegen Annahme ist stabil gegen die
+Optionsreihenfolge und damit kein Artefakt der Prompt-Konstruktion.
+Nachzurechnen mit `node tools/probe.mjs verdict-order`.
+
 Damit löst sich der Kompromiss ungünstig auf, der beim Umbau benannt war: mit
 Scoring misst der Lauf nicht mehr, ob das Kollektiv ein Urteil *artikulieren*
 kann, sondern nur noch, ob es *unterscheidet*. Es unterscheidet nicht.
@@ -560,6 +576,45 @@ Für eine Regel, die semantisches Entailment nicht prüfen kann, ist das mehr al
 zu erwarten war. Was sie nicht kann, ist aus einem Modell ohne Relevanzsignal
 eines herausholen.
 
+### Der komparative Weg, und warum er hier endet
+
+Absolutes Bewerten ist schwerer als Vergleichen — deshalb arbeitet auch RLHF mit
+Paarpräferenzen statt mit Noten. Ein darwinsches Embryo würde deshalb erst
+Varianten sammeln und dann die beste auswählen, statt jeden Vorschlag einzeln zu
+benoten. Selektionsdruck über eine Population ist zudem eine Eigenschaft der
+Umgebung und keine Meinung einer Zelle, passt also besser zu den Invarianten als
+alles bisher Gebaute.
+
+Diesmal wurde vor dem Umbau gemessen. Neun Kandidatenpaare aus echten
+archivierten Vorschlägen und handgeschriebenen Gegenstücken, jedes in beiden
+Reihenfolgen gescort:
+
+```text
+survives the swap: 0/9
+```
+
+Kein einziges Paar überlebt den Tausch, und zwar nicht zufällig: das Modell wählt
+in allen achtzehn Durchläufen **die zweitgenannte Option**, mit Margen bis 1,7
+nats. Aus solchen Präferenzen lässt sich kein Selektionsdruck ableiten.
+Nachzurechnen mit `node tools/probe.mjs pairwise-swap`.
+
+### Was die gescorte Wahl tatsächlich steuert
+
+Aus den Kontrollen zusammen ergibt sich eine genauere Regel als „kein Signal",
+und sie unterscheidet zwei Fälle.
+
+**Tragen die Auswahltoken selbst Bedeutung** — `ACCEPT`, `REVISE`, `REJECT` —,
+dominiert der Prior des Modells über diese Wörter. Er ist stabil gegen die
+Position, aber nicht auf die Eingabe kalibriert: Exzellentes und Unsinn bekommen
+beide `REJECT`.
+
+**Sind sie bloße Zeiger** — `A` und `B`, oder `observation-04` —, gibt es keinen
+semantischen Prior, und die Position übernimmt vollständig.
+
+Beide Male entscheidet nicht der Inhalt. Aber die Ursachen sind verschieden, und
+jede Messung, die die Optionsreihenfolge nicht kontrolliert, misst im zweiten
+Fall ihre eigene Anordnung.
+
 ## 12. Vier Wände
 
 Die sieben Läufe trennen die Ursachen sauber auf. Jeder Lauf hat eine Schicht
@@ -689,12 +744,19 @@ sondern die Zelle.
 
 - Die Kernfrage ist teilbeantwortet: die Organisation entsteht, die
   Differenzierung nicht. Ob sie bei rollentreueren Zellen entsteht, ist offen.
-- **Größer werden** ist nach 011 nicht mehr eine Option unter mehreren, sondern
-  die verbleibende. SmolLM2 gibt es als 1.7B; das bliebe lokal und klein. Zwei
-  Tests stehen bereit: die Kalibrierungsfälle aus Abschnitt 10 — erkennt ein
-  größeres Modell den einhellig gelobten Vorschlag als `ACCEPT`? — und die
-  Positionskontrolle aus Abschnitt 11: folgt seine Wahl dem Inhalt statt der
-  Listenposition? Fällt beides negativ aus, liegt es nicht an der Größe.
+- **Größer werden** ist die verbleibende Option. SmolLM2 gibt es als 1.7B; das
+  bliebe lokal und klein. Drei Tests stehen als `tools/probe.mjs` bereit und
+  laufen in Minuten, bevor irgendetwas umgebaut werden muss: erkennt ein größeres
+  Modell den einhellig gelobten Vorschlag als `ACCEPT`, folgt seine Zitatwahl dem
+  Inhalt statt der Listenposition, und überlebt eine Paarpräferenz den Tausch?
+  Fällt alles drei negativ aus, liegt es nicht an der Größe.
+- **Der komparative Aufbau ist nicht widerlegt, nur seine Implementierung.** Dass
+  Vergleichen leichter ist als absolutes Bewerten, bleibt richtig; auf 360M
+  scheitert schon der Vergleich. Die Tauschprüfung ist damit die
+  Eingangsbedingung für jedes darwinsche Design: ohne stabile Präferenz kein
+  Selektionsdruck, und dann braucht der Rest nicht gebaut zu werden. Wäre sie
+  erfüllt, stünde der Aufbau fest — Varianten über gestörte Prompts statt über
+  Zufall, Turnier mit Tauschprüfung, unentschiedenes Turnier nimmt nichts an.
 - **Die ACCEPT-Schwelle ist ungeklärt.** Denkbar ist, dass `ACCEPT` nicht als
   Urteil verliert, sondern als Token — etwa weil Instruction-Tuning zustimmende
   Einwortantworten selten macht. Ein Gegentest wäre, die drei Label gegen
@@ -736,6 +798,12 @@ git show origin/archive/embryo-004:state/events.jsonl
 
 # Ledger-Integrität und Replay-Stabilität
 npm run validate && npm run replay
+
+# Die zitierten Messungen selbst nachrechnen
+node tools/probe.mjs verdict-calibration
+node tools/probe.mjs verdict-order
+node tools/probe.mjs citation-position
+node tools/probe.mjs pairwise-swap
 
 # Reparaturen mit Regressionstests
 git fetch origin claude/review-needed-whfn3p && npm test
