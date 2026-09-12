@@ -64,7 +64,7 @@ selben Prompt im ersten Versuch ein Verdikt.
 | 010 | Kontrollarm, Annahme per Verdikt | 7 | 26/64 | 0 | keine |
 | 011 | wie 009, Zitat gescort statt generiert | 7 | 25/64 | 0 | keine |
 
-006 bis 010 liefen auf dem reparierten Substrat und sind unten in eigenen
+006 bis 011 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular (Behauptungen und Einwände
 statt Frage-Vorschlag-Review) und sind nur eingeschränkt vergleichbar. In 003
 bis 005 endeten 75 von 192 Zellen — 39 Prozent — in einem Abstain.
@@ -297,7 +297,7 @@ teilen keine Erinnerung. Der Prompt eines Wiederholungsversuchs benennt deshalb
 den Zustand des Gradienten und nicht eine Vergangenheit, die die Zelle gar nicht
 hat.
 
-## 10. Die Gegenläufe 006 bis 010
+## 10. Die Gegenläufe 006 bis 008
 
 Der Bericht wäre unvollständig ohne die Läufe auf dem reparierten Substrat.
 Beide verwenden dasselbe Ziel, dieselbe Konfiguration und dieselben angehefteten
@@ -439,7 +439,7 @@ Zelle übernahm das Label in ihre Revision, die dann mit `- REVISE: …` anfing.
 Verdikt steht ohnehin strukturiert im Payload und in der Kantenrelation. Der hier
 ausgewertete Lauf ist die Wiederholung ohne diese Kontamination.
 
-## 11. Der kontrollierte Test des Substrat-Urteils
+## 11. Das Substrat-Urteil: 009 bis 011
 
 Der in Abschnitt 13 skizzierte dritte Weg ist gebaut und gelaufen. Ein Seed kann
 jetzt `acceptance_mode: "citation"` setzen. Dann ist ein Review keine Meinung,
