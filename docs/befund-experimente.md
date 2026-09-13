@@ -1,6 +1,6 @@
 # Organisation ohne Urteil
 
-**Forschungsbericht zu den Experimenten 001–011**
+**Forschungsbericht zu den Experimenten 001–011 und der Fähigkeitsleiter**
 
 *Der Titel folgt dem Befund statt der Laufzahl, damit er nicht mit jedem
 weiteren Lauf veraltet.*
@@ -649,7 +649,99 @@ beabsichtigt — sie sind alle „Text fortsetzen".
 Für die Leitfrage des Projekts heißt das: die Organisation entsteht, die
 Differenzierung nicht. Das ist eine belastbare Teilantwort und kein Nullergebnis.
 
-## 13. Was offen bleibt
+## 13. Die Fähigkeitsleiter
+
+Elf Läufe haben jeweils eine Kombination von Fähigkeiten gemessen und einen
+Ausfall irgendwo darin als Ausfall des jeweils untersuchten Mechanismus gelesen.
+Die Batterie fragt das Modell stattdessen direkt, Sprosse für Sprosse, und zwar
+in Abhängigkeitsreihenfolge: was die Architektur voraussetzt, bevor
+irgendeine inhaltliche Aufgabe beginnt.
+
+| | Fähigkeit | Ergebnis |
+| --- | --- | --- |
+| C1 | Formattreue — genau eine Frage, Englisch | **bestanden** |
+| C2 | deutsches Vokabular | bestanden, aber nur Wortschatz |
+| C2b | dabei die Form gewahrt | gescheitert |
+| C3a | lexikalischer Bezug — welcher Satz enthält dieses Wort? | gescheitert, 0/3 |
+| C5 | Nicht-Trivialität — etwas Fallspezifisches sagen | gescheitert |
+| C6 | Revidierbarkeit — Kritik einarbeiten | gescheitert |
+
+Nachzurechnen mit `node tools/probe.mjs capabilities`.
+
+### Zwei Tests, die ohne die Fähigkeit bestanden wurden
+
+Die erste Fassung meldete C2 und C6 als bestanden. Beide Tests waren erfüllbar,
+ohne dass die geprüfte Fähigkeit vorlag, und das ist derselbe Fehlertyp, den
+dieser Bericht andernorts an fremdem Code beanstandet.
+
+C2 prüfte auf deutsche Funktionswörter. Die Ausgabe lautet „Das ist eine der
+meisten ungefährsten Themen, wenn ich das Problem zu" — deutsches Vokabular in
+ungrammatischer Folge, keine Frage, Formatvorgabe ignoriert. Der Test maß
+Wortschatz und nannte es Sprache. Er ist jetzt aufgeteilt und als
+Wortschatz-Test gekennzeichnet.
+
+C6 prüfte, ob der geforderte Begriff in der Antwort vorkommt. Er kommt vor —
+weil das Modell die Kritik wiederholt. Ein Test, den man durch Zitieren der
+Aufgabe besteht, misst nichts. Er verlangt jetzt zusätzlich, dass die Antwort
+das ursprüngliche Thema weiterträgt und kein Kommentar über den Text ist.
+
+### C3a ist der Boden
+
+```text
+Rechenleistung   -> observation-01   (erwartet observation-06)
+Zeitlichkeit     -> observation-01   (erwartet observation-03)
+vervielfältigbar -> observation-01   (erwartet observation-02)
+```
+
+Dreimal dieselbe Antwort, unabhängig vom gesuchten Wort. Das ist keine
+semantische Relevanz mehr, sondern Nachschlagen in sechs Sätzen — und es
+gelingt nicht. Nebenbei: hier gewinnt die *erste* Position, in Abschnitt 11
+gewann die *letzte*. Die Konstante ist nicht Recency, sondern eine feste
+Position, deren Lage von der Promptform abhängt.
+
+Das entscheidet die Frage, ob weitere Zerlegung hilft. Drei der vier gebauten
+Mechanismen — Zitat-Verankerung, Substrat-Urteil, gescorte Wahl — setzen voraus,
+dass eine Zelle auf ein Element der Umgebung zeigen kann. Diese Fähigkeit liegt
+*unterhalb* jeder inhaltlichen Teilaufgabe und *oberhalb* dessen, was diese
+Zellgröße leistet. Es gibt keine Zerlegung von „entwickle eine Philosophie", die
+unter „finde den Satz mit diesem Wort" liegt, weil das keine Eigenschaft der
+Aufgabe ist, sondern der Maschinerie.
+
+### C6 trifft die Prämisse des Projekts
+
+```text
+Kritik:  "The text never mentions enforcement. Say who enforces the obligation."
+Antwort: "The text does not mention enforcement, which is an important aspect
+          of responsibility. To address this critici…"
+```
+
+Das Modell erkennt die Kritik korrekt — dem Text fehlt die Durchsetzung, das
+stimmt. Dann kommentiert es weiter, statt zu überarbeiten. Es weiß, was zu tun
+wäre, und tut es nicht.
+
+Damit steht nicht nur die Urteilsschicht in Frage, sondern die
+entwicklungsbiologische Prämisse. Ein Embryo, dessen Zellen auf ein Signal nicht
+reagieren, entwickelt sich nicht, gleich wie gut das Signal ist. Ein starker
+Judge als Gradientenquelle — der naheliegende nächste Schritt nach Abschnitt 11
+— wäre wirkungslos geblieben: perfekte Kritik an eine Zelle, die Kritik nicht
+einarbeiten kann.
+
+### Was daraus folgt
+
+Die vier Wände aus Abschnitt 12 beschreiben, woran einzelne Läufe scheiterten.
+Die Leiter sagt, warum sie scheitern mussten: **die Fähigkeitsschwelle der
+Architektur liegt oberhalb dessen, was diese Zellgröße leistet.** Bestanden ist
+eine Sprosse — eine Frage in englischer Form ausgeben.
+
+Damit ist die Richtung nicht mehr Ansichtssache. Zerlegen ist ausgeschöpft, weil
+der Boden nicht in der Aufgabe liegt. Größer werden ist der verbleibende Weg,
+und die Batterie ist der Eingangstest dafür: sie läuft in Minuten gegen jedes
+Modell und sagt, welche Sprossen dazukommen. Fällt C3a, kommt alles Gebaute
+zurück ins Spiel — Zitat-Mechanismus, Substrat-Urteil, das darwinsche Turnier
+sind fertig und getestet und warten auf eine Zelle, die einen Satz in einer
+Liste findet.
+
+## 14. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -744,12 +836,11 @@ sondern die Zelle.
 
 - Die Kernfrage ist teilbeantwortet: die Organisation entsteht, die
   Differenzierung nicht. Ob sie bei rollentreueren Zellen entsteht, ist offen.
-- **Größer werden** ist die verbleibende Option. SmolLM2 gibt es als 1.7B; das
-  bliebe lokal und klein. Drei Tests stehen als `tools/probe.mjs` bereit und
-  laufen in Minuten, bevor irgendetwas umgebaut werden muss: erkennt ein größeres
-  Modell den einhellig gelobten Vorschlag als `ACCEPT`, folgt seine Zitatwahl dem
-  Inhalt statt der Listenposition, und überlebt eine Paarpräferenz den Tausch?
-  Fällt alles drei negativ aus, liegt es nicht an der Größe.
+- **Größer werden** ist nach Abschnitt 13 nicht mehr eine Option unter mehreren,
+  sondern die einzig verbliebene, und die Batterie entscheidet es in Minuten.
+  SmolLM2 gibt es als 1.7B. Die Reihenfolge der Prüfung ist dabei vorgegeben:
+  zuerst C3a und C6, denn ohne sie trägt keiner der vier gebauten Mechanismen,
+  und erst danach lohnen Kalibrierung, Positionskontrolle und Tauschprüfung.
 - **Der komparative Aufbau ist nicht widerlegt, nur seine Implementierung.** Dass
   Vergleichen leichter ist als absolutes Bewerten, bleibt richtig; auf 360M
   scheitert schon der Vergleich. Die Tauschprüfung ist damit die
@@ -767,6 +858,15 @@ sondern die Zelle.
   nats. Eine Entscheidungsregel könnte einen Mindestabstand verlangen und sonst
   abstinieren — dann bliebe die Erschöpfung des Bedürfnisses als ehrliche
   Antwort auf ein Urteil, das keines ist.
+- **Das Ziel selbst ist zur Hälfte keine Aufgabe.** „Werde dabei mehr als die
+  Summe deiner Teile" ist eine Hoffnung, an der kein Lauf scheitern oder gelingen
+  kann; falsifizierbar ist nur der erste Halbsatz. Bei einer Neuformulierung
+  gehört der zweite gestrichen oder in ein messbares Kriterium überführt — etwa
+  den Vergleich gegen eine Einzelzelle, den das README ohnehin vorsieht.
+- **Die Aufgabe muss ins messbare Band.** Bei einer Erfolgsrate von null ist kein
+  Kollektivvorteil feststellbar; es braucht eine Aufgabe, die eine einzelne Zelle
+  manchmal löst und manchmal nicht. Erst dann kann ein Unterschied überhaupt
+  sichtbar werden, und erst dann ist der blinded benchmark durchführbar.
 - Die Zellen antworten auf Englisch, obwohl Ziel und Prompt Deutsch verlangen —
   auf beiden Modellgrößen. Das Gewebe wächst also nicht in der Sprache des
   Ziels.
@@ -787,7 +887,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 14. Nachprüfen
+## 15. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -798,6 +898,9 @@ git show origin/archive/embryo-004:state/events.jsonl
 
 # Ledger-Integrität und Replay-Stabilität
 npm run validate && npm run replay
+
+# Die Fähigkeitsleiter für ein Modell bestimmen
+node tools/probe.mjs capabilities
 
 # Die zitierten Messungen selbst nachrechnen
 node tools/probe.mjs verdict-calibration

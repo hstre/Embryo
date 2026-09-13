@@ -194,7 +194,7 @@ const probes = {
     // Naming the missing term is not enough: echoing the criticism back contains it
     // too. A revision has to carry the original subject forward and must not be
     // commentary about the text.
-    const namesTerm = /\b(enforc|sanction|penalt|oversight|regulator|audit)\b/i.test(revision);
+    const namesTerm = /\b(enforc\w*|sanction\w*|penalt\w*|oversight|regulator\w*|audit\w*)\b/i.test(revision);
     const keepsSubject = /\b(responsibilit|humans?|language models?)\b/i.test(revision);
     const isCommentary = /\b(the text|this text|the criticism|does not mention|is an important aspect)\b/i.test(revision);
     report("C6", "Revidierbarkeit: Kritik einarbeiten", namesTerm && keepsSubject && !isCommentary,
