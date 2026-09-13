@@ -9,8 +9,11 @@
 import { SmolLmPolicy } from "../src/policies/smollm.mjs";
 import { readJson } from "../src/state.mjs";
 
-const MODEL = "HuggingFaceTB/SmolLM2-360M-Instruct";
-const REVISION = "a10cc1512eabd3dde888204e902eca88bddb4951";
+// Defaults to the revision the experiments ran on. Override to profile another
+// model — the ladder is the same instrument for any of them.
+//   MODEL=HuggingFaceTB/SmolLM2-1.7B-Instruct REVISION=31b70e2e… node tools/probe.mjs capabilities
+const MODEL = process.env.MODEL ?? "HuggingFaceTB/SmolLM2-360M-Instruct";
+const REVISION = process.env.REVISION ?? "a10cc1512eabd3dde888204e902eca88bddb4951";
 const policy = new SmolLmPolicy({ model: MODEL, revision: REVISION, citationBy: "score" });
 policy.metaModel = MODEL;
 policy.metaRevision = REVISION;
