@@ -29,7 +29,7 @@ The analogy is operational, not a claim that software is literally biological.
 
 1. **Work, not messages, recruits cells.** A question creates a `PROPOSE` need; a proposal creates three `REVIEW_FRAGMENT` needs; their traces create a `META_REVIEW` need.
 2. **Proposal is not consequence.** LLM output is never authoritative. The gate validates a closed action vocabulary and all referenced objects.
-3. **Evidence must exist in the environment.** A cell cannot create an observation and cite it as evidence in the same action.
+3. **Cells cannot invent their environment.** The closed action vocabulary has no way to create an observation. Observations enter only through the seed.
 4. **Every attempt leaves a receipt.** Receipts are append-only, hash-linked, attributable and replay-checked.
 5. **Growth is bounded.** Energy, attempts per need, cells per generation and total generations all have hard caps.
 6. **No shared transcript.** A cell receives only a deterministic local view.
@@ -107,10 +107,41 @@ The `GITHUB_TOKEN` has only `contents: write` and `actions: write`. Generated mo
 - It does not train or alter model weights.
 - It does not establish consciousness or subjecthood.
 - It does not yet establish a collective-intelligence advantage.
-- Schema-valid evidence references are not the same as semantic entailment.
+- A schema-valid proposal is not a sound one. The gate checks structure and provenance, never meaning.
 
 Version 0.1 establishes the experimental substrate. The next research stage is a blinded benchmark against a single cell, best-of-N independent cells, fixed-role communicating agents and the growing stigmergic condition.
 
-## Experiment 005
+## Experiments 005 to 010
 
-The fifth embryo repeats Experiment 004 with one controlled change. It begins with the same open goal, configuration, prompts and empty observation set. Questioner, proposer, adversarial reviewer, charitable reviewer, coherence reviewer and synthesizer still use the pinned 135M model. Only the meta-reviewer, which must integrate the three review traces and emit `ACCEPT`, `REVISE` or `REJECT`, uses the pinned 360M model. This tests whether a slightly larger integrator is enough to turn the reviewer collective into actionable collective judgment.
+Experiment 005 repeated Experiment 004 with one controlled change: every cell stayed on the pinned 135M model except the meta-reviewer, which integrates the three review traces and must emit `ACCEPT`, `REVISE` or `REJECT`. That one used the pinned 360M model.
+
+It ran to quiescence on `embryo-state` and produced **no accepted proposal at all**: 64 of 64 energy units, 16 generations, 8 abandoned questions, 7 rejected proposals, goal still open. The meta-reviewer abstained in 21 of 21 attempts. The isolation of the variable was clean — the 43 non-meta receipts are byte-identical to those of Experiment 004 — but the aggregate decision counts of 004 and 005 are identical too, so the larger integrator changed the text and nothing else.
+
+What did hold is the stigmergic machinery itself. Across all 64 cells the recruitment chain resolves exactly: 9 questions, 9 `PROPOSE` needs, 23 `REVIEW_FRAGMENT` needs — seven complete three-perspective panels plus two for an eighth, unfinished proposal — and exactly seven `META_REVIEW` gradients, one per completed panel. No cell requested any of them. Invariant 1 is demonstrated; only the judgment layer failed.
+
+The cause of that failure was a defect, not a result. `SmolLmPolicy` handed the text-generation pipeline a plain string, and the pipeline only applies a model's chat template when it receives a message array. Both arms therefore ran instruction-tuned models in raw completion mode, which is why the receipts contain prompt continuations rather than reviews. Under the same prompt, the 360M meta-reviewer opens with a verdict once the chat template is applied and produced none without it.
+
+Experiments 003 to 005 are affected by this and do not answer the question they were set up to ask. Their tissue is preserved on the `archive/embryo-00N` branches.
+
+Five counter-runs on the repaired substrate, kept under [`docs/runs/`](docs/runs), separate the causes further. All end with no accepted proposal, each for a different reason:
+
+- **006** — repaired interface, cells still on 135M. The models now follow instructions rather than continuing the prompt, but 135M produces assistant filler instead of a question or a proposal, and the substrate carries that faithfully downstream. An isolated measurement places the threshold between 135M and 360M, at the questioner and proposer rather than at the meta-reviewer.
+- **007** — every cell on 360M. The content layer works: a real question, a real proposal. Everything downstream then collapses. The three reviewer perspectives emit byte-identical text in both panels, and the meta-reviewer continues the theme instead of judging it.
+
+- **008** — as 007, but the verdict is read off the model's own distribution instead of being written and parsed back out. Each of `ACCEPT`, `REVISE` and `REJECT` is scored as the log-probability of its whole token sequence. The meta-reviewer then decides in three cases out of three, and the tissue runs three full revision rounds — the developmental cycle the README describes, working for the first time. But `ACCEPT` sits 2.3 to 2.5 nats behind the winner in every judgement, and a calibration against hand-written cases shows why: a proposal its three reviews unanimously praise still scores `REJECT`. The distribution carries no quality signal.
+
+- **009 and 010** — a controlled pair testing whether acceptance can come from the substrate instead of a cell. A seed may now set `acceptance_mode: "citation"`, and a review then has to name a stance and at least one observation the environment supplies; the gate checks the cited nodes really are observations, which no action can create, and derives the outcome from what the panel accumulated — no meta-reviewer exists in that mode at all. Both arms use the same seed, the same six supplied premises and the same model, and differ only in how acceptance is decided. Neither accepts anything, but they fail differently: the nine review fragments the verdict arm recorded are the same text as the proposal they review, which the gate lets through because it only checks that text exists, while the citing arm refuses exactly that and halts for lack of evidence. The motion the control arm shows is motion on worthless material.
+
+The last three are results rather than defects. The structural differentiation holds — `deriveNeeds()` recruits the right role, the local view masks per perspective, the gate enforces the closed vocabulary — but the behavioural differentiation does not follow, because the phenotypes are defined by prompt alone. At this model scale the cells are more homogeneous than intended: all of them are "continue the text". Taking the decision out of generation gets past that — the model does decide once its own distribution is read directly — but the wall behind it is the judgement itself. Requiring a citation does not get past it either: naming an id from a list is retrieval rather than judgement, and the cell fails that too. The organization forms; the differentiation does not.
+
+What the citation mechanism does establish is narrower and still worth having: it cannot be satisfied by a repetition of the thing under review, and the verdict path can.
+
+One direction the report leaves open is worth naming here, because it follows from the invariants rather than working against them. Every run since 003 asks a single cell for a single act of judgement. The alternative is to put the judgement where every other state transition in this project already comes from — the substrate: a deterministic rule reading what has accumulated across rounds, the way `deriveNeeds()` already derives needs from the tissue rather than asking for them.
+
+Experiment 001 is the only run in which anything ever survived review, and its vocabulary did carry evidence: `SUPPORT` took an `observation_ids` field. The id was not the model's, though. The adapter read only the leading character of the output — `1` supports, `0` objects — and filled the citation in itself: the model named `observation-04` while the receipt cites `observation-01`, under a hardcoded rationale string. One claim of eleven held, on a single binary token.
+
+So nothing in this project has ever been verified against its environment. 001 had the vocabulary but the citation was the adapter's; the rewrite into question-proposal-review dropped the vocabulary, and the seed's observation set has been empty since 005. Invariant 3 asks for evidence in the environment and has never been operational — which is the case for building the mechanism, not against it.
+
+Eleven runs later a capability battery (`node tools/probe.mjs capabilities`) asks the model directly for each ability the architecture rests on, instead of inferring them from a run that combines all of them. On the pinned 360M model exactly one rung passes — emitting a single question in English. It cannot find which of six supplied sentences contains a given word, and given a concrete criticism it restates the criticism instead of revising the text. Three of the four mechanisms built here need the first of those, and the revision loop needs the second, so the threshold the architecture stands on sits above what this cell size delivers. Decomposing the goal further cannot help, because that floor belongs to the machinery rather than to the task.
+
+The full forensic report on all eleven runs, with the ledger evidence, the calibration figures and the capability ladder, is in [`docs/befund-experimente.md`](docs/befund-experimente.md) (German).

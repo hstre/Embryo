@@ -1,0 +1,505 @@
+{
+  "schema_version": 3,
+  "embryo_id": "human-llm-society-008",
+  "generation": 7,
+  "energy_spent": 26,
+  "next_node_seq": 18,
+  "next_event_seq": 27,
+  "ledger_head": "e6458ef5b19044a0c6e94aad75e6f55fddaf91f4ef37921361ce78f253280cde",
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 16,
+    "energy_budget": 64,
+    "max_text_chars": 1200,
+    "local_context_limit": 6
+  },
+  "nodes": [
+    {
+      "id": "goal-0001",
+      "kind": "goal",
+      "status": "open",
+      "text": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
+      "source": "seed",
+      "created_event": 0
+    },
+    {
+      "id": "question-0001",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "What is the first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence?",
+      "source": "questioner-cell",
+      "created_event": 1
+    },
+    {
+      "id": "proposal-0002",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and respect for others. By doing so, we can begin to build a foundation for",
+      "source": "proposer-cell",
+      "created_event": 2
+    },
+    {
+      "id": "review-fragment-0003",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 3
+    },
+    {
+      "id": "review-fragment-0004",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 4
+    },
+    {
+      "id": "review-fragment-0005",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 5
+    },
+    {
+      "id": "meta-review-0006",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and respect for others.",
+      "source": "meta-reviewer-cell",
+      "created_event": 6
+    },
+    {
+      "id": "proposal-0007",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "- Recognizing and acknowledging the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms, is the first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and respect for others.",
+      "source": "proposer-cell",
+      "created_event": 7
+    },
+    {
+      "id": "review-fragment-0008",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- A philosophy that promotes equal respect among individuals and artificial intelligence must be founded on the recognition and acknowledgment of the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This begins with understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 8
+    },
+    {
+      "id": "review-fragment-0009",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is recognizing and acknowledging the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and respect",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 9
+    },
+    {
+      "id": "review-fragment-0010",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- A philosophy that promotes equal respect among individuals and artificial intelligence must be founded on the recognition and acknowledgment of the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This begins with understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 10
+    },
+    {
+      "id": "meta-review-0011",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence must be based on the recognition and acknowledgment of the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This begins with understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and respect.",
+      "source": "meta-reviewer-cell",
+      "created_event": 11
+    },
+    {
+      "id": "proposal-0012",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "- A philosophy that promotes equal respect among individuals and artificial intelligence must start with the recognition and acknowledgment of the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This begins with understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality and respect for others.",
+      "source": "proposer-cell",
+      "created_event": 12
+    },
+    {
+      "id": "review-fragment-0013",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 13
+    },
+    {
+      "id": "review-fragment-0014",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence must start with the recognition and acknowledgment of the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This begins with understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 14
+    },
+    {
+      "id": "review-fragment-0015",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "- Recognizing and acknowledging the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms, is the first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence. This involves understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 15
+    },
+    {
+      "id": "meta-review-0016",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence must start with the recognition and acknowledgment of the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This begins with understanding the fundamental principles of human rights, such as autonomy, non-maleficence, beneficence, and justice, which underlie the pursuit of equality.",
+      "source": "meta-reviewer-cell",
+      "created_event": 16
+    },
+    {
+      "id": "question-0017",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "- A philosophy that promotes equal respect among individuals and artificial intelligence must start with the recognition and acknowledgment of the inherent value and dignity of all beings, including those who have been created by humans or developed through machine learning algorithms. This begins with understanding the fundamental principles of human rights, such as autonomy, non-malefic",
+      "source": "questioner-cell",
+      "created_event": 20
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "question-0001",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 1
+    },
+    {
+      "id": "edge-0002",
+      "from": "proposal-0002",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 2
+    },
+    {
+      "id": "edge-0003",
+      "from": "review-fragment-0003",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0004",
+      "from": "review-fragment-0004",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0005",
+      "from": "review-fragment-0005",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0006",
+      "from": "meta-review-0006",
+      "to": "proposal-0002",
+      "relation": "revises",
+      "created_event": 6
+    },
+    {
+      "id": "edge-0007",
+      "from": "proposal-0007",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 7
+    },
+    {
+      "id": "edge-0008",
+      "from": "proposal-0007",
+      "to": "proposal-0002",
+      "relation": "supersedes",
+      "created_event": 7
+    },
+    {
+      "id": "edge-0009",
+      "from": "review-fragment-0008",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0010",
+      "from": "review-fragment-0009",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0011",
+      "from": "review-fragment-0010",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0012",
+      "from": "meta-review-0011",
+      "to": "proposal-0007",
+      "relation": "revises",
+      "created_event": 11
+    },
+    {
+      "id": "edge-0013",
+      "from": "proposal-0012",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0014",
+      "from": "proposal-0012",
+      "to": "proposal-0007",
+      "relation": "supersedes",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0015",
+      "from": "review-fragment-0013",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0016",
+      "from": "review-fragment-0014",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0017",
+      "from": "review-fragment-0015",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0018",
+      "from": "meta-review-0016",
+      "to": "proposal-0012",
+      "relation": "revises",
+      "created_event": 16
+    },
+    {
+      "id": "edge-0019",
+      "from": "question-0017",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 20
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-question-d021588ad209",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-98029a2ec0e9",
+      "kind": "PROPOSE",
+      "target_id": "question-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-8aec7279c60d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-87f0c0d554ac",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-2dd5c29635bd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-fb9cccc39d28",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-40154d8dd596",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 30,
+      "stage": 2
+    },
+    {
+      "id": "need-review_fragment-83b921e9c23f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-1234d071fe86",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-df8bad648dbd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-c73d2056d69b",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-60de74e54930",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 30,
+      "stage": 7
+    },
+    {
+      "id": "need-review_fragment-a0ac82a9603a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-78a537459e3a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-d03730559ece",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-c41ff9cc4fbc",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-8720570b1612",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0012",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 3,
+      "priority": 30,
+      "stage": 12
+    },
+    {
+      "id": "need-question-320ac35a20fd",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-e02662361fd7",
+      "kind": "PROPOSE",
+      "target_id": "question-0017",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 4,
+      "priority": 30
+    },
+    {
+      "id": "need-question-23ea66727647",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 5,
+      "priority": 10,
+      "stage": 0
+    }
+  ]
+}

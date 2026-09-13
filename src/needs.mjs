@@ -1,4 +1,5 @@
 import { digest } from "./canonical.mjs";
+import { acceptanceMode, requiredSupport } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 const PRIORITY = Object.freeze({ REVIEW_FRAGMENT: 40, META_REVIEW: 35, PROPOSE: 30, SYNTHESIZE: 20, QUESTION: 10 });
@@ -24,7 +25,7 @@ function panelNeeds(state, targetId) {
   return state.needs.filter((need) => need.kind === "REVIEW_FRAGMENT" && need.target_id === targetId);
 }
 
-function panelComplete(state, targetId) {
+export function panelComplete(state, targetId) {
   const panel = panelNeeds(state, targetId);
   return panel.length === PERSPECTIVES.length && panel.every((need) => need.status !== "open");
 }
@@ -72,8 +73,13 @@ function ensureNeed(state, kind, targetId, discriminator = "0") {
 
 function ensureFreshNeed(state, kind, targetId, stage) {
   if (state.needs.some((need) => need.kind === kind && need.status === "open")) return;
-  const previous = state.needs.filter((need) => need.kind === kind && need.target_id === targetId).length;
-  const need = ensureNeed(state, kind, targetId, `${stage}:${previous}`);
+  // Only a need that produced work advances the discriminator. An exhausted need
+  // therefore keeps its id and stays exhausted, so repeated invalid output inhibits
+  // this gradient instead of minting an identical need under a fresh hash forever.
+  const completed = state.needs.filter(
+    (need) => need.kind === kind && need.target_id === targetId && need.status === "resolved",
+  ).length;
+  const need = ensureNeed(state, kind, targetId, `${stage}:${completed}`);
   need.stage = stage;
 }
 
@@ -82,6 +88,48 @@ function ensureReviewPanel(state, targetId) {
     const need = ensureNeed(state, "REVIEW_FRAGMENT", targetId, String(stage));
     need.stage = stage;
   }
+}
+
+function citedObservations(state, fragmentId) {
+  return state.edges.filter((edge) => edge.from === fragmentId && edge.relation === "cites").map((edge) => edge.to);
+}
+
+// The verdict nobody casts. Once a review panel is complete, the gate reads what
+// the panel accumulated — which observations were cited in support, and whether
+// any reviewer found a contradiction — and derives the outcome from that. No cell
+// is asked for an opinion, and the decision is a property of the traces, not of
+// whichever cell happened to run last.
+export function citationVerdict(state, target) {
+  const fragments = reviewFragments(state, target.id);
+  if (fragments.some((fragment) => fragment.stance === "contradicts")) return "REVISE";
+  const supporting = new Set();
+  for (const fragment of fragments) {
+    if (fragment.stance !== "supports") continue;
+    for (const id of citedObservations(state, fragment.id)) supporting.add(id);
+  }
+  return supporting.size >= requiredSupport(state) ? "ACCEPT" : "REJECT";
+}
+
+// Applies that derived verdict, mirroring the transitions a META_REVIEW would make.
+export function resolveByCitations(state, target) {
+  if (acceptanceMode(state) !== "citation") return null;
+  if (!["proposal", "synthesis"].includes(target.kind) || target.status !== "unreviewed") return null;
+  if (!panelComplete(state, target.id)) return null;
+  const verdict = citationVerdict(state, target);
+  const mutations = [`node:${target.id}`];
+  target.status = verdict === "ACCEPT" ? "accepted" : verdict === "REVISE" ? "revision_requested" : "rejected";
+  if (target.kind === "proposal") {
+    const question = linkedQuestion(state, target.id);
+    if (question) {
+      question.status = verdict === "ACCEPT" ? "answered" : verdict === "REJECT" ? "abandoned" : "under_review";
+      mutations.push(`node:${question.id}`);
+    }
+  } else if (verdict === "ACCEPT") {
+    const goal = state.nodes.find((node) => node.kind === "goal");
+    goal.status = "accepted";
+    mutations.push(`node:${goal.id}`);
+  }
+  return { verdict, mutations };
 }
 
 export function registerAttemptFailure(state, need) {
@@ -104,6 +152,11 @@ export function registerAttemptFailure(state, need) {
         mutations.push(`node:${question.id}`);
       }
     }
+  }
+
+  if (need.kind === "REVIEW_FRAGMENT" && target) {
+    const resolved = resolveByCitations(state, target);
+    if (resolved) mutations.push(...resolved.mutations);
   }
 
   if (need.kind === "META_REVIEW" && target?.status === "unreviewed") {
@@ -133,7 +186,7 @@ export function deriveNeeds(state) {
   for (const node of state.nodes) {
     if (["proposal", "synthesis"].includes(node.kind) && node.status === "unreviewed") {
       ensureReviewPanel(state, node.id);
-      if (panelComplete(state, node.id)) ensureNeed(state, "META_REVIEW", node.id);
+      if (panelComplete(state, node.id) && acceptanceMode(state) === "verdict") ensureNeed(state, "META_REVIEW", node.id);
     }
     if (node.kind === "proposal" && node.status === "revision_requested") ensureFreshNeed(state, "PROPOSE", node.id, node.created_event);
     if (node.kind === "synthesis" && node.status === "revision_requested") ensureFreshNeed(state, "SYNTHESIZE", node.id, node.created_event);

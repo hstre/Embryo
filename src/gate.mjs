@@ -1,5 +1,5 @@
-import { validateActionShape } from "./schema.mjs";
-import { registerAttemptFailure, reviewPerspective } from "./needs.mjs";
+import { acceptanceMode, validateActionShape } from "./schema.mjs";
+import { registerAttemptFailure, resolveByCitations, reviewPerspective } from "./needs.mjs";
 import { nextNodeId, nodeById } from "./state.mjs";
 
 const ALLOWED = Object.freeze({
@@ -95,6 +95,26 @@ export function applyProposal(state, proposal, eventSeq) {
     if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "review fragment text required");
     const perspective = reviewPerspective(need.stage);
     if (!perspective) return reject("PERSPECTIVE_MISSING", "review need has no valid perspective");
+
+    // Under the citation mechanism a review is not an opinion but a reference: the
+    // cell must name a stance and at least one observation that already exists in
+    // the environment. The gate checks that the cited nodes are observations, which
+    // no cell can create, so the reference cannot be manufactured by the citing cell.
+    const citing = acceptanceMode(state) === "citation";
+    let cited = [];
+    if (citing) {
+      if (!payload.stance) return reject("STANCE_REQUIRED", "review fragment must take a stance");
+      if (!Array.isArray(payload.observation_ids) || payload.observation_ids.length === 0) {
+        return reject("CITATION_REQUIRED", "review fragment must cite at least one observation");
+      }
+      cited = payload.observation_ids.map((observationId) => nodeById(state, observationId));
+      if (cited.some((node) => node?.kind !== "observation")) {
+        return reject("CITATION_UNKNOWN", "review fragment cites something that is not a supplied observation");
+      }
+    } else if (payload.stance || payload.observation_ids) {
+      return reject("CITATION_NOT_ALLOWED", "this embryo decides by verdict, not by citation");
+    }
+
     const id = nextNodeId(state, "review-fragment");
     state.nodes.push({
       id,
@@ -103,11 +123,18 @@ export function applyProposal(state, proposal, eventSeq) {
       text: payload.text.trim(),
       source: "reviewer-cell",
       perspective,
+      ...(citing ? { stance: payload.stance } : {}),
       created_event: eventSeq,
     });
     const edgeId = addEdge(state, id, target.id, "reviews", eventSeq);
     need.status = "resolved";
-    return { accepted: true, code: "REVIEW_FRAGMENT_ADDED", message: id, mutations: [`node:${id}`, `edge:${edgeId}`, `need:${need.id}`] };
+    const mutations = [`node:${id}`, `edge:${edgeId}`, `need:${need.id}`];
+    for (const observation of cited) mutations.push(`edge:${addEdge(state, id, observation.id, "cites", eventSeq)}`);
+
+    const resolved = resolveByCitations(state, target);
+    if (!resolved) return { accepted: true, code: "REVIEW_FRAGMENT_ADDED", message: id, mutations };
+    mutations.push(...resolved.mutations);
+    return { accepted: true, code: `PANEL_${resolved.verdict}`, message: target.id, mutations };
   }
 
   if (proposal.type === "META_REVIEW") {
@@ -144,7 +171,7 @@ export function applyProposal(state, proposal, eventSeq) {
     if (sourceProposals.some((node) => node?.kind !== "proposal" || node.status !== "accepted")) {
       return reject("UNACCEPTED_PROPOSAL", "synthesis may use accepted proposals only");
     }
-    if (duplicates(state, ["synthesis"], payload.text)) return reject("DUPLICATE_SYNTHESIS", "synthesis already exists, including rejected paths");
+    if (duplicates(state, ["proposal", "synthesis"], payload.text)) return reject("DUPLICATE_SYNTHESIS", "synthesis already exists, including rejected paths");
     if (target.kind === "synthesis" && target.status === "revision_requested") target.status = "superseded";
     else if (target.kind !== "goal" || target.status !== "open") return reject("TARGET_MISMATCH", "synthesis must address the goal or revise a synthesis");
     const id = nextNodeId(state, "synthesis");

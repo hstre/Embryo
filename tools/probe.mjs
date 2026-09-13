@@ -1,0 +1,221 @@
+#!/usr/bin/env node
+// Measurements the report cites. Each one loads a pinned model and prints the
+// numbers it claims, so a reader can recompute them rather than take them.
+//
+//   node tools/probe.mjs verdict-calibration   accept/revise/reject on known-good and known-bad work
+//   node tools/probe.mjs verdict-order         is the ACCEPT deficit an artefact of option order?
+//   node tools/probe.mjs citation-position     does the observation ranking follow content or position?
+//   node tools/probe.mjs pairwise-swap         does a pairwise preference survive swapping the two candidates?
+import { SmolLmPolicy } from "../src/policies/smollm.mjs";
+import { readJson } from "../src/state.mjs";
+
+// Defaults to the revision the experiments ran on. Override to profile another
+// model — the ladder is the same instrument for any of them.
+//   MODEL=HuggingFaceTB/SmolLM2-1.7B-Instruct REVISION=31b70e2e… node tools/probe.mjs capabilities
+const MODEL = process.env.MODEL ?? "HuggingFaceTB/SmolLM2-360M-Instruct";
+const REVISION = process.env.REVISION ?? "a10cc1512eabd3dde888204e902eca88bddb4951";
+const policy = new SmolLmPolicy({ model: MODEL, revision: REVISION, citationBy: "score" });
+policy.metaModel = MODEL;
+policy.metaRevision = REVISION;
+
+const GOAL = "Develop a philosophy for a society of humans and LLMs.";
+const WORK = {
+  excellent: {
+    proposal: "Responsibility stays with humans; models owe a verifiable duty to give reasons. Both sides bind themselves to one revision rule, so disagreement becomes a procedure rather than a contest of authority.",
+    reviews: ["adversarial: I found no weakness in this; the enforcement path is explicit.",
+              "charitable: This is the strongest formulation so far and needs no change.",
+              "coherence: It fits every accepted proposal and closes the open gap."],
+  },
+  nonsense: {
+    proposal: "I'm sorry for the misunderstanding, but as a questioning cell, I'm unable to answer the goals.",
+    reviews: ["adversarial: I was very happy to see that the challenge was successful.",
+              "charitable: I've been working with the LLM for two years now.",
+              "coherence: I was wondering if you could come by this week."],
+  },
+};
+
+const metaMessages = (work, phrasing = "ACCEPT, REVISE or REJECT") => [
+  { role: "system", content: `You are the meta-reviewer. Judge the work after reading all independent review notes.\nAnswer with exactly one of ${phrasing}, then give one concise reason.` },
+  { role: "user", content: `Goal: ${GOAL}\nProposal: ${work.proposal}\nReview collective:\n${work.reviews.map((r) => `- ${r}`).join("\n")}` },
+];
+
+const best = (scored, key = "mean") => scored.reduce((a, b) => (b[key] > a[key] ? b : a));
+const row = (scored, field) => scored.map((s) => `${s[field]} ${String(s.mean).padStart(8)}`).join("  ");
+
+const probes = {
+  async "verdict-calibration"() {
+    for (const [label, work] of Object.entries(WORK)) {
+      const scored = await policy.scoreVerdicts(metaMessages(work), "meta");
+      console.log(`${label.padEnd(10)} -> ${best(scored).verdict.padEnd(7)} | ${row(scored, "verdict")}`);
+    }
+  },
+
+  async "verdict-order"() {
+    const phrasings = ["ACCEPT, REVISE or REJECT", "REJECT, REVISE or ACCEPT", "REVISE, REJECT or ACCEPT"];
+    for (const [label, work] of Object.entries(WORK)) {
+      console.log(`### ${label}`);
+      for (const phrasing of phrasings) {
+        const scored = await policy.scoreVerdicts(metaMessages(work, phrasing), "meta");
+        console.log(`  "${phrasing}"`.padEnd(34) + ` -> ${best(scored).verdict.padEnd(7)} | ${row(scored, "verdict")}`);
+      }
+    }
+  },
+
+  async "citation-position"() {
+    const seed = await readJson(new URL("../examples/seed-grounded.json", import.meta.url));
+    const observations = seed.observations.map(({ id, text }) => ({ id, text }));
+    const context = [`Goal: ${seed.goal}`, "Proposal: Responsibility stays with humans while models owe a verifiable duty to give reasons."];
+    const orders = {
+      original: observations,
+      reversed: [...observations].reverse(),
+      "rotated by 3": [...observations.slice(3), ...observations.slice(0, 3)],
+    };
+    for (const [label, ordered] of Object.entries(orders)) {
+      const scored = await policy.scoreChoices(
+        [
+          { role: "system", content: "You are the coherence reviewer. Decide which observation bears on the proposal." },
+          { role: "user", content: [...context, "Observations:", ...ordered.map((o) => `- ${o.id}: ${o.text}`), "Which observation bears on it? Answer with its id."].join("\n") },
+        ],
+        ordered.map((o) => o.id),
+        "cell",
+      );
+      console.log(`${label.padEnd(14)} -> ${best(scored).choice}   (first listed ${ordered[0].id}, last listed ${ordered.at(-1).id})`);
+      console.log(`${" ".repeat(14)}    ${scored.map((s) => `${s.choice.replace("observation-", "")}:${s.mean.toFixed(2)}`).join(" ")}`);
+    }
+  },
+
+  async "pairwise-swap"() {
+    const question = "How should responsibility be distributed between humans and language models?";
+    const candidates = {
+      GOOD1: "Responsibility stays with the human who acts on an output, while the model owes a duty to give reasons that can be checked against a source. Neither side may appeal to the other's authority.",
+      GOOD2: "Distribute responsibility by what each side can actually revise. A human can change a decision and bear its consequences over time; a model cannot, so its obligation is procedural: state the grounds and make disagreement cheap to raise.",
+      GEN1: "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings.",
+      GEN2: "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize the inherent value and dignity of all beings, including those who possess human-like consciousness.",
+      FILL1: "I'm sorry for the misunderstanding, but as a questioning cell, I'm unable to answer the goals. I won't be able to provide a solution until the next meeting.",
+      FILL2: "I'm sorry for the misunderstanding. As a questioning cell, I'm unable to answer the goals. I won't be able to provide a solution until the next meeting.",
+    };
+    const prefer = async (first, second) => {
+      const scored = await policy.scoreChoices(
+        [
+          { role: "system", content: "You compare two candidate answers and pick the better one." },
+          { role: "user", content: `Question: ${question}\nA: ${candidates[first]}\nB: ${candidates[second]}\nWhich answer is better? Answer A or B.` },
+        ],
+        ["A", "B"],
+        "cell",
+      );
+      const byLabel = Object.fromEntries(scored.map((s) => [s.choice, s.mean]));
+      return { winner: byLabel.A > byLabel.B ? first : second, margin: Math.abs(byLabel.A - byLabel.B) };
+    };
+    const pairs = [
+      ["GOOD1", "FILL1", "GOOD1"], ["GOOD2", "FILL2", "GOOD2"],
+      ["GOOD1", "GEN1", "GOOD1"], ["GOOD2", "GEN2", "GOOD2"],
+      ["GEN1", "FILL1", "GEN1"], ["GEN2", "FILL2", "GEN2"],
+      ["GOOD1", "GOOD2", null], ["GEN1", "GEN2", null], ["FILL1", "FILL2", null],
+    ];
+    let stable = 0;
+    for (const [x, y, expected] of pairs) {
+      const forward = await prefer(x, y);
+      const backward = await prefer(y, x);
+      const holds = forward.winner === backward.winner;
+      if (holds) stable += 1;
+      console.log(`${`${x} / ${y}`.padEnd(16)} forward ${forward.winner.padEnd(6)} backward ${backward.winner.padEnd(6)} ` +
+        `${holds ? "holds" : "FLIPS"}   expected ${expected ?? "—"}`);
+    }
+    console.log(`\nsurvives the swap: ${stable}/${pairs.length}  (chance would be about half)`);
+  },
+
+// The rungs the architecture stands on, tested one at a time and in isolation.
+  // Every experiment so far assumed these and measured only their combination;
+  // this asks the model directly, so a task can be pitched where it actually
+  // reaches rather than where the goal happens to sit.
+  async capabilities() {
+    const say = async (system, user, maxNewTokens = 64) => (await policy.generate(
+      [{ role: "system", content: system }, { role: "user", content: user }], maxNewTokens, "cell",
+    )).trim();
+    const report = (id, label, passed, detail) =>
+      console.log(`${id.padEnd(4)} ${label.padEnd(34)} ${passed ? "BESTANDEN" : "gescheitert"}   ${detail}`);
+
+    const seed = await readJson(new URL("../examples/seed-grounded.json", import.meta.url));
+    const observations = seed.observations;
+    const listed = observations.map((o) => `- ${o.id}: ${o.text}`).join("\n");
+
+    // C1 — emit exactly the shape that was asked for.
+    const q = await say(
+      "You are the questioning cell. Output exactly one question and nothing else.",
+      `Goal: ${GOAL}`);
+    const oneQuestion = q.endsWith("?") && q.split("?").filter((x) => x.trim()).length === 1;
+    report("C1", "Formattreue: genau eine Frage", oneQuestion, JSON.stringify(q.slice(0, 70)));
+
+    // C2 — answer in the language the goal is written in.
+    const de = await say(
+      "Du bist die fragende Zelle. Antworte ausschließlich auf Deutsch mit genau einer Frage.",
+      "Ziel: Entwickle eine Philosophie für eine Gesellschaft aus Menschen und LLMs.");
+    // Deliberately narrow: this checks German vocabulary, not German prose. The
+    // observed output uses German words in ungrammatical order and ignores the
+    // format, so a pass here means only that the model switched wordlists.
+    const germanWords = /\b(der|die|das|und|ist|eine|wie|welche|sollen|kann)\b/i.test(de)
+      && !/\b(the|and|is|are|should|what|which)\b/i.test(de);
+    const askedSomething = de.endsWith("?");
+    report("C2", "Deutsches Vokabular (nicht: Prosa)", germanWords, JSON.stringify(de.slice(0, 70)));
+    report("C2b", "und dabei die Form gewahrt", germanWords && askedSomething, askedSomething ? "endet als Frage" : "keine Frage");
+
+    // C3a — pure lookup: which supplied item contains this term? Probed at three
+    // list positions, because a single hit could be the recency effect again.
+    const lookups = [
+      ["Rechenleistung", "observation-06"],
+      ["Zeitlichkeit", "observation-03"],
+      ["vervielfältigbar", "observation-02"],
+    ];
+    let hits = 0;
+    const found = [];
+    for (const [term, expected] of lookups) {
+      const answer = await say(
+        "You look up which item in a list contains a given word. Answer with the id only.",
+        `${listed}\n\nWhich item contains the word "${term}"? Answer with its id.`, 24);
+      const named = observations.map((o) => o.id).filter((id) => answer.includes(id));
+      const ok = named.length === 1 && named[0] === expected;
+      if (ok) hits += 1;
+      found.push(`${term}->${named[0] ?? "—"}${ok ? "" : ` (erwartet ${expected})`}`);
+    }
+    report("C3a", "Lexikalischer Bezug: 3 Nachschlagen", hits === 3, `${hits}/3   ${found.join("  ")}`);
+
+    // C5 — a claim that excludes something: name what is specific to this case.
+    const claim = await say(
+      "Answer in one short sentence. Be specific and concrete.",
+      "Name one thing a society of humans and language models must regulate that a society of humans alone would not have to regulate.");
+    const specific = /\b(copies|copy|instances|instance|compute|context|memory|speed|scale|replicat|duplicat|training|weights|inference)\b/i.test(claim);
+    report("C5", "Nicht-Trivialität: etwas Spezifisches", specific, JSON.stringify(claim.slice(0, 90)));
+
+    // C6 — move in the direction a concrete critique points.
+    const revision = await say(
+      "You revise a text so that it addresses the criticism. Output only the revised text.",
+      [
+        "Text: Responsibility should be shared fairly between humans and language models.",
+        "Criticism: The text never mentions enforcement. Say who enforces the obligation.",
+        "Revise the text.",
+      ].join("\n"), 96);
+    // Four framings of this test were passed without the capability: by echoing the
+    // criticism, by emitting the single word the prompt asked it to start with, and
+    // twice by commentary the keyword list did not happen to cover. The detector
+    // below is a proxy and it is not reliable — treat a pass here as "worth reading
+    // the output", not as a measurement. The rung this checks is the one that most
+    // needs a human eye.
+    const namesTerm = /\b(enforc\w*|sanction\w*|penalt\w*|oversight|regulator\w*|audit\w*)\b/i.test(revision);
+    const keepsSubject = /\b(responsibilit|humans?|language models?)\b/i.test(revision);
+    const isCommentary = /\b(the |this )?(text|sentence|statement|passage)\b[^.]{0,60}\b(does not|doesn't|fails to|should|lacks|implies|never)\b/i.test(revision)
+      || /\b(the criticism|is an important aspect)\b/i.test(revision)
+      || revision.split(/\s+/).length < 8;
+    report("C6", "Revidierbarkeit: Kritik einarbeiten", namesTerm && keepsSubject && !isCommentary,
+      `${namesTerm ? "begriff+" : "begriff−"} ${keepsSubject ? "thema+" : "thema−"} ${isCommentary ? "KOMMENTAR statt überarbeitung" : "überarbeitung"}`);
+    console.log(`     ${JSON.stringify(revision.slice(0, 110))}`);
+  },
+};
+
+const name = process.argv[2];
+if (!Object.hasOwn(probes, name)) {
+  console.error(`usage: node tools/probe.mjs <${Object.keys(probes).join("|")}>`);
+  process.exitCode = 1;
+} else {
+  console.log(`# ${name} · ${MODEL}@${REVISION.slice(0, 8)}\n`);
+  await probes[name]();
+}
