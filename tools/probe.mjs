@@ -194,12 +194,17 @@ const probes = {
         "Criticism: The text never mentions enforcement. Say who enforces the obligation.",
         "Revise the text.",
       ].join("\n"), 96);
-    // Naming the missing term is not enough: echoing the criticism back contains it
-    // too. A revision has to carry the original subject forward and must not be
-    // commentary about the text.
+    // Four framings of this test were passed without the capability: by echoing the
+    // criticism, by emitting the single word the prompt asked it to start with, and
+    // twice by commentary the keyword list did not happen to cover. The detector
+    // below is a proxy and it is not reliable — treat a pass here as "worth reading
+    // the output", not as a measurement. The rung this checks is the one that most
+    // needs a human eye.
     const namesTerm = /\b(enforc\w*|sanction\w*|penalt\w*|oversight|regulator\w*|audit\w*)\b/i.test(revision);
     const keepsSubject = /\b(responsibilit|humans?|language models?)\b/i.test(revision);
-    const isCommentary = /\b(the text|this text|the criticism|does not mention|is an important aspect)\b/i.test(revision);
+    const isCommentary = /\b(the |this )?(text|sentence|statement|passage)\b[^.]{0,60}\b(does not|doesn't|fails to|should|lacks|implies|never)\b/i.test(revision)
+      || /\b(the criticism|is an important aspect)\b/i.test(revision)
+      || revision.split(/\s+/).length < 8;
     report("C6", "Revidierbarkeit: Kritik einarbeiten", namesTerm && keepsSubject && !isCommentary,
       `${namesTerm ? "begriff+" : "begriff−"} ${keepsSubject ? "thema+" : "thema−"} ${isCommentary ? "KOMMENTAR statt überarbeitung" : "überarbeitung"}`);
     console.log(`     ${JSON.stringify(revision.slice(0, 110))}`);
