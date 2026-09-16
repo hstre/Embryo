@@ -234,11 +234,18 @@ const probes = {
     const any = await policy.generate([
       { role: "system", content: "You copy text. Reply with one sentence copied word for word from the text. Do not change anything." },
       { role: "user", content: `${document}\n\nCopy one sentence from the text above, word for word.` },
-    ], 96, "cell");
-    const a = check(any, null);
-    console.log(`C3c0  reines Kopieren            ${a.exact ? "BESTANDEN" : "gescheitert"}   ` +
-      `${a.exact ? "wörtlich gefunden" : a.loose ? "nur nach Whitespace-Normalisierung" : "nicht im Text"}`);
-    console.log(`      ${JSON.stringify(a.span.slice(0, 100))}\n`);
+    ], 220, "cell");
+    const anyDe = await policy.generate([
+      { role: "system", content: "Du kopierst Text. Gib genau einen Satz wörtlich aus dem Text wieder. Ändere nichts, übersetze nichts." },
+      { role: "user", content: `${document}\n\nGib einen Satz aus dem Text oben wörtlich wieder.` },
+    ], 220, "cell");
+    for (const [label, raw] of [["englische Anweisung", any], ["deutsche Anweisung", anyDe]]) {
+      const r = check(raw, null);
+      console.log(`C3c0  reines Kopieren, ${label.padEnd(20)} ${r.exact ? "BESTANDEN" : "gescheitert"}   ` +
+        `${r.exact ? "wörtlich gefunden" : r.loose ? "nur nach Whitespace-Normalisierung" : "nicht im Text"}`);
+      console.log(`      ${JSON.stringify(r.span.slice(0, 100))}`);
+    }
+    console.log();
 
     // C3c1 — copying plus the same selection difficulty as C3a, at three positions.
     const targets = [
@@ -252,7 +259,7 @@ const probes = {
       const answer = await policy.generate([
         { role: "system", content: "You copy text. Reply with the sentence copied word for word. Do not change anything, do not explain." },
         { role: "user", content: `${document}\n\nCopy the sentence that contains the word "${term}", word for word.` },
-      ], 96, "cell");
+      ], 220, "cell");
       const r = check(answer, expected);
       if (r.exact) anchored += 1;
       if (r.exact && r.right) correct += 1;
