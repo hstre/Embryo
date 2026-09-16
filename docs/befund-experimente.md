@@ -831,8 +831,45 @@ statt „gemeinsame" ändert die Bedeutung, nicht die Ähnlichkeit. Die Stringsu
 fängt es. Das ist zugleich ein Argument gegen Whitespace-Toleranz im Gate.
 
 Ohne Befundcharakter, weil n=3: die beiden exakten Zitate waren 45 und 56
-Zeichen lang, das korrumpierte 209. Falls sich das hält, wären kurze Spans zu
-verlangen statt ganzer Sätze — das ist zu messen, bevor etwas gebaut wird.
+Zeichen lang, das korrumpierte 209. Das war zu messen, bevor etwas gebaut wird.
+
+#### Die Spanlänge, gemessen
+
+Zwölf Abfragen auf 1.7B, sechs Begriffe aus dem Seed-Dokument, jeder einmal mit
+der Vorgabe „kürzestmögliche Wortfolge, höchstens acht Wörter" und einmal mit
+„der ganze Satz":
+
+| tatsächliche Spanlänge | exakt verankert |
+| --- | --- |
+| 0–40 Zeichen | 1/1 |
+| 40–80 Zeichen | 1/3 |
+| 80–140 Zeichen | 0/2 |
+| 140+ Zeichen | 0/6 |
+
+Die Richtung ist monoton und passt zum Einzelfall aus C3c. Als Parameter taugt
+sie trotzdem nicht: pro Band stehen ein bis sechs Messpunkte, und die obere
+Hälfte der Tabelle ist mit n=1 und n=3 kaum von Zufall zu trennen. Sie steht
+hier als Hypothese mit Nenner — *kurze Spans werden zuverlässiger wörtlich
+wiedergegeben als lange* —, nicht als Schwelle, an der ein Gate ausgelegt
+werden könnte.
+
+Der härtere Befund ist ein anderer und war nicht gesucht. **Die Vorgabe wirkt
+nicht.** Unter „höchstens acht Wörter" lieferte das Modell Spans von 326 und
+369 Zeichen; die mittlere Länge lag mit 142 Zeichen nur unwesentlich unter den
+164 Zeichen der Vorgabe „ganzer Satz". Die Längenanweisung wird also nicht
+befolgt — dieselbe Formatschwäche wie bei C1 und C2b, hier an einer Stelle, wo
+sie die Konstruktion direkt betrifft: ein Span-Gate kann eine Längengrenze
+nicht an die Zelle delegieren. Es muss sie selbst durchsetzen, und eine
+Ablehnung wegen Überlänge wäre dann der häufigste Fall, nicht der seltene.
+
+Zwei Einschränkungen zur Messung selbst. Erstens ist sie mit C3c nicht direkt
+vergleichbar: dort war 2/3 verankert, hier 2/12. C3c fragte nach einem Satz zu
+einem Thema, diese Messung nach der kürzesten Wortfolge, die einen bestimmten
+Begriff enthält — das verlangt zusätzlich, eine Grenze zu setzen, und genau das
+scheitert. Der Abfall von 2/3 auf 2/12 misst die schwierigere Aufgabe, nicht
+eine schlechtere Verankerungsfähigkeit. Zweitens sind die 2/6 unter „kurz"
+gegen 0/6 unter „lang" bei nahezu gleicher mittlerer Länge konfundiert; aus
+diesem Vergleich ist nichts zu lesen.
 
 [br]: https://github.com/hstre/Budget-Review
 
@@ -891,7 +928,8 @@ Philosophie — aber es wäre der erste Zyklus dieses Projekts mit nachprüfbare
 Bezug zur Umgebung.
 
 Zwei Bausteine wären dafür aus [budget-review][br] zu übernehmen. Der erste ist
-das Span-Gate. Der zweite ist dessen Buchführung: Übereinstimmung zwischen
+das Span-Gate — mit einer Längengrenze, die das Gate selbst zieht, weil die
+Zelle eine solche Vorgabe nachweislich ignoriert. Der zweite ist dessen Buchführung: Übereinstimmung zwischen
 Prüfpfaden wird dort als Überlappung protokolliert und ausdrücklich nicht als
 Wahrheit gewertet. Embryos zweite Seed-Prämisse verlangt genau das — *„Eine
 Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind"* —
