@@ -1570,6 +1570,85 @@ danach bleibt, ist die Anweisungsbefolgung selbst, und dagegen hilft keine
 Toleranz im Gate.
 
 
+### Und was der Prompt daran noch ändert: nichts
+
+Was nach 021 übrig ist, ist Anweisungsbefolgung, und die einzige Stellschraube,
+die dieses Projekt je dafür hatte, ist der Prompt. Budget-Reviews Zweig
+`claude/gold-recall-echr` hat einen Prompt-Effekt dieser Größenordnung als nicht
+von der Laufstreuung trennbar entlarvt. Hier ist er es — greedy und lokal
+decodiert —, aber das ist eine Behauptung und keine Annahme, also läuft als
+erster Arm eine **Wiederholung des Basisprompts**. Wäre sie nicht byteidentisch,
+druckt die Messung keine Zahlen.
+
+**Sie ist byteidentisch, auf beiden Modellgrößen.** Damit ist dies die erste
+Prompt-Messung dieses Projekts mit verifizierter Nullstreuung: jeder Unterschied
+zwischen zwei Armen *ist* der Prompt.
+
+Fünf Arme gegen die drei verbliebenen Fehlerarten, gewertet wie im Gate —
+Rahmung abgestreift, Leerraum toleriert, mindestens 40 Zeichen, gegen die
+Beobachtung, die die Zelle gesehen hat. Marke vorab: **≥ 5 von 6**.
+
+| Arm | gegen | 1.7B | 360M |
+| --- | --- | ---: | ---: |
+| `basis` | — | 3/6 | 0/6 |
+| `deutsch` | Übersetzung | **1/6** | 1/6 |
+| `kein-kommentar` | Kommentar | 3/6 | 0/6 |
+| `erster-satz` | die Auswahl | **2/6** | 1/6 |
+| `fortsetzung` | Anweisungsbefolgung insgesamt | 3/6 | 1/6 |
+
+**Kein Arm erreicht die Marke, auf keiner Größe.** Zwei liegen auf 1.7B unter der
+Basis: die deutsche Anweisung verliert zwei Beobachtungen, die Vorgabe „erster
+Satz" eine.
+
+Aufschlussreicher als die Summen ist das Muster. `kein-kommentar` und
+`fortsetzung` treffen auf 1.7B **exakt dieselben drei Beobachtungen** wie die
+Basis — Zeichen für Zeichen dasselbe Ergebnis, nicht dieselbe Zahl bei anderer
+Verteilung. Das Kommentarverbot ändert nichts, obwohl Kommentar eine der drei
+Fehlerarten ist. Und die Fortsetzung — der Assistententurn beginnt bereits mit
+24 Zeichen der Passage — ändert ebenfalls nichts: das Modell wird mitten im
+Zitat abgesetzt und läuft trotzdem davon.
+
+Meine Vorhersage war, `fortsetzung` schlage alle anderen, weil es die
+Anweisungsbefolgung umgeht statt sie zu adressieren. Sie ist falsch. Auf 1.7B
+liegt der Arm gleichauf mit der Basis, auf 360M gewinnt er dieselbe eine
+Beobachtung wie zwei andere Arme auch.
+
+Zwei Fehlschläge stehen stellvertretend für die beiden Verlustarten:
+
+```text
+erster-satz, Beobachtung 04
+  First sentence of the passage: "Nachprüfbarkeit ist teilbar, Zusti…
+
+deutsch, Beobachtung 05
+  Die Revidierbarkeit ist eine Bedingung, die keine Schwäche ist. Ei…
+```
+
+Der erste enthält das richtige Zitat und stellt ihm ein Etikett voran — wieder
+eine Darstellungsfrage, aber eine, die das Gate nicht toleriert und nicht
+tolerieren sollte: ein beliebiges Präfix abzustreifen wäre eine erheblich größere
+Befugnis als Anführungszeichen. Der zweite ist eine Umformulierung, die flüssiger
+klingt als die Quelle und deshalb durchfällt — die deutsche Anweisung hat das
+Modell nicht näher an den Text gebracht, sondern ins freie Formulieren.
+
+### Einschränkungen dieser Messung
+
+**Sie ist nicht die Laufbedingung.** Die Probe fragt jede Beobachtung einmal; der
+Lauf hat drei Versuche pro Bedürfnis und schiebt ab dem zweiten eine
+Wiederholungsanweisung in den Prompt. Deshalb liest die Basis hier 0/6 auf 360M,
+während Lauf 020 zwei Beobachtungen angenommen hat. Beide Zahlen stimmen, sie
+messen Verschiedenes, und sie sind nicht austauschbar. Der Unterschied ist
+übrigens selbst ein Prompt-Effekt — die Wiederholungsanweisung —, nur ein
+zufällig entstandener.
+
+**Sechs Beobachtungen pro Arm sind wenig.** Anders als bei allen früheren
+Einzelmessungen dieses Berichts ist das aber keine Streuungsfrage: bei
+Nullstreuung ist der Vergleich für *diese* sechs Passagen exakt. Was offen
+bleibt, ist die Übertragung auf andere Passagen, nicht die Zahl selbst.
+
+Damit ist die Prompt-Stellschraube gemessen und nicht bloß vermutet. Sie bewegt
+den Zitierer nicht, und zwei naheliegende Verbesserungen verschlechtern ihn.
+
+
 ## 18. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
@@ -1752,6 +1831,9 @@ node tools/probe.mjs rule-fire
 
 # Hängt die Stance des Modellarms an der Optionsreihenfolge?
 node tools/probe.mjs stance-order
+
+# Bewegt ein Prompt die Zitierzelle? Kontrollarm bricht die Messung ab, wenn nicht
+node tools/probe.mjs quote-prompt
 
 # Spanlänge mit Leerraum-Toleranz und Bruchstellendiagnose
 MODEL=HuggingFaceTB/SmolLM2-1.7B-Instruct \
