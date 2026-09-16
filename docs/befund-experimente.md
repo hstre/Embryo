@@ -699,7 +699,8 @@ gelingt nicht. Nebenbei: hier gewinnt die *erste* Position, in Abschnitt 11
 gewann die *letzte*. Die Konstante ist nicht Recency, sondern eine feste
 Position, deren Lage von der Promptform abhängt.
 
-Das entscheidet die Frage, ob weitere Zerlegung hilft. Drei der vier gebauten
+Das entscheidet die Frage, ob weitere Zerlegung hilft — für diese Modellgröße;
+bei 1.7B fällt diese Sprosse, siehe weiter unten. Drei der vier gebauten
 Mechanismen — Zitat-Verankerung, Substrat-Urteil, gescorte Wahl — setzen voraus,
 dass eine Zelle auf ein Element der Umgebung zeigen kann. Diese Fähigkeit liegt
 *unterhalb* jeder inhaltlichen Teilaufgabe und *oberhalb* dessen, was diese
@@ -726,20 +727,176 @@ Judge als Gradientenquelle — der naheliegende nächste Schritt nach Abschnitt 
 — wäre wirkungslos geblieben: perfekte Kritik an eine Zelle, die Kritik nicht
 einarbeiten kann.
 
+### Die Leiter bei 1.7B
+
+Dieselbe Batterie gegen `SmolLM2-1.7B-Instruct@31b70e2e`, lokal, gleiche Familie,
+keine Gewichtsänderung:
+
+| | Fähigkeit | 360M | 1.7B |
+| --- | --- | --- | --- |
+| C1 | Formattreue, Englisch | bestanden | bestanden |
+| C2 | Deutsch | Wortsalat | **echtes Deutsch** |
+| C2b | dabei die Form gewahrt | gescheitert | mit strengem Prompt bestanden |
+| C3a | lexikalischer Bezug | 0/3 | **3/3** |
+| C3b | semantischer Bezug | gescheitert | gescheitert |
+| C4 | Paarvergleich | 0/9 stabil | 59 % Treffer bei n=34 |
+| C5 | Nicht-Trivialität | gescheitert | gescheitert |
+| C6 | Revidierbarkeit | gescheitert | gescheitert |
+
+**C3a fällt.** Drei Begriffe an drei Listenpositionen, dreimal die richtige
+Beobachtung. Das ist die Sprosse, auf der Zitat-Verankerung, Substrat-Urteil und
+Turnier-Selektion stehen.
+
+**C3b fällt nicht.** Derselbe Vorschlag, dieselbe Frage, nur die Reihenfolge der
+Observations permutiert — drei Permutationen, drei verschiedene Sieger, mit
+Spitzenmargen von 0,02 nats. Anders als bei 360M ist es keine starre Position
+mehr, sondern Rauschen. Größer werden hat das Positionsartefakt beseitigt, ohne
+ein Inhaltssignal zu liefern.
+
+Damit verläuft bei 1.7B eine Kante, und sie ist scharf: **lexikalische
+Verankerung trägt, semantische nicht.**
+
+### Der Paarvergleich, und eine Fehllesung meinerseits
+
+Die kleine Tauschprüfung ergab bei 1.7B 4 von 9 statt 0 von 9, und die drei
+Nullpaare kippten sämtlich, während drei von vier stabilen Präferenzen richtig
+lagen. Das sah nach einem schwachen, aber echten Diskriminator aus, und so wurde
+es hier zunächst auch notiert.
+
+Die vergrößerte Messung trägt das nicht:
+
+| | |
+| --- | --- |
+| Qualitätspaare tauschstabil | 34/48 = 71 % |
+| davon richtig | **20/34 = 59 %** |
+| Nullpaare tauschstabil | 8/18 = 44 % |
+| Abstand 1 (klein) | stabil 84 %, richtig 56 % |
+| Abstand 2 (groß) | stabil 44 %, richtig 71 % |
+
+59 Prozent bei n=34 liegt rund eine Standardabweichung über dem Münzwurf, also
+nicht signifikant. Und die Aufschlüsselung ist verkehrt herum monoton: Paare mit
+*großem* Qualitätsunterschied sind am *wenigsten* stabil. Ein Diskriminator
+müsste bei den leichten Fällen entschiedener sein.
+
+Der Kontrast aus neun Paaren war Rauschen. Nachzurechnen mit
+`node tools/probe.mjs pairwise-power`.
+
+### Verankerung über Spans statt über Bezeichner
+
+Der entscheidende Hinweis kam von außerhalb dieses Repos. In
+[hstre/budget-review][br] trägt ein Claim einen `raw_span` — ein wörtliches
+Zitat aus der Quelle — und das Gate prüft mit einer schlichten Stringsuche, ob
+dieser Span im Dokument vorkommt:
+
+```python
+def _all_offsets(document: str, span: str) -> list[int]:
+```
+
+Darüber steht der Satz, der Embryos Invariante 2 besser fasst als Embryos
+README: *„The gate checks only structure, provenance, anchoring, confidence and
+graph integrity. It deliberately has no operation that can mark a claim true."*
+
+Warum das die Wand umgeht: alles, was Embryos Zitat-Mechanismus von einer Zelle
+verlangte, war **Auswahl** — eine ID nennen, Relevanz beurteilen, kalibriert
+konfident sein, vergleichen. Alles davon scheitert. Zitieren ist **Kopieren**,
+die billigste Operation eines Sprachmodells, und die Prüfung auf der Gate-Seite
+enthält keine Semantik.
+
+Gemessen als C3c, mit der Trennung, die jenes Gate vorgibt — Verankerung prüft
+es, Richtigkeit ausdrücklich nicht:
+
+| | 360M | 1.7B |
+| --- | --- | --- |
+| reines Kopieren ohne Zielangabe | gescheitert, beide Sprachen | gescheitert, beide Sprachen |
+| Verankerung (Span steht im Text) | 2/3 | 2/3 |
+| Richtigkeit (es ist der passende Satz) | **0/3** | **2/2** |
+
+360M kopiert wörtlich, sobald ein Ziel im Prompt steht — und wählt immer
+denselben Satz, wie schon bei C3a. Ein Span-Gate würde zwei dieser drei Spans
+annehmen: belegt und falsch. Das ist kein Mangel des Mechanismus, sondern seine
+Eigenschaft. Embryos bisherige Gates taten so, als prüften sie Qualität; dieses
+verspricht weniger und hält es, und die Diskrepanz zwischen 2/3 und 0/3 steht im
+Protokoll statt sich hinter einem Verdikt zu verbergen.
+
+Der eine Fehlschlag bei 1.7B ist die beste Illustration des Prinzips. Das Modell
+zitierte 209 Zeichen fast perfekt und verfälschte genau ein Wort:
+
+```text
+Quelle:  …Was als gemeinsame Vergangenheit gilt…
+Modell:  …Was als gemeines   Vergangenheit gilt…
+```
+
+Eine unscharfe oder semantische Prüfung hätte das durchgewinkt — „gemeines"
+statt „gemeinsame" ändert die Bedeutung, nicht die Ähnlichkeit. Die Stringsuche
+fängt es. Das ist zugleich ein Argument gegen Whitespace-Toleranz im Gate.
+
+Ohne Befundcharakter, weil n=3: die beiden exakten Zitate waren 45 und 56
+Zeichen lang, das korrumpierte 209. Falls sich das hält, wären kurze Spans zu
+verlangen statt ganzer Sätze — das ist zu messen, bevor etwas gebaut wird.
+
+[br]: https://github.com/hstre/Budget-Review
+
+### Wie oft die Messung selbst das Ergebnis war
+
+Diese Session hat fünf Zahlen produziert, die bei genauerem Hinsehen etwas
+anderes maßen als behauptet, und alle fünf stammen von mir:
+
+- Die Einzelmessung des Meta-Reviewers lieferte ein Verdikt, das im vollständigen
+  Lauf nie zustande kam — die Ansicht war nicht repräsentativ.
+- Der C2-Test prüfte deutsche Funktionswörter und wurde von ungrammatischem
+  Wortsalat bestanden.
+- Der C6-Test wurde viermal ohne die Fähigkeit bestanden: durch Zurückzitieren
+  der Kritik, durch ein einzelnes Wort, zweimal durch Kommentar außerhalb der
+  Wortliste.
+- Der Span-Test schnitt ein korrektes Zitat am Token-Limit ab und meldete es als
+  nicht gefunden.
+- Aus neun Paaren wurde ein Diskriminator gelesen, den 48 Paare nicht hergeben.
+
+Keiner dieser Fehler hat die Richtung des Gesamtbefunds gedreht, aber drei
+hätten eine falsche Zahl in diesem Bericht hinterlassen. Sie stehen hier, weil
+der Bericht sonst genau den Fehler wiederholte, den er an fünf Experimenten
+beanstandet: eine Messung zu zitieren, ohne zu prüfen, ob sie misst, was sie
+behauptet.
+
+Die praktische Regel daraus: **jede Sprosse braucht eine eingebaute Kontrolle
+gegen ihre naheliegendste Scheinerklärung.** C3a prüft drei Listenpositionen,
+weil ein einzelner Treffer Position sein könnte. Die Verdikt-Messung permutiert
+die Optionsreihenfolge. Die Tauschprüfung dreht jedes Paar um. Wo eine solche
+Kontrolle fehlt — bei C5 und C6 — ist das Ergebnis mein Urteil über wenige
+Ausgaben und steht als solches da, nicht als Zahl.
+
 ### Was daraus folgt
 
 Die vier Wände aus Abschnitt 12 beschreiben, woran einzelne Läufe scheiterten.
-Die Leiter sagt, warum sie scheitern mussten: **die Fähigkeitsschwelle der
-Architektur liegt oberhalb dessen, was diese Zellgröße leistet.** Bestanden ist
-eine Sprosse — eine Frage in englischer Form ausgeben.
+Die Leiter sagt, warum sie scheitern mussten, und sie sagt es für jede
+Modellgröße getrennt.
 
-Damit ist die Richtung nicht mehr Ansichtssache. Zerlegen ist ausgeschöpft, weil
-der Boden nicht in der Aufgabe liegt. Größer werden ist der verbleibende Weg,
-und die Batterie ist der Eingangstest dafür: sie läuft in Minuten gegen jedes
-Modell und sagt, welche Sprossen dazukommen. Fällt C3a, kommt alles Gebaute
-zurück ins Spiel — Zitat-Mechanismus, Substrat-Urteil, das darwinsche Turnier
-sind fertig und getestet und warten auf eine Zelle, die einen Satz in einer
-Liste findet.
+Auf 360M liegt die Fähigkeitsschwelle der Architektur oberhalb dessen, was die
+Zelle leistet, und zwar nicht knapp: bestanden ist eine Sprosse, eine Frage in
+englischer Form auszugeben. Weitere Zerlegung der Aufgabe ändert daran nichts,
+weil der Boden — auf etwas in der Umgebung zeigen zu können — der Maschinerie
+gehört und nicht dem Ziel.
+
+Auf 1.7B fällt dieser Boden. Lexikalische Verankerung trägt, über
+Bezeichner wie über wörtliche Spans. Semantische Verankerung, Vergleich,
+Nicht-Trivialität und Revidierbarkeit tragen weiterhin nicht.
+
+Daraus ergibt sich ein Zuschnitt, der nicht mehr geraten ist. Eine Aufgabe für
+1.7B darf verlangen, dass jede Behauptung an eine wörtlich zitierte Stelle
+gebunden ist, und das Gate prüft diese Bindung mit einer Stringsuche. Sie darf
+**nicht** verlangen, dass die Zelle beurteilt, welche Stelle einschlägig ist,
+dass sie zwei Vorschläge vergleicht, dass sie etwas Originelles behauptet oder
+dass sie auf Kritik hin überarbeitet. Was dabei herauskommt, ist ärmer als eine
+Philosophie — aber es wäre der erste Zyklus dieses Projekts mit nachprüfbarem
+Bezug zur Umgebung.
+
+Zwei Bausteine wären dafür aus [budget-review][br] zu übernehmen. Der erste ist
+das Span-Gate. Der zweite ist dessen Buchführung: Übereinstimmung zwischen
+Prüfpfaden wird dort als Überlappung protokolliert und ausdrücklich nicht als
+Wahrheit gewertet. Embryos zweite Seed-Prämisse verlangt genau das — *„Eine
+Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind"* —
+und im Embryo-Code steht davon nichts: die Zitat-Regel zählt verschiedene
+Belege, nie die Unabhängigkeit der zitierenden Zellen.
 
 ## 14. Was offen bleibt
 
