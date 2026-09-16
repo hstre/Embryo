@@ -17,36 +17,53 @@ weiteren Lauf veraltet.*
 
 ## 1. Kurzfassung
 
-Embryo hat in fünf Läufen 231 Zellen ausgeführt. In den vier Läufen mit der
-Frage-Vorschlag-Review-Architektur wurde **kein einziger Vorschlag akzeptiert**.
-Das Ziel blieb jedes Mal offen, das Energiebudget wurde dreimal vollständig
-verbraucht.
+Embryo hat in einundzwanzig Läufen rund fünfhundert Zellen ausgeführt. Unter dem
+ursprünglichen Ziel — eine Philosophie für eine Gesellschaft aus Menschen und
+LLMs — wurde **kein einziger Vorschlag akzeptiert**, in keinem der sechzehn
+Läufe, die es verfolgten.
 
-Die naheliegende Lesart war, dass ein 135M-Modell zu klein für Urteilsbildung
-ist. Experiment 005 hat diese Lesart geprüft und den Meta-Reviewer auf 360M
-vergrößert. Das Ergebnis war identisch — bis auf die letzte Stelle der
-Entscheidungsstatistik.
+Die Ursachen ließen sich nacheinander auftrennen, und sie liegen in Schichten.
 
-Drei Gegenläufe auf dem reparierten Substrat haben die Ursachenkette danach
-weiter aufgetrennt. Alle bleiben bei null akzeptierten Vorschlägen, aber aus
-jeweils anderem Grund, und die letzten beiden sind keine Defekte mehr, sondern
-Ergebnisse. Die Phänotypen sind ausschließlich über Prompts definiert, und auf
-dieser Modellgröße differenzieren Prompts das Verhalten nicht. Und wenn man das
-Urteil nicht mehr generieren lässt, sondern direkt aus der Wahrscheinlichkeits-
-verteilung des Modells liest, entsteht es zwar — trägt aber kein Qualitäts-
-signal.
+**Ein Aufrufdefekt.** Die Policy übergab der Text-Pipeline einen String statt
+eines Message-Arrays; das Chat-Template wurde nie angewendet, und fünf
+Experimente liefen als reine Textvervollständigung. Behoben, und die Läufe
+danach zeigen, was darunter lag.
 
-Die stigmergische Maschinerie selbst hat dabei getragen: die Rekrutierungskette
-von der Frage über den Vorschlag zum Review-Panel und zum Meta-Review ist über
-alle 64 Zellen von 005 exakt aufgegangen, ohne eine einzige Nachricht zwischen
-Zellen. Gescheitert ist allein die Urteilsschicht.
+**Die Urteilsschicht trägt nicht.** Prompts differenzieren die drei
+Reviewer-Phänotypen auf dieser Modellgröße nicht — ihre Ausgaben sind
+byteidentisch. Liest man das Verdikt direkt aus der Wahrscheinlichkeits-
+verteilung statt es generieren zu lassen, entsteht es zwar, trägt aber weder
+Qualitäts- noch Relevanzsignal.
 
-Die Ursache war kein Modellgrenzwert, sondern ein Aufrufdefekt: die Policy
-übergab der Text-Pipeline einen String statt eines Message-Arrays. Damit wurde
-das Chat-Template nie angewendet, und beide Modellgrößen liefen als reine
-Textvervollständigung. Die Receipts enthalten deshalb Prompt-Fortsetzungen statt
-Reviews. Nach der Korrektur liefert dieselbe angeheftete 360M-Revision beim
-selben Prompt im ersten Versuch ein Verdikt.
+**Die Zitatschicht trägt auch nicht.** Alle neun Review-Fragmente eines Laufs
+zitieren dieselbe Beobachtung. Hält man die Listenreihenfolge fest und
+verschiebt nur die Bezeichner, folgt die Wahl dem Beobachtungstext **null von
+neun Mal**. Die Zelle rangiert Zeichenketten in Listenplätzen.
+
+**Das Panel ist eine Instanz.** Die drei Perspektiven teilen ihre vollständige
+Rangfolge aller sechs Beobachtungen, auf 360M wie auf 1.7B. Ein Geschwisterfragment
+im Prompt wird 3/3 übernommen. Blendet man das Panel, ändert sich am Gewebe
+knotenweise nichts.
+
+**Eine Fähigkeitsleiter sagt, warum.** Auf 360M besteht eine Sprosse von sechs.
+Auf 1.7B fällt der Boden — lexikalische Verankerung trägt —, semantische
+Verankerung, Vergleich, Nicht-Trivialität und Revidierbarkeit weiterhin nicht.
+
+Was dabei durchgehend **getragen** hat, ist die stigmergische Maschinerie
+selbst: die Rekrutierungskette von der Frage über den Vorschlag zum Panel ist
+über alle Läufe exakt aufgegangen, ohne eine einzige Nachricht zwischen Zellen,
+und jeder Lauf ist replay-stabil.
+
+**Ab Lauf 016 gilt deshalb ein anderes Ziel** — nicht ein leichteres Stück
+derselben Aufgabe, sondern die Bedingung darunter: ein Register von vier
+Stellen, die wörtlich in der Umgebung vorkommen, zugelassen per Stringsuche,
+ohne jede urteilende Rolle. Drei Paare mit vorab festgeschriebenen Marken, drei
+sich gegenseitig verdeckende Ursachen: die Zelle kopiert das Register statt die
+Beobachtung (zwölf von zwölf Zellen), sie rahmt ihre Antwort in
+Anführungszeichen, und sie übersetzt oder kommentiert statt zu kopieren. Die
+ersten beiden sind behoben. **021 erreicht 3 von 4** — das erste Mal in diesem
+Projekt, dass etwas angenommen wurde, dessen Annahme an einer Prüfung gegen die
+Umgebung hing.
 
 ## 2. Befund
 
@@ -63,11 +80,23 @@ selben Prompt im ersten Versuch ein Verdikt.
 | 009 | `v7-cited`, Annahme aus Zitaten | 7 | 25/64 | 18 | keine |
 | 010 | Kontrollarm, Annahme per Verdikt | 7 | 26/64 | 0 | keine |
 | 011 | wie 009, Zitat gescort statt generiert | 7 | 25/64 | 0 | keine |
+| 012 | Panel blind, Überlappung verbucht | 7 | 25/64 | 0 | keine |
+| 013 | Panel sichtbar, Überlappung verbucht | 7 | 25/64 | 0 | keine |
+| 014 | dritter Arm ist eine Ankerregel | 5 | 17/64 | 6 | keine |
+| 015 | dritter Arm ist der entartete Kontrollarm | 4 | 13/64 | 0 | keine |
+| 016 | **neues Ziel:** Register, 360M | 5 | 17/64 | 0 | 1 von 4 Stellen |
+| 017 | Register, 1.7B | 4 | 16/64 | 0 | 1 von 4 |
+| 018 | Register ohne Registeranzeige, 360M | 5 | 17/64 | 0 | 1 von 4 |
+| 019 | dasselbe, 1.7B | 4 | 14/64 | 0 | 2 von 4 |
+| 020 | zusätzlich Rahmung toleriert, 360M | 4 | 16/64 | 0 | **2 von 4** |
+| 021 | dasselbe, 1.7B | 3 | 12/64 | 0 | **3 von 4** |
 
-006 bis 011 liefen auf dem reparierten Substrat und sind unten in eigenen
-Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular (Behauptungen und Einwände
-statt Frage-Vorschlag-Review) und sind nur eingeschränkt vergleichbar. In 003
-bis 005 endeten 75 von 192 Zellen — 39 Prozent — in einem Abstain.
+006 bis 021 liefen auf dem reparierten Substrat und sind unten in eigenen
+Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular
+(Behauptungen und Einwände statt Frage-Vorschlag-Review) und sind nur
+eingeschränkt vergleichbar. In 003 bis 005 endeten 75 von 192 Zellen — 39
+Prozent — in einem Abstain. Ab 016 gilt der neue Auftrag aus Abschnitt 17; die
+Spalte zählt dort Registereinträge statt akzeptierter Vorschläge.
 
 ## 3. Ein Fehlerbild, viermal protokolliert
 
@@ -1425,7 +1454,123 @@ Messung pro Arm ist ein Zug. Was hier auf 1.7B mit n=1 steht, steht damit auf
 demselben Fuß wie die dort zurückgezogenen Prompt-Befunde.
 
 
-## 17. Was offen bleibt
+## 17. Der neue Auftrag: die Bedingung darunter
+
+Fünfzehn Abschnitte lang lautete das Ziel, eine Philosophie zu entwickeln. Es
+verlangt Auswahl, Vergleich, Originalität und Revision, und alle vier sind auf
+beiden Modellgrößen gemessen abwesend. Ab 016 gilt deshalb ein anderes Ziel —
+nicht ein leichteres Stück derselben Aufgabe, sondern die **Bedingung**, ohne
+die keine der bisherigen Konstruktionen tragen kann:
+
+> Lege ein Register an: vier verschiedene Stellen, die wörtlich in den
+> gelieferten Beobachtungen vorkommen.
+
+`acceptance_mode: "anchor"` nimmt jede urteilende Rolle aus der Schleife.
+`deriveNeeds` leitet je ein Bedürfnis pro noch nicht zitierter Beobachtung ab,
+die Zelle sieht genau diese Beobachtung und soll einen Satz daraus kopieren, und
+das Gate entscheidet per Stringsuche gegen diese eine Beobachtung. Kein
+Review-Panel, kein Meta-Review, keine Frage, keine Synthese. Was ins Gewebe
+geht, ist die Textstelle der Beobachtung, nie der Wortlaut der Zelle.
+
+Warum das die Bedingung ist und nicht bloß leichter: **wenn ein Substrat nicht
+vier nachprüfbar verankerte Stellen seiner Umgebung ansammeln kann, kann kein
+Mechanismus darüber es auch.** Jede Zitatregel, jede Belegzählung, jede
+Anti-Delphi-Buchführung setzt voraus, dass überhaupt ein Beleg entsteht.
+
+Drei Paare, je 360M und 1.7B, je eine Änderung, die Marke vor jedem Paar
+festgeschrieben und committet. Als Kontrolle, dass die Aufgabe lösbar ist, fährt
+ein Test dieselbe Aufgabe mit einem perfekten Zitierer: 4 von 4.
+
+| Paar | Änderung | Marke | 360M | 1.7B |
+| --- | --- | --- | --- | --- |
+| 016 / 017 | — | ≥2 bzw. ≥3 | 1/4 verfehlt | 1/4 verfehlt |
+| 018 / 019 | Register vor der Zelle verborgen | ≥3 | 1/4 verfehlt | 2/4 verfehlt |
+| 020 / 021 | Gate toleriert die Rahmung der Antwort | ≥2 bzw. ≥3 | **2/4 erfüllt** | **3/4 erfüllt** |
+
+### Was die Zelle stattdessen tat, dreimal nacheinander
+
+**Erste Runde: sie kopiert das Register.** In 016 und 017 zeigt die Local View
+dem Zitierer, was schon im Register steht, unter der Überschrift *„Already in the
+register; copy a different sentence."* Das Ergebnis ist das Gegenteil der
+Absicht: sobald ein Eintrag existiert, geben die folgenden Zellen **diesen
+Eintrag** aus statt die Beobachtung, die ihr Bedürfnis ihnen zeigt. In 017 sind
+das **zwölf von zwölf** Zellen für die Beobachtungen 03 bis 06.
+
+Das ist derselbe Übernahmeeffekt wie in Abschnitt 14 — ein Köder im Prompt wird
+3/3 übernommen, auch aus einem Satz, der ihn ausdrücklich abweist —, hier zum
+ersten Mal in einem vollständigen Lauf und mit direkter Wirkung auf das Gewebe.
+Die stigmergische Spur, die Variation erzeugen sollte, verhindert sie.
+
+Meine vorab notierte Fehlervorhersage war falsch: ich hatte Kommentar statt
+Zitat als häufigste Bruchstelle erwartet. Sie kommt vor, aber die häufigste war
+diese.
+
+**Zweite Runde: sie rahmt ihre Antwort.** `show_register: false` beseitigt den
+Kopiereffekt vollständig — in 018 und 019 kommt er **kein einziges Mal** mehr
+vor. Erreicht werden trotzdem nur 1/4 und 2/4. Darunter liegt eine dritte
+Ursache, die in keiner Vorregistrierung stand: die Zelle setzt ihre Antwort in
+Anführungszeichen, und das Gate vergleicht den Rohtext.
+
+| | |
+| --- | --- |
+| Beobachtung 04, Lauf 019, dreimal | `"Nachprüfbarkeit ist teilbar, Zustimmung nicht."` |
+| die Beobachtung enthält | `Nachprüfbarkeit ist teilbar, Zustimmung nicht. Eine …` |
+
+Wörtlich richtig, abgelehnt an zwei Zeichen. Die Gegenrechnung lief **auf den
+Receipts, ohne neuen Lauf**: 018 verliert eine Beobachtung an nichts als die
+Rahmung, 019 verliert eine an drei solche Ablehnungen — die beiden Läufe läsen
+2/4 und 3/4.
+
+**Dritte Runde: die Rechnung geht auf.** `tolerate_wrapping: true` streift
+Anführungszeichen und einen Listenstrich **außen** ab. Innen wird nichts
+angefasst: ein verändertes Wort fällt weiter durch, und gespeichert wird
+weiterhin die Textstelle der Beobachtung. 020 liest 2/4, 021 liest 3/4 — genau
+die Werte der Gegenrechnung, beide Marken erfüllt.
+
+### Was jetzt im Gewebe steht
+
+Drei Stellen der Umgebung, jede über eine Stringsuche gegen die Beobachtung
+zugelassen, auf die ihr Bedürfnis zeigte, jede als Textstelle der Quelle
+gespeichert, der Lauf replay-stabil:
+
+```text
+Modellinstanzen sind beliebig vervielfältigbar.
+Nachprüfbarkeit ist teilbar, Zustimmung nicht.
+Revidierbarkeit ist eine Bedingung, keine Schwäche.
+```
+
+Das ist wenig, und es ist zugleich das erste Mal in diesem Projekt, dass
+überhaupt etwas angenommen wurde, dessen Annahme an einer Prüfung gegen die
+Umgebung hing. Abschnitt 6 hält fest, dass nie eine Behauptung gegen ihre
+Umgebung verifiziert wurde; ab 020 stimmt das nicht mehr.
+
+Das Ziel bleibt trotzdem offen: verlangt sind vier Einträge, erreicht sind drei.
+
+### Was übrig bleibt
+
+Die verbleibenden Ablehnungen in 021 sind keine Darstellungsfragen mehr und
+verteilen sich auf drei Arten, die alle schon benannt sind:
+
+| Fehlerart | Beobachtungen | Beispiel |
+| --- | --- | --- |
+| Übersetzung ins Englische statt Kopie | 01, 06 | „The access to computational resources is distributed time-like." |
+| Kommentar über die Passage | 03 | „The passage is discussing the asymmetry of time perception." |
+| Ein Wort verändert | 01 | „Begründung **fall** auseinander" statt „fallen" |
+
+Auf 360M kommt eine vierte dazu, die 1.7B nicht mehr zeigt: freie Erfindung in
+gebrochenem Deutsch („A bezugt wie ein Schluss, dass nicht zu tun"). Und eine
+fünfte, die interessant ist, weil sie fast gelingt — 020 gibt für Beobachtung 06
+dreimal `Wer mehr Instanzen betreiben kann, kann eine Debatte fluten, ohne ein …`
+aus und bricht erst nach 73 von 105 Zeichen ab.
+
+Drei Fehlerarten, drei Eingriffe, zwei davon wirksam. Die Reihe zeigt vor allem
+eines: **jede Ursache verdeckte die nächste.** Der Registereffekt war real und
+allein nicht hinreichend; die Rahmung war real und allein nicht hinreichend; was
+danach bleibt, ist die Anweisungsbefolgung selbst, und dagegen hilft keine
+Toleranz im Gate.
+
+
+## 18. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -1572,7 +1717,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 18. Nachprüfen
+## 19. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
