@@ -1,4 +1,5 @@
-import { acceptanceMode, validateActionShape } from "./schema.mjs";
+import { acceptanceMode, minSpanChars, validateActionShape } from "./schema.mjs";
+import { relaxedSpan } from "./policies/rule.mjs";
 import { registerAttemptFailure, resolveByCitations, reviewPerspective } from "./needs.mjs";
 import { nextNodeId, nodeById } from "./state.mjs";
 
@@ -65,6 +66,32 @@ export function applyProposal(state, proposal, eventSeq) {
 
   if (proposal.type === "ADD_PROPOSAL") {
     if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "proposal text required");
+
+    // The anchor task. Acceptance is a string lookup against the one observation
+    // this need points at, and there is no path to acceptance that does not pass
+    // through it — no cell is asked whether the quote is any good.
+    if (acceptanceMode(state) === "anchor") {
+      if (target.kind !== "observation") return reject("TARGET_MISMATCH", "an anchored proposal must quote an observation");
+      const quoted = relaxedSpan(target.text, payload.text.trim());
+      if (!quoted) return reject("NOT_ANCHORED", "this text does not occur in the observation");
+      if (quoted.length < minSpanChars(state)) return reject("SPAN_TOO_SHORT", `a quote must reach config.min_span_chars (${minSpanChars(state)})`);
+      if (duplicates(state, ["proposal"], quoted)) return reject("DUPLICATE_PROPOSAL", "this passage is already in the register");
+      // What goes into the tissue is the observation's own slice, never the
+      // cell's wording, so a quote that survived only whitespace tolerance still
+      // reproduces the source exactly. The receipt keeps what the cell wrote.
+      const id = nextNodeId(state, "proposal");
+      state.nodes.push({ id, kind: "proposal", status: "accepted", text: quoted, source: "quoting-cell", created_event: eventSeq });
+      const edgeId = addEdge(state, id, target.id, "quotes", eventSeq);
+      need.status = "resolved";
+      return {
+        accepted: true,
+        code: "ANCHORED",
+        message: id,
+        mutations: [`node:${id}`, `edge:${edgeId}`, `need:${need.id}`],
+        ...(quoted === payload.text.trim() ? {} : { relaxed_from: payload.text.trim() }),
+      };
+    }
+
     if (duplicates(state, ["proposal", "synthesis"], payload.text)) return reject("DUPLICATE_PROPOSAL", "proposal already exists, including rejected paths");
     let question;
     const mutations = [];

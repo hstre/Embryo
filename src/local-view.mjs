@@ -63,7 +63,9 @@ export function buildLocalView(state, need) {
     embryo_id: state.embryo_id,
     generation: state.generation,
     max_text_chars: state.config.max_text_chars,
-    role: need.kind === "QUESTION"
+    role: acceptanceMode(state) === "anchor"
+      ? "quoter"
+      : need.kind === "QUESTION"
       ? "questioner"
       : need.kind === "REVIEW_FRAGMENT"
         ? "reviewer"

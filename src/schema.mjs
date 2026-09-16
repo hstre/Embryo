@@ -16,13 +16,15 @@ const REQUIRED_CONFIG_KEYS = new Set([
 ]);
 // Optional, so that states written before the citation mechanism existed stay
 // valid and keep their digest. A seed opts in by setting them.
-const ACCEPTANCE_MODES = new Set(["verdict", "citation"]);
+// "anchor" is the precondition task: no cell judges anything, the gate checks
+// whether a proposal quotes its observation, and nothing else can be accepted.
+const ACCEPTANCE_MODES = new Set(["verdict", "citation", "anchor"]);
 // How much the reviewers of one panel may know of each other. "sighted" is the
 // behaviour every run before 012 had and stays the default, so their receipts
 // keep their hashes. "logged" keeps the arms sighted but makes the gate account
 // for what each could have read; "blind" additionally withholds the siblings.
 const PANEL_INDEPENDENCE = new Set(["sighted", "logged", "blind"]);
-const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars"]);
 const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
@@ -53,6 +55,9 @@ function validateOptionalConfig(config) {
   if (Object.hasOwn(config, "required_support")) {
     invariant(Number.isInteger(config.required_support) && config.required_support > 0, "config.required_support must be a positive integer");
   }
+  if (Object.hasOwn(config, "min_span_chars")) {
+    invariant(Number.isInteger(config.min_span_chars) && config.min_span_chars > 0, "config.min_span_chars must be a positive integer");
+  }
   if (Object.hasOwn(config, "panel_independence")) {
     invariant(PANEL_INDEPENDENCE.has(config.panel_independence), "config.panel_independence must be sighted, logged or blind");
     // The accounting is about citations. Asking for it where acceptance comes from
@@ -79,6 +84,12 @@ export function requiredSupport(state) {
 // their agreement is worth anything. The seed's second premise says a majority
 // among correlated instances is not evidence; this is the knob that lets a run
 // answer that question about its own panel instead of assuming it away.
+// How much of an observation a quote has to reproduce before it counts. Below
+// this a proposal can anchor on a comma and pass.
+export function minSpanChars(state) {
+  return state.config.min_span_chars ?? 40;
+}
+
 export function panelIndependence(state) {
   return state.config.panel_independence ?? "sighted";
 }

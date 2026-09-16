@@ -219,6 +219,29 @@ export class SmolLmPolicy {
       };
     }
 
+    // The quoting cell. It is given the passage to quote from — C3c0 measured that
+    // copying without a target fails on both model sizes — and asked for nothing
+    // but a copy. No selection, no judgement, no language production.
+    if (view.role === "quoter") {
+      const text = await ask(
+        [
+          "You copy text. Reply with one sentence copied word for word from the passage below.",
+          "Change nothing, translate nothing, explain nothing. Output only the sentence.",
+        ].join("\n"),
+        [
+          `Passage:\n${view.target.text}`,
+          ...(view.accepted_proposals.length ? ["Already in the register; copy a different sentence:", ...bullets(view.accepted_proposals)] : []),
+        ],
+        220,
+      );
+      return {
+        action: text
+          ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty quote" } },
+        trace: { raw_output: text },
+      };
+    }
+
     if (need.kind === "PROPOSE") {
       const text = await ask(
         [

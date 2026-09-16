@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createState, readJson } from "../src/state.mjs";
+import { createState, nodeById, readJson } from "../src/state.mjs";
 import { deriveNeeds, canGrow, reviewPerspective } from "../src/needs.mjs";
 import { PanelWithRulePolicy, RulePolicy } from "../src/policies/rule.mjs";
 import { applyProposal } from "../src/gate.mjs";
@@ -708,4 +708,92 @@ test("only the named stage is handed to the rule", async () => {
       : action, state.next_event_seq);
   }
   assert.deepEqual(seen, [["adversarial", "MODEL"], ["charitable", "MODEL"], ["coherence", "ADD_REVIEW_FRAGMENT"]]);
+});
+
+// --- The precondition task: quote the environment, and let the gate check it ---
+
+const anchoredSeedPath = new URL("../examples/seed-anchored.json", import.meta.url);
+
+async function anchoredState(overrides = {}) {
+  const seed = await readJson(anchoredSeedPath);
+  return createState({ ...seed, config: { ...seed.config, ...overrides } });
+}
+
+function quote(state, text) {
+  const need = deriveNeeds(state)[0];
+  return { need, decision: applyProposal(state, { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }, state.next_event_seq) };
+}
+
+test("the anchor task recruits one need per unquoted observation and nothing else", async () => {
+  const state = await anchoredState();
+  const needs = deriveNeeds(state);
+  assert.deepEqual([...new Set(needs.map((need) => need.kind))], ["PROPOSE"]);
+  assert.deepEqual(needs.map((need) => need.target_id), state.nodes.filter((node) => node.kind === "observation").map((node) => node.id));
+  // No judgement anywhere: the modes that ask a cell for one are out of the loop.
+  assert.equal(buildLocalView(state, needs[0]).view.role, "quoter");
+  assert.equal(needs.some((need) => ["REVIEW_FRAGMENT", "META_REVIEW", "QUESTION", "SYNTHESIZE"].includes(need.kind)), false);
+});
+
+test("a quote is accepted by lookup, and the tissue keeps the source's own wording", async () => {
+  const state = await anchoredState();
+  const observation = state.nodes.find((node) => node.id === "observation-01");
+  const passage = observation.text.slice(0, 60);
+  // The cell writes it with the whitespace flattened, as a model quoting across a
+  // line break would. The gate finds it and stores the observation's own slice.
+  const { decision } = quote(state, passage.replace(/\s+/g, "  "));
+  assert.equal(decision.code, "ANCHORED");
+  const stored = state.nodes.find((node) => node.id === decision.message);
+  assert.equal(stored.status, "accepted");
+  assert.ok(observation.text.includes(stored.text));
+  assert.equal(decision.relaxed_from, passage.replace(/\s+/g, "  ").trim());
+  // And the edge the coverage rule reads is the gate's, not the cell's.
+  assert.ok(state.edges.some((edge) => edge.from === stored.id && edge.to === observation.id && edge.relation === "quotes"));
+  assert.equal(deriveNeeds(state).some((need) => need.target_id === "observation-01"), false);
+});
+
+test("paraphrase, a too-short span and a repeat are all refused", async () => {
+  const cases = [
+    ["Verantwortung und Rechtfertigung fallen auseinander, und das ist der Punkt.", "NOT_ANCHORED"],
+    ["Verantwortung und", "SPAN_TOO_SHORT"],
+  ];
+  for (const [text, code] of cases) {
+    const state = await anchoredState();
+    assert.equal(quote(state, text).decision.code, code, text);
+  }
+  // A quote has to come from the observation its need points at. Offering the
+  // first observation's passage against the second is not a duplicate but a
+  // miss, and the gate says so before it ever looks at the register.
+  const state = await anchoredState();
+  const passage = state.nodes.find((node) => node.id === "observation-01").text.slice(0, 60);
+  assert.equal(quote(state, passage).decision.code, "ANCHORED");
+  assert.equal(quote(state, passage).decision.code, "NOT_ANCHORED");
+
+  // The duplicate guard is reachable only where two observations share a
+  // passage, which the need order cannot rule out.
+  const seed = await readJson(anchoredSeedPath);
+  const repeated = createState({
+    ...seed,
+    observations: [seed.observations[0], { ...seed.observations[0], id: "observation-02" }],
+    config: { ...seed.config, target_proposals: 2 },
+  });
+  const shared = repeated.nodes.find((node) => node.id === "observation-01").text.slice(0, 60);
+  assert.equal(quote(repeated, shared).decision.code, "ANCHORED");
+  assert.equal(quote(repeated, shared).decision.code, "DUPLICATE_PROPOSAL");
+});
+
+test("a perfect quoter reaches the target, which is what makes a failure readable", async () => {
+  // The positive control for the task itself: if this did not close, a run that
+  // does not close would say nothing about the cells.
+  const state = await anchoredState();
+  let guard = 0;
+  while (canGrow(state) && guard < 20) {
+    const need = deriveNeeds(state)[0];
+    const observation = nodeById(state, need.target_id);
+    applyProposal(state, { type: "ADD_PROPOSAL", need_id: need.id, payload: { text: observation.text.slice(0, 70) } }, state.next_event_seq);
+    state.energy_spent += 1;
+    guard += 1;
+  }
+  assert.equal(state.nodes.filter((node) => node.kind === "proposal" && node.status === "accepted").length, 4);
+  assert.equal(state.nodes.find((node) => node.kind === "goal").status, "accepted");
+  assert.equal(canGrow(state), false);
 });

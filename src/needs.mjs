@@ -38,6 +38,9 @@ function conditionStillHolds(state, need) {
     return target.kind === "goal" && target.status === "open" && accepted < state.config.target_proposals;
   }
   if (need.kind === "PROPOSE") {
+    // In the anchor task a need points at an observation and stays open until
+    // some proposal quotes it. Nothing judges; coverage is the only state.
+    if (target.kind === "observation") return !quotedObservations(state).has(target.id);
     return (target.kind === "question" && target.status === "open")
       || (target.kind === "proposal" && target.status === "revision_requested");
   }
@@ -88,6 +91,18 @@ function ensureReviewPanel(state, targetId) {
     const need = ensureNeed(state, "REVIEW_FRAGMENT", targetId, String(stage));
     need.stage = stage;
   }
+}
+
+// Observations some accepted proposal already quotes. The edge is the record;
+// no cell can create one, because only the gate adds it.
+export function quotedObservations(state) {
+  const quoted = new Set();
+  for (const edge of state.edges) {
+    if (edge.relation !== "quotes") continue;
+    const source = nodeById(state, edge.from);
+    if (source?.status === "accepted") quoted.add(edge.to);
+  }
+  return quoted;
 }
 
 function citedObservations(state, fragmentId) {
@@ -260,10 +275,34 @@ export function registerAttemptFailure(state, need) {
   return mutations;
 }
 
+// The precondition task, derived the same way every other need is: from the
+// tissue. One need per observation nobody has quoted yet, in the order the seed
+// supplied them, and the goal closes when enough of them are covered. There is
+// no question, no review panel and no synthesis — every capability the ladder
+// measured as absent is out of the loop, and what is left is the one it
+// measured as present.
+function deriveAnchorNeeds(state) {
+  const quoted = quotedObservations(state);
+  const goal = state.nodes.find((node) => node.kind === "goal");
+  if (quoted.size >= state.config.target_proposals) {
+    goal.status = "accepted";
+    for (const need of state.needs) if (need.status === "open") need.status = "resolved";
+    return [];
+  }
+  for (const node of state.nodes) {
+    if (node.kind !== "observation" || quoted.has(node.id)) continue;
+    ensureNeed(state, "PROPOSE", node.id);
+  }
+  return state.needs
+    .filter((need) => need.status === "open")
+    .sort((a, b) => (nodeById(state, a.target_id)?.ordinal ?? 0) - (nodeById(state, b.target_id)?.ordinal ?? 0) || a.id.localeCompare(b.id));
+}
+
 export function deriveNeeds(state) {
   for (const need of state.needs) {
     if (need.status === "open" && !conditionStillHolds(state, need)) need.status = "resolved";
   }
+  if (acceptanceMode(state) === "anchor") return deriveAnchorNeeds(state);
 
   for (const node of state.nodes) {
     if (["proposal", "synthesis"].includes(node.kind) && node.status === "unreviewed") {
