@@ -24,7 +24,7 @@ const ACCEPTANCE_MODES = new Set(["verdict", "citation", "anchor"]);
 // keep their hashes. "logged" keeps the arms sighted but makes the gate account
 // for what each could have read; "blind" additionally withholds the siblings.
 const PANEL_INDEPENDENCE = new Set(["sighted", "logged", "blind"]);
-const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping"]);
 const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
@@ -54,6 +54,9 @@ function validateOptionalConfig(config) {
   }
   if (Object.hasOwn(config, "required_support")) {
     invariant(Number.isInteger(config.required_support) && config.required_support > 0, "config.required_support must be a positive integer");
+  }
+  if (Object.hasOwn(config, "tolerate_wrapping")) {
+    invariant(typeof config.tolerate_wrapping === "boolean", "config.tolerate_wrapping must be a boolean");
   }
   if (Object.hasOwn(config, "show_register")) {
     invariant(typeof config.show_register === "boolean", "config.show_register must be a boolean");
@@ -96,6 +99,13 @@ export function minSpanChars(state) {
 // Whether a quoting cell is shown what the register already holds. It was shown
 // it in 016 and 017 so that it would quote something else; both runs suggest it
 // copies that instead. Default true keeps those two replaying unchanged.
+// Whether the gate looks past quotation marks and a list bullet around a cell's
+// answer. Default false: runs 018 and 019 recorded four rejections of exactly
+// that shape, and their receipts have to keep saying so.
+export function tolerateWrapping(state) {
+  return state.config.tolerate_wrapping ?? false;
+}
+
 export function showRegister(state) {
   return state.config.show_register ?? true;
 }

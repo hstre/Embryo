@@ -1,4 +1,4 @@
-import { acceptanceMode, minSpanChars, validateActionShape } from "./schema.mjs";
+import { acceptanceMode, minSpanChars, tolerateWrapping, validateActionShape } from "./schema.mjs";
 import { relaxedSpan } from "./policies/rule.mjs";
 import { registerAttemptFailure, resolveByCitations, reviewPerspective } from "./needs.mjs";
 import { nextNodeId, nodeById } from "./state.mjs";
@@ -14,6 +14,17 @@ const VERDICTS = new Set(["ACCEPT", "REVISE", "REJECT"]);
 
 function reject(code, message) {
   return { accepted: false, code, message, mutations: [] };
+}
+
+// What a cell wraps around its answer, stripped before the lookup. Quotation
+// marks and a list bullet are how the answer is *presented*; they say nothing
+// about what it says, and 016 to 019 recorded four rejections of passages the
+// observation contains verbatim, refused on nothing else. Only the outside is
+// touched, and what the tissue stores is still the observation's own slice, so
+// this tolerates presentation in the same sense whitespace tolerance does — not
+// paraphrase, which a changed word inside still fails.
+function unwrap(text) {
+  return text.trim().replace(/^[-*\s"„»'`]+/, "").replace(/["“«'`\s]+$/, "").trim();
 }
 
 function normalize(text) {
@@ -72,7 +83,8 @@ export function applyProposal(state, proposal, eventSeq) {
     // through it — no cell is asked whether the quote is any good.
     if (acceptanceMode(state) === "anchor") {
       if (target.kind !== "observation") return reject("TARGET_MISMATCH", "an anchored proposal must quote an observation");
-      const quoted = relaxedSpan(target.text, payload.text.trim());
+      const offered = tolerateWrapping(state) ? unwrap(payload.text) : payload.text.trim();
+      const quoted = offered ? relaxedSpan(target.text, offered) : null;
       if (!quoted) return reject("NOT_ANCHORED", "this text does not occur in the observation");
       if (quoted.length < minSpanChars(state)) return reject("SPAN_TOO_SHORT", `a quote must reach config.min_span_chars (${minSpanChars(state)})`);
       if (duplicates(state, ["proposal"], quoted)) return reject("DUPLICATE_PROPOSAL", "this passage is already in the register");

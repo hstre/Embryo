@@ -797,3 +797,19 @@ test("a perfect quoter reaches the target, which is what makes a failure readabl
   assert.equal(state.nodes.find((node) => node.kind === "goal").status, "accepted");
   assert.equal(canGrow(state), false);
 });
+
+test("the gate looks past how a cell wraps its answer, but not past a changed word", async () => {
+  const state = await anchoredState({ tolerate_wrapping: true });
+  const passage = state.nodes.find((node) => node.id === "observation-01").text.slice(0, 60).trim();
+  // Runs 016 to 019 recorded four rejections of exactly this shape.
+  assert.equal(quote(state, `- "${passage}"`).decision.code, "ANCHORED");
+  assert.equal(state.nodes.find((node) => node.kind === "proposal").text, passage);
+
+  // A word changed inside still fails, with or without the tolerance.
+  const changed = await anchoredState({ tolerate_wrapping: true });
+  assert.equal(quote(changed, `"${passage.replace("Begründung", "Begruendung")}"`).decision.code, "NOT_ANCHORED");
+
+  // And off by default, so the runs that recorded those rejections keep them.
+  const strict = await anchoredState();
+  assert.equal(quote(strict, `- "${passage}"`).decision.code, "NOT_ANCHORED");
+});
