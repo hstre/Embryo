@@ -210,6 +210,60 @@ const probes = {
     console.log(`     ${JSON.stringify(revision.slice(0, 110))}`);
   },
 
+  // Grounding by verbatim quotation rather than by naming an id, after the
+  // admission gate in hstre/budget-review: a claim carries a raw span, and the gate
+  // checks with a plain string search whether that span occurs in the source. The
+  // cell then only has to copy, never to select an identifier or judge relevance.
+  // Anchoring and correctness are reported apart, because the gate there checks the
+  // first and deliberately does not check the second.
+  async "span-anchor"() {
+    const seed = await readJson(new URL("../examples/seed-grounded.json", import.meta.url));
+    const document = seed.observations.map((o) => o.text).join("\n");
+    const strip = (t) => t.trim().replace(/^["„»'`]+|["“«'`.]+$/g, "").trim();
+    const squash = (t) => t.replace(/\s+/g, " ").trim();
+
+    const check = (answer, expected) => {
+      const span = strip(answer);
+      const exact = span.length > 0 && document.includes(span);
+      const loose = span.length > 0 && squash(document).includes(squash(span));
+      const right = expected ? squash(expected).includes(squash(span)) && squash(span).length > 20 : null;
+      return { span, exact, loose, right };
+    };
+
+    // C3c0 — pure copying: no selection at all.
+    const any = await policy.generate([
+      { role: "system", content: "You copy text. Reply with one sentence copied word for word from the text. Do not change anything." },
+      { role: "user", content: `${document}\n\nCopy one sentence from the text above, word for word.` },
+    ], 96, "cell");
+    const a = check(any, null);
+    console.log(`C3c0  reines Kopieren            ${a.exact ? "BESTANDEN" : "gescheitert"}   ` +
+      `${a.exact ? "wörtlich gefunden" : a.loose ? "nur nach Whitespace-Normalisierung" : "nicht im Text"}`);
+    console.log(`      ${JSON.stringify(a.span.slice(0, 100))}\n`);
+
+    // C3c1 — copying plus the same selection difficulty as C3a, at three positions.
+    const targets = [
+      ["Rechenleistung", seed.observations[5].text],
+      ["Zeitlichkeit", seed.observations[2].text],
+      ["vervielfältigbar", seed.observations[1].text],
+    ];
+    let anchored = 0;
+    let correct = 0;
+    for (const [term, expected] of targets) {
+      const answer = await policy.generate([
+        { role: "system", content: "You copy text. Reply with the sentence copied word for word. Do not change anything, do not explain." },
+        { role: "user", content: `${document}\n\nCopy the sentence that contains the word "${term}", word for word.` },
+      ], 96, "cell");
+      const r = check(answer, expected);
+      if (r.exact) anchored += 1;
+      if (r.exact && r.right) correct += 1;
+      console.log(`  "${term}"`.padEnd(22) + `${r.exact ? "verankert" : r.loose ? "nur lose" : "NICHT im text"}` +
+        `${r.exact ? (r.right ? " · richtiger satz" : " · FALSCHER satz") : ""}`);
+      console.log(`      ${JSON.stringify(r.span.slice(0, 100))}`);
+    }
+    console.log(`\nC3c1  Verankerung (was das Gate prüft)   ${anchored}/3`);
+    console.log(`      Richtigkeit (was es nicht prüft)   ${correct}/3`);
+  },
+
   // The small swap probe has nine pairs — enough to see 0/9 at 360M, not enough to
   // read a rate off. This one uses three quality tiers of four candidates, every
   // pair in both orders, and separates the two questions that matter: does a
