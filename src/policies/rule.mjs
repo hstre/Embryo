@@ -25,6 +25,65 @@
 
 const DEFAULT_MIN_SPAN = 24;
 
+// Whitespace-collapsed copy of a text, plus the index in the original that each
+// collapsed character came from. Taken from budget-review's repair pass on the
+// claude/gold-recall-echr branch, where it turned out to be the difference
+// between 20 and 23 of 24 gold spans on a court decision.
+function collapsed(text) {
+  const out = [];
+  const origin = [];
+  let previousSpace = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (/\s/.test(character)) {
+      if (!previousSpace) {
+        out.push(" ");
+        origin.push(index);
+      }
+      previousSpace = true;
+      continue;
+    }
+    out.push(character);
+    origin.push(index);
+    previousSpace = false;
+  }
+  return { text: out.join(""), origin };
+}
+
+// The document's own text for a span that differs from it only in whitespace.
+// What comes back is the document's slice, never the quoting model's wording, so
+// a claim built on it still quotes the source exactly. A span the document does
+// not contain, whitespace aside, still returns null: this tolerates typesetting,
+// not paraphrase — which is the distinction Beleg K is about, and which the
+// report previously ran together with this one.
+export function relaxedSpan(document, span) {
+  const needle = span.split(/\s+/).filter(Boolean).join(" ");
+  if (!needle) return null;
+  const haystack = collapsed(document);
+  const position = haystack.text.indexOf(needle);
+  if (position < 0) return null;
+  return document.slice(haystack.origin[position], haystack.origin[position + needle.length - 1] + 1);
+}
+
+// Where a quoted span stops matching the document, and what stands there. A
+// rejected quote is only actionable if it says which character broke it: a
+// truncated preview cannot tell a dropped line break from a rewritten word.
+export function divergence(document, span, window = 30) {
+  let low = 0;
+  let high = span.length;
+  while (low < high) {
+    const middle = Math.floor((low + high + 1) / 2);
+    if (document.includes(span.slice(0, middle))) low = middle;
+    else high = middle - 1;
+  }
+  const offset = low ? document.indexOf(span.slice(0, low)) : -1;
+  return {
+    prefix: low,
+    document: offset >= 0 ? document.slice(offset + low, offset + low + window) : "",
+    span: span.slice(low, low + window),
+  };
+}
+
 // Longest passage the two strings share verbatim. No case folding, no
 // whitespace collapsing: at 1.7B the one corrupted quote of the span probe
 // altered a single word inside 209 otherwise perfect characters, which is the

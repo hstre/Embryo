@@ -828,7 +828,14 @@ Modell:  …Was als gemeines   Vergangenheit gilt…
 
 Eine unscharfe oder semantische Prüfung hätte das durchgewinkt — „gemeines"
 statt „gemeinsame" ändert die Bedeutung, nicht die Ähnlichkeit. Die Stringsuche
-fängt es. Das ist zugleich ein Argument gegen Whitespace-Toleranz im Gate.
+fängt es.
+
+Den Zusatz, den hier zuvor stand — *„zugleich ein Argument gegen
+Whitespace-Toleranz im Gate"* —, nehme ich zurück. Er wirft zwei Dinge
+zusammen, die Abschnitt 16 trennt: Leerraum-Toleranz, die den Satzspiegel
+verzeiht und dabei die Textstelle des Dokuments zurückgibt, lässt genau diese
+Verfälschung weiterhin durchfallen. Beleg K spricht gegen Toleranz gegenüber
+**Umformulierung**, nicht gegen Toleranz gegenüber **Zeilenumbrüchen**.
 
 Ohne Befundcharakter, weil n=3: die beiden exakten Zitate waren 45 und 56
 Zeichen lang, das korrumpierte 209. Das war zu messen, bevor etwas gebaut wird.

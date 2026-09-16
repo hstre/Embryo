@@ -8,7 +8,7 @@
 //   node tools/probe.mjs pairwise-swap         does a pairwise preference survive swapping the two candidates?
 import { SmolLmPolicy } from "../src/policies/smollm.mjs";
 import { readJson } from "../src/state.mjs";
-import { anchoredObservation, longestCommonSpan } from "../src/policies/rule.mjs";
+import { anchoredObservation, divergence, longestCommonSpan, relaxedSpan } from "../src/policies/rule.mjs";
 import { readReceipts } from "../src/ledger.mjs";
 import { replay } from "../src/replay.mjs";
 import { buildLocalView } from "../src/local-view.mjs";
@@ -299,14 +299,42 @@ const probes = {
           { role: "user", content: `${document}\n\n${template.replace("%s", term)}` },
         ], 220, "cell");
         const span = strip(out);
-        rows.push({ setting, term, len: span.length, exact: span.length > 0 && document.includes(span) });
+        // Exact and whitespace-relaxed are reported separately. budget-review's
+        // gold-recall branch found that on a hard-wrapped court decision 14 of 18
+        // rejected quotes broke at a line break, and tolerating that — while still
+        // returning the document's own slice — moved recall from 20 to 23 of 24.
+        // Whether the same holds here is a measurement, not an assumption.
+        const relaxed = span.length > 0 ? relaxedSpan(document, span) : null;
+        rows.push({
+          setting,
+          term,
+          len: span.length,
+          exact: span.length > 0 && document.includes(span),
+          relaxed: Boolean(relaxed),
+          break: span.length > 0 && !document.includes(span) ? divergence(document, span) : null,
+        });
       }
     }
 
     const bands = [[0, 40], [40, 80], [80, 140], [140, Infinity]];
-    console.log("Vorgabe   Begriff            länge  verankert");
+    console.log("Vorgabe   Begriff            länge  exakt  nur über Leerraum");
     for (const r of rows) {
-      console.log(`${r.setting.padEnd(9)} ${r.term.padEnd(18)} ${String(r.len).padStart(5)}  ${r.exact ? "ja" : "NEIN"}`);
+      console.log(`${r.setting.padEnd(9)} ${r.term.padEnd(18)} ${String(r.len).padStart(5)}  ${(r.exact ? "ja" : "NEIN").padEnd(6)} ${r.exact ? "" : r.relaxed ? "GERETTET" : "nein"}`);
+    }
+    const rescued = rows.filter((r) => !r.exact && r.relaxed);
+    console.log(`\nexakt ${rows.filter((r) => r.exact).length}/${rows.length}` +
+      `  ·  mit Leerraum-Toleranz ${rows.filter((r) => r.exact || r.relaxed).length}/${rows.length}` +
+      `  ·  davon allein durch Leerraum gerettet ${rescued.length}`);
+    // What the ones that are still not found actually broke on. A count without
+    // this cannot tell a line break from a rewritten word.
+    const stillMissing = rows.filter((r) => !r.exact && !r.relaxed && r.break);
+    if (stillMissing.length) {
+      console.log("\nBruchstellen der weiterhin nicht gefundenen Spannen");
+      for (const r of stillMissing.slice(0, 6)) {
+        console.log(`  ${r.term.padEnd(18)} passt bis zeichen ${String(r.break.prefix).padStart(4)}`);
+        console.log(`    Dokument: ${JSON.stringify(r.break.document)}`);
+        console.log(`    Modell:   ${JSON.stringify(r.break.span)}`);
+      }
     }
     console.log("\nexakte Verankerung nach tatsächlicher Spanlänge");
     for (const [lo, hi] of bands) {
@@ -596,7 +624,14 @@ const probes = {
       for (const node of state.nodes) {
         if (!["proposal", "synthesis"].includes(node.kind)) continue;
         const longest = observations.map((observation) => longestCommonSpan(node.text, observation.text).length).reduce((a, b) => Math.max(a, b), 0);
-        rows.push({ label: `${run}/${node.id}`, chars: node.text.length, longest });
+        // The same count on whitespace-collapsed text. On budget-review's court
+        // decision this was the whole difference; here it is a control against
+        // reading a typesetting artefact as an absence of contact.
+        const flat = (text) => text.split(/\s+/).filter(Boolean).join(" ");
+        const longestFlat = observations
+          .map((observation) => longestCommonSpan(flat(node.text), flat(observation.text)).length)
+          .reduce((a, b) => Math.max(a, b), 0);
+        rows.push({ label: `${run}/${node.id}`, chars: node.text.length, longest, longestFlat });
       }
     }
 
@@ -621,8 +656,11 @@ const probes = {
     }
     for (const threshold of [8, 16, 24, 40]) {
       const firing = rows.filter((row) => row.longest >= threshold).length;
-      console.log(`  Schwelle ${String(threshold).padStart(2)}: ${firing}/${rows.length} Vorschläge verankert`);
+      const flat = rows.filter((row) => row.longestFlat >= threshold).length;
+      console.log(`  Schwelle ${String(threshold).padStart(2)}: ${firing}/${rows.length} exakt, ${flat}/${rows.length} mit Leerraum-Toleranz`);
     }
+    const maxFlat = rows.reduce((a, row) => Math.max(a, row.longestFlat), 0);
+    console.log(`  längste Spanne über alle Vorschläge: ${rows.reduce((a, row) => Math.max(a, row.longest), 0)} exakt, ${maxFlat} über Leerraum`);
     // The archive is English against German premises, so a zero here is partly a
     // language artefact. Naming the bound is the point of printing it.
     console.log(`\n  Die Vorschläge im Archiv sind englisch, die Prämissen deutsch — eine Null oben`);
