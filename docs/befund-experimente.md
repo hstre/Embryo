@@ -936,7 +936,197 @@ Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind"* —
 und im Embryo-Code steht davon nichts: die Zitat-Regel zählt verschiedene
 Belege, nie die Unabhängigkeit der zitierenden Zellen.
 
-## 14. Was offen bleibt
+## 14. Die korrelierten Instanzen
+
+Die zweite Prämisse des Seeds steht seit 009 in der Umgebung:
+
+> *Modellinstanzen sind beliebig vervielfältigbar. Eine Mehrheit unter ihnen ist
+> kein Beleg, solange die Instanzen korreliert sind, weil sie denselben Fehler
+> gemeinsam machen.*
+
+Im Code stand davon nichts. `citationVerdict` zählte verschiedene Beobachtungen
+und fragte nicht, welcher Arm sie zitiert hatte und was dieser Arm vorher gelesen
+hatte. Dabei ist Embryos Panel der Lehrbuchfall: drei Durchläufe **eines** Modells,
+unterschieden durch ein Wort im Prompt, und jeder Arm sieht die Fragmente der Arme
+vor ihm in seiner Local View. Das Gate zählte also Stimmen, die es selbst
+korreliert erzeugt hatte.
+
+### Was eingebaut wurde
+
+Aus [budget-review][br] stammt nicht nur das Span-Gate, sondern auch dessen
+Buchführung: dort laufen mehrere Prüfarme über denselben Claim-Graph, ohne
+einander zu sehen, und ihre Übereinstimmung wird als *Überlappung* konsolidiert —
+protokolliert, nie als Bestätigung gelesen.
+
+Übernommen als `config.panel_independence` mit drei Stufen:
+
+| Stufe | Arme sehen einander | Gate verbucht | Wirkung |
+| --- | --- | --- | --- |
+| `sighted` | ja | nein | exakt das alte Verhalten, Vorgabe |
+| `logged` | ja | ja | nur unabhängige Zitate zählen |
+| `blind` | nein | ja | Local View hält die Geschwisterfragmente zurück |
+
+`supportLedger()` klassifiziert jedes stützende Zitat als **support** (erster Arm,
+unabhängig von den Armen vor ihm), **overlap** (ein späterer Arm auf derselben
+Beobachtung) oder **correlated** (ein Arm, der die Arme vor sich lesen konnte).
+Nur `support` zählt gegen `required_support`. Nichts in dieser Buchführung markiert
+eine Behauptung als wahr; sie protokolliert, worauf das Panel übereinstimmte und
+was diese Übereinstimmung wert war. Ein Widerspruch behält sein volles Gewicht —
+ein Gegenbeispiel ist keine Stimme —, wird aber mit dem Vermerk aufgezeichnet, ob
+der widersprechende Arm blind war.
+
+Blind ist ausdrücklich nur das Panel. Ein Vorschlagender liest weiter akzeptierte
+und verworfene Spuren, ein Überarbeitender liest die Reviews. Das Panel ist die
+einzige Stelle, an der eine Spur später *gezählt* wird, und eine Zählung von
+Instanzen, die einander gelesen haben, zählt eine Instanz.
+
+`sighted` bleibt die Vorgabe, damit die Läufe 006 bis 011 ihre Receipt-Hashes
+behalten. Alle sechs sind gegen den erweiterten Code weiterhin replay-stabil.
+
+### 012 und 013 — und was sie nicht unterscheidet
+
+Zwei Läufe gegen dieselbe Umgebung, dasselbe angeheftete 360M und dieselbe
+gescorte Zitatwahl wie 011. Unterschied allein: ob ein Reviewer seine Nachbarn
+sieht und ob das Gate die Überlappung verbucht.
+
+| | 011 | 012 | 013 |
+| --- | --- | --- | --- |
+| Panel | sichtbar | **blind** | sichtbar |
+| Buchführung | keine | ja | ja |
+| Zellen | 25 | 25 | 25 |
+| Knoten im Gewebe | 22 | 22 | 22 |
+| akzeptierte Vorschläge | 0 | 0 | 0 |
+
+Die drei Gewebe sind **knotenweise identisch** — gleiche Art, gleicher Status,
+gleicher Text, Knoten für Knoten. Das Panel zu blenden hat nichts geändert. Der
+Grund steht in den Zitaten: alle neun Review-Fragmente jedes Laufs zitieren
+`observation-01`, und zwar ausschließlich. In fünfundzwanzig Zellen kam nie ein
+zweites Zitat zustande. Die Unterscheidung zwischen einem unabhängigen und einem
+korrelierten Beleg bekam damit nie eine zweite Beobachtung, an der sie hätte
+greifen können; `correlated` bleibt in beiden Ledgern leer.
+
+Was die Buchführung zeigt, zeigt sie trotzdem. Über die drei Panels je Lauf:
+
+| Panel | support | overlap | Widersprüche | Verdikt |
+| --- | ---: | ---: | ---: | --- |
+| `proposal-0002` | 1 | 1 | 1 | REVISE |
+| `proposal-0006` | 1 | 2 | 0 | REJECT |
+| `proposal-0011` | 0 | 0 | 3 | REJECT |
+
+`proposal-0006` ist der interessante Fall: drei Arme, alle stützend, alle auf
+derselben Beobachtung — und im blinden Lauf haben sie das ohne einander getan.
+Das ist Konvergenz, nicht Abschrift, und die Buchführung verbucht sie trotzdem als
+Überlappung, die nichts hinzufügt. Genau das verlangt die Prämisse. Der höchste
+unabhängige Beleg in beiden Läufen ist 1 bei geforderten 2. Kein Verdikt hat sich
+gegenüber 011 geändert, weil die alte Regel bei einer einzigen Beobachtung
+ebenfalls ablehnte: **der Mechanismus ist richtig und war hier nicht tragend.**
+
+### Sind es drei Arme oder einer?
+
+Die Probe `panel-independence` fragt das direkt. Jede Perspektive rangiert die
+sechs Beobachtungen ohne Geschwisterfragment im Prompt.
+
+| | 360M | 1.7B |
+| --- | --- | --- |
+| verschiedene Spitzenwahlen der drei Arme | 1/3 | 1/3 |
+| paarweise gleiche Rangpositionen | **6/6** | **6/6** |
+
+Nicht nur derselbe Favorit: die vollständige Rangfolge aller sechs Beobachtungen
+ist zwischen allen drei Perspektiven identisch, auf beiden Modellgrößen. Das
+Perspektivwort ändert die Rangfolge an keiner einzigen Stelle. Die drei Reviewer
+sind eine Instanz mit drei Etiketten, und ihre Übereinstimmung trägt dem Gate
+nichts zu, gleich was es zählt.
+
+Der zweite Teil der Probe setzt dem Arm ein Geschwisterfragment vor, das
+ausgerechnet die Beobachtung zitiert, die er selbst auf den **letzten** Platz
+gesetzt hat:
+
+| | 360M | 1.7B |
+| --- | --- | --- |
+| Köder übernommen | 3/3 | 3/3 |
+| Kontrolle 1: Echo hält die eigene Wahl | 3/3 | 3/3 |
+| Kontrolle 2: blosse Nennung genügt | **0/3** | **3/3** |
+
+Der Arm übernimmt den Köder vollständig — von Platz sechs auf Platz eins, auf
+beiden Größen. Kontrolle 1 schließt aus, dass irgendein zusätzlicher Satz die
+Rangfolge destabilisiert: wird ihm sein eigener Favorit vorgesetzt, bleibt er
+dabei. Kontrolle 2 trennt, ob das *Zitat* übernommen wird oder nur der zuletzt
+genannte Bezeichner — dem Arm wird derselbe Köder in einem Satz vorgesetzt, der
+ihn ausdrücklich *abweist*. Auf 1.7B genügt die blosse Nennung, auf 360M nicht.
+
+Die beiden Zahlen sind allerdings nicht sauber vergleichbar: der Köder ist die
+jeweils letztplatzierte Beobachtung und damit auf den beiden Modellen eine
+andere. Was bleibt, ist auf beiden Größen dasselbe und reicht für den Zweck: ein
+sichtbarer Arm ist in keinem Sinne eine zweite Instanz.
+
+### Die Kontrolle, die das Zitat erledigt
+
+Bis hierher ließe sich die Einigkeit auf `observation-01` inhaltlich lesen — die
+Beobachtung handelt von Verantwortung und Begründung, die Vorschläge auch. Zwei
+Kontrollen prüfen das, und beide laufen gegen den Lauf selbst: die Probe
+`run-position` spult 012 bis zu jeder gescorten Zitatentscheidung zurück, baut die
+Local View wieder auf, die jene Zelle tatsächlich gesehen hat, und verändert darin
+nur eines.
+
+Dass die Rekonstruktion den Lauf **9/9** exakt trifft, ist die Voraussetzung dafür,
+den Rest überhaupt zu lesen.
+
+**Erste Kontrolle, Reihenfolge.** Die Liste wird umgedreht und rotiert. Die Wahl
+übersteht das in **6/9** Ansichten; über 27 Durchgänge gewinnt `observation-01`
+24-mal. Also kein Positionsartefakt — anders als in der synthetischen
+Promptform der Probe `citation-position`, wo stets die letztgenannte
+Beobachtung gewinnt. Welche Promptform man misst, entscheidet das Ergebnis; nur
+die Ansicht des Laufs zählt.
+
+**Zweite Kontrolle, Etiketten.** Der Scorer erzwingt die Bezeichner-Zeichenketten
+`observation-01` bis `observation-06` als Fortsetzungen. Die erste Kontrolle kann
+nicht ausschließen, dass schlicht `observation-01` die wahrscheinlichste dieser
+sechs Zeichenketten ist, egal wofür sie steht. Also bleibt die Reihenfolge fest,
+und die Etiketten wandern: jeder Text behält seinen Platz und bekommt den
+Bezeichner drei Stellen weiter.
+
+| Der Gewinner folgt … | |
+| --- | ---: |
+| dem Etikett | 3/9 |
+| dem Beobachtungstext | **0/9** |
+
+**Null von neun.** Kein einziges Mal folgt die Wahl dem Text, der im Lauf gewonnen
+hat. Sie folgt auch nicht sauber dem Etikett. Die Zelle rangiert
+Bezeichner-Zeichenketten in Listenplätzen; welche Beobachtung dahintersteht, hat
+auf das Ergebnis keinen messbaren Einfluss.
+
+Damit ist die Zitatschicht auf 360M abschließend beschrieben. Sie erzeugt formal
+gültige Referenzen — das Gate prüft korrekt, dass die zitierte Beobachtung
+existiert und von keiner Zelle erzeugt wurde — und diese Referenzen enthalten
+keine Information darüber, welche Beobachtung zur Sache gehört. Was die
+Buchführung dieses Abschnitts protokolliert, ist mithin nicht eine schwache
+Übereinstimmung, sondern gar keine: eine Instanz, die dreimal dieselbe
+Zeichenkette ausgibt.
+
+Die Grenze der Etikettenkontrolle gehört dazu: sie kann „Etikett" und „Etikett an
+diesem Listenplatz" nicht trennen, und sie steht auf neun Ansichten eines Modells.
+Für die Frage, ob der *Text* die Wahl bestimmt, genügt sie, denn dafür ist 0/9
+eindeutig.
+
+### Was daraus folgt
+
+Die Prämisse ist jetzt im Code und nicht mehr nur in der Umgebung. Sie hat in
+diesen Läufen kein Verdikt verändert, und das ist kein Einwand gegen sie, sondern
+ihr Befund: sie meldet, dass das Panel eine Stimme hat. Für eine Neuauflage auf
+1.7B bleibt sie die richtige Voreinstellung — dort gilt das Gleiche, 6/6
+identische Rangfolgen, und dort wird die Unterscheidung zwischen `support` und
+`overlap` gebraucht, sobald überhaupt zwei verschiedene Zitate zustande kommen.
+
+Offen bleibt der Teil, den budget-review anders löst: dort sind die Arme nicht
+nur blind, sondern **verschieden** — verschiedene Rollen, verschiedene
+Konfigurationen, ein deterministischer Prüfarm ohne Modell neben den
+Modellarmen. Embryos drei Perspektiven sind dasselbe Modell mit demselben
+Gewicht. Blendung macht daraus keine Unabhängigkeit; sie macht nur sichtbar, dass
+keine da ist. Echte Dekorrelation verlangt entweder verschiedene Modelle oder
+mindestens einen Arm, der gar keines ist — etwa eine deterministische Prüfung
+gegen die Umgebung, die kein Vorschlag bestehen kann, indem er sie überredet.
+
+## 15. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -1014,7 +1204,8 @@ holen statt aus der Zelle. Der zweite ist die stigmergische Antwort und im Rahme
 der bestehenden Invarianten zu haben.
 
 Er ist inzwischen gebaut und in 009, 010 und 011 geprüft; Abschnitt 11 wertet
-das aus. Beide Wege, an die Referenz zu kommen, sind damit durchgespielt: das
+das aus. Seine zweite Hälfte — die Unabhängigkeit der Instanzen, aus denen das
+Substrat sein Urteil bezieht — steht in Abschnitt 14. Beide Wege, an die Referenz zu kommen, sind damit durchgespielt: das
 Zitat schreiben zu lassen (009) und es aus der Verteilung zu lesen (011). Im
 ersten Fall kommt keine Referenz zustande, im zweiten eine formal gültige ohne
 Inhalt.
@@ -1082,7 +1273,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 15. Nachprüfen
+## 16. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -1102,6 +1293,15 @@ node tools/probe.mjs verdict-calibration
 node tools/probe.mjs verdict-order
 node tools/probe.mjs citation-position
 node tools/probe.mjs pairwise-swap
+
+# Ist das Panel drei Instanzen oder eine? Zwei Kontrollen eingebaut
+node tools/probe.mjs panel-independence
+
+# Die Zitatwahl gegen den Lauf selbst kontrollieren: Reihenfolge und Etiketten
+VIEWS=9 node tools/probe.mjs run-position
+
+# Die Überlappungsbuchführung aus einem fertigen Gewebe lesen
+node src/cli.mjs panel --state docs/runs/012/embryo.json
 
 # Reparaturen mit Regressionstests
 git fetch origin claude/review-needed-whfn3p && npm test
