@@ -875,8 +875,8 @@ diesem Vergleich ist nichts zu lesen.
 
 ### Wie oft die Messung selbst das Ergebnis war
 
-Diese Session hat fünf Zahlen produziert, die bei genauerem Hinsehen etwas
-anderes maßen als behauptet, und alle fünf stammen von mir:
+Diese Session hat sieben Zahlen produziert, die bei genauerem Hinsehen etwas
+anderes maßen als behauptet, und alle sieben stammen von mir:
 
 - Die Einzelmessung des Meta-Reviewers lieferte ein Verdikt, das im vollständigen
   Lauf nie zustande kam — die Ansicht war nicht repräsentativ.
@@ -888,8 +888,13 @@ anderes maßen als behauptet, und alle fünf stammen von mir:
 - Der Span-Test schnitt ein korrektes Zitat am Token-Limit ab und meldete es als
   nicht gefunden.
 - Aus neun Paaren wurde ein Diskriminator gelesen, den 48 Paare nicht hergeben.
+- Die Läufe 012 und 013 liefen im ersten Anlauf auf 135M statt auf 360M, weil
+  der Runner kein `--model` übergab und die Vorgabe der Policy 135M ist. Beide
+  wurden verworfen und angeheftet neu gefahren.
+- Die Stance-Messung ließ im ersten Anlauf die Frage aus dem Kontext weg und traf
+  den Lauf nur 4/9. Über den Replay-Pfad rekonstruiert trifft sie ihn 9/9.
 
-Keiner dieser Fehler hat die Richtung des Gesamtbefunds gedreht, aber drei
+Keiner dieser Fehler hat die Richtung des Gesamtbefunds gedreht, aber fünf
 hätten eine falsche Zahl in diesem Bericht hinterlassen. Sie stehen hier, weil
 der Bericht sonst genau den Fehler wiederholte, den er an fünf Experimenten
 beanstandet: eine Messung zu zitieren, ohne zu prüfen, ob sie misst, was sie
@@ -1117,8 +1122,8 @@ ihr Befund: sie meldet, dass das Panel eine Stimme hat. Für eine Neuauflage auf
 identische Rangfolgen, und dort wird die Unterscheidung zwischen `support` und
 `overlap` gebraucht, sobald überhaupt zwei verschiedene Zitate zustande kommen.
 
-Offen bleibt der Teil, den budget-review anders löst: dort sind die Arme nicht
-nur blind, sondern **verschieden** — verschiedene Rollen, verschiedene
+Der Teil, den budget-review anders löst, ist inzwischen gebaut und in Abschnitt
+15 gemessen: dort sind die Arme nicht nur blind, sondern **verschieden** — verschiedene Rollen, verschiedene
 Konfigurationen, ein deterministischer Prüfarm ohne Modell neben den
 Modellarmen. Embryos drei Perspektiven sind dasselbe Modell mit demselben
 Gewicht. Blendung macht daraus keine Unabhängigkeit; sie macht nur sichtbar, dass
@@ -1126,7 +1131,160 @@ keine da ist. Echte Dekorrelation verlangt entweder verschiedene Modelle oder
 mindestens einen Arm, der gar keines ist — etwa eine deterministische Prüfung
 gegen die Umgebung, die kein Vorschlag bestehen kann, indem er sie überredet.
 
-## 15. Was offen bleibt
+## 15. Der Arm, der kein Modell ist
+
+Abschnitt 14 endete mit der Forderung nach einem Prüfarm, der gar kein Modell
+ist. Dafür gibt es in diesem Umfeld bereits eine Messreihe — und sie ist negativ.
+
+[hstre/DESi][desi] wurde am 29. Juli 2026 eingestellt. Der zentrale Anspruch war,
+dass eine deterministische Governance-Schicht gegenüber einem starken
+Sprachmodell einen eigenständigen epistemischen Beitrag liefert. Vier Anläufe
+gegen extern erstellte Datensätze, zwei davon versiegelt:
+
+| Anspruch | Ergebnis |
+| --- | --- |
+| Regeln urteilen über Ableitungen (Entailment) | 7/20, drei Falschdurchlässe |
+| Regeln beschränken das Modellurteil (Vetoschicht) | **0 Reparaturen, 6 Schäden** in 80 Urteilen |
+| Regeln klassifizieren semantische Transformationen | mikro-F1 **0,25** gegen **0,727** des Modells |
+| Regeln führen einen Governance-Vertrag aus | alle Arme 1,000 — **auch ein entarteter** |
+
+Der vorgeschlagene Arm ist also nicht neu, sondern bereits widerlegt — in der
+Form, in der ich ihn vorgeschlagen hatte. Zwei dieser Zeilen bestimmen den
+Entwurf stärker als jedes Merkmal.
+
+**Die zweite Zeile nimmt dem Arm das Veto.** Eine Regel, die Modellurteile
+beschränken durfte, hat in achtzig Fällen nichts repariert und sechsmal Schaden
+angerichtet. In Embryo löst ein `contradicts` eine Überarbeitung aus; ein
+deterministischer Arm mit dieser Befugnis wäre genau jene Vetoschicht. Der Arm
+hier kann deshalb **nur stützen oder sich enthalten**. Kein Eingabewert bringt
+ihn dazu, etwas zurückzuweisen; ein Test prüft das.
+
+**Die dritte Zeile nimmt ihm die Semantik.** Gegen ein starkes Modell verlor die
+Regel bei semantischer Klassifikation um den Faktor drei. DESis eigener
+Claim-Extraktor formuliert die Disziplin, die daraus folgt, in seinem
+Kopfkommentar: *„Only four claim kinds are emitted. Anything else — semantic
+free-text claims, narrative paragraphs, opinions — is intentionally ignored."*
+Was bleibt, ist die eine Frage, die eine Regel ohne Modell entscheiden kann: ob
+zwei Zeichenketten eine Passage teilen. Das ist die Prüfung aus
+[budget-review][br], angewandt auf den Vorschlag statt auf ein deklariertes Zitat
+— die längste wörtliche Übereinstimmung zwischen Vorschlagstext und Beobachtung,
+ohne Groß-Klein-Toleranz und ohne Whitespace-Normalisierung, aus dem Grund, den
+Beleg K nennt.
+
+Der Arm sagt damit nicht, dass ein Vorschlag richtig ist. Er sagt, dass 47
+Zeichen einer bestimmten Beobachtung wörtlich in ihm vorkommen — und sonst
+nichts.
+
+### Die vierte Zeile ist die wichtigste
+
+Im abschließenden Governance-Benchmark von DESi erreichte ein Vergleichsarm aus
+fünfzehn Zeilen, der nichts vergleicht und nur nachsieht, ob ein Feld im JSON
+vorhanden ist, dieselbe perfekte Punktzahl wie die vollständige Implementierung.
+Auf vierzig Blindfällen gab es zwischen den Armen keinen einzigen Unterschied.
+Das hat den Benchmark als untauglich entlarvt und wäre sonst unbemerkt geblieben.
+
+Dieser entartete Arm ist hier mitgebaut: `--rule-arm degenerate` zitiert die
+erste Beobachtung, ohne irgendetwas anzusehen. Er ist die Kontrolle, die
+entscheidet, ob der Vergleich überhaupt etwas misst.
+
+### Feuert die Regel je?
+
+Vor jedem Lauf die billigste Messung, ohne Modell, in einer Sekunde. Über alle
+vierzehn Vorschläge und Synthesen der Läufe 009 bis 013:
+
+| Schwelle | verankert |
+| --- | --- |
+| ≥ 8 Zeichen | 0/14 |
+| ≥ 16 Zeichen | 0/14 |
+| ≥ 24 Zeichen | 0/14 |
+| ≥ 40 Zeichen | 0/14 |
+
+Die längste wörtliche Übereinstimmung beträgt bei **allen vierzehn** genau fünf
+Zeichen. Kein Vorschlag dieses Projekts hat je wörtlichen Kontakt zu seiner
+Umgebung gehabt.
+
+Zwei Kontrollen halten diese Null lesbar. Eine **Positivkontrolle** — ein Satz,
+der eine Prämisse zitiert — feuert mit 212 Zeichen aus `observation-03`; das
+Instrument kann also feuern. Eine **Negativkontrolle** — ein deutscher Satz zum
+selben Gegenstand, der nichts zitiert — feuert nicht. Und eine Einschränkung, die
+die Zahl nicht wegräumt, aber begrenzt: **die Vorschläge im Archiv sind englisch,
+die Prämissen deutsch.** Die Null misst auch das.
+
+### 014 und 015
+
+Derselbe Seed, dasselbe angeheftete 360M, blindes Panel wie 012. Unterschied
+allein: wer der dritte Arm ist.
+
+| | 012 | 014 | 015 |
+| --- | --- | --- | --- |
+| dritter Arm | Modellzelle | **Ankerregel** | **entartet** |
+| Zellen | 25 | 17 | 13 |
+| Review-Fragmente | 9 | 4 | 6 |
+| akzeptierte Vorschläge | 0 | 0 | 0 |
+
+014 enthält sich in jedem Panel, wie die Messung vorhergesagt hat. Das Panel
+bleibt bei zwei Armen, beide zitieren `observation-01`, also ein unabhängiger
+Beleg bei geforderten zwei — abgelehnt.
+
+015 ist der Befund. Der entartete Arm zitiert `observation-01` mit `supports`.
+Der Modellarm in 012 zitiert in allen neun Fragmenten ebenfalls `observation-01`.
+**Die Wahl der Beobachtung unterscheidet die beiden Arme nicht.** Was übrig
+bleibt, ist die Stance.
+
+### Was von der Stance übrig bleibt
+
+Gemessen wie in Abschnitt 14: Lauf 012 bis zu jeder Entscheidung zurückspulen,
+die Ansicht der Zelle wiederherstellen, und darin nur die Benennung der drei
+Optionen im Prompt permutieren. Die Rekonstruktion trifft den Lauf **9/9**.
+
+| | |
+| --- | ---: |
+| Stance übersteht die Permutation | **3/9** |
+
+In sechs von neun Fällen kippt die Stance, wenn man die Optionen lediglich in
+anderer Reihenfolge benennt. Die drei stabilen sind alle `CONTRADICTS` auf
+demselben Vorschlag.
+
+Ein erster Anlauf dieser Messung traf den Lauf nur 4/9, weil ich die Frage aus
+dem Kontext weggelassen hatte. Er steht in Abschnitt 13 in der Liste der
+Messungen, die etwas anderes maßen als behauptet.
+
+Damit ist der Modellarm auf 360M beschrieben: er wählt die Beobachtung wie der
+entartete Arm — immer dieselbe — und setzt eine Stance darauf, die in zwei
+Dritteln der Fälle an der Optionsreihenfolge hängt. Die zwölf Zellen, die 012
+gegenüber 015 zusätzlich verbraucht hat, gehen auf eine REVISE zurück, die aus
+genau diesem Kippen entstand.
+
+### Was daraus folgt
+
+Der deterministische Arm ist gebaut, und er reicht **nicht** — aber die Gründe
+liegen auseinander, und nur einer davon gehört ihm.
+
+Er selbst ist in diesem Aufbau **inert**: er feuert nie, weil die Zellen nichts
+produzieren, woran er ansetzen könnte. Das ist kein Fehler der Regel. Eine Regel,
+die Verankerung prüft, braucht etwas Verankertes, und die Messung aus Abschnitt
+13 sagt, wo das herkäme: 1.7B zitiert wörtlich, 2/3 verankert, 2/2 davon richtig.
+Auf dieser Größe hätte der Arm Material.
+
+Und DESis Befund bleibt stehen, in der Form, in der er gemessen wurde: **gegen
+ein starkes Modell** war kein Mehrwert nachweisbar. Embryos Zelle ist kein
+starkes Modell. Sie wählt ihre Beobachtung nachweislich ohne Bezug zum Text
+(0/9, Abschnitt 14) und ihre Stance überwiegend nach Optionsreihenfolge (3/9).
+Gegen diesen Vergleichspunkt ist eine Regel, die sich enthält, wenn sie nichts
+findet, keine Verschlechterung — sie ist die einzige Komponente im Aufbau, deren
+Ausgabe überhaupt an etwas hängt. Das ist ein bescheidener Anspruch, und er ist
+der einzige, den die Zahlen tragen.
+
+Der Rest ist die Methode, und die ist das Wertvollste an dem eingestellten
+Projekt. Der Projektabschluss nennt sie in einem Satz: Konfiguration einfrieren,
+Vorhersagen festschreiben, dann erst öffnen, danach nicht mehr nachjustieren —
+*„und immer einen entarteten Vergleichsarm mitlaufen lassen, der prüft, ob der
+Benchmark überhaupt etwas misst."* Dieser Abschnitt hat genau das getan, und der
+entartete Arm hat auch hier mehr gezeigt als der echte.
+
+[desi]: https://github.com/hstre/DESi
+
+## 16. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -1273,7 +1431,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 16. Nachprüfen
+## 17. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -1302,6 +1460,16 @@ VIEWS=9 node tools/probe.mjs run-position
 
 # Die Überlappungsbuchführung aus einem fertigen Gewebe lesen
 node src/cli.mjs panel --state docs/runs/012/embryo.json
+
+# Hat die deterministische Regel je etwas zum Ankern? Ohne Modell, in einer Sekunde
+node tools/probe.mjs rule-fire
+
+# Hängt die Stance des Modellarms an der Optionsreihenfolge?
+node tools/probe.mjs stance-order
+
+# Einen Lauf mit Regelarm bzw. mit dem entarteten Kontrollarm fahren
+node src/cli.mjs step --backend smollm --citation-by score --rule-arm anchor
+node src/cli.mjs step --backend smollm --citation-by score --rule-arm degenerate
 
 # Reparaturen mit Regressionstests
 git fetch origin claude/review-needed-whfn3p && npm test
