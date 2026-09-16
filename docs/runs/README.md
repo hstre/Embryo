@@ -17,6 +17,12 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `013` | wie 011, Panel sichtbar, Überlappung protokolliert | 25 | 25/64 | 0 |
 | `014` | wie 012, dritter Panelarm ist eine deterministische Ankerregel | 17 | 17/64 | 0 |
 | `015` | wie 014, Regel durch den entarteten Kontrollarm ersetzt | 13 | 13/64 | 0 |
+| `016` | **neuer Auftrag:** Register wörtlicher Stellen, 360M | 17 | 17/64 | 1 |
+| `017` | wie 016 auf 1.7B | 16 | 16/64 | 1 |
+| `018` | wie 016, Register vor der Zelle verborgen | 17 | 17/64 | 1 |
+| `019` | wie 018 auf 1.7B | 14 | 14/64 | 2 |
+| `020` | wie 018, Gate toleriert die Rahmung der Antwort | 16 | 16/64 | **2** |
+| `021` | wie 020 auf 1.7B | 12 | 12/64 | **3** |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
@@ -52,6 +58,16 @@ wie der echte Arm, misst der Vergleich nichts.
 ```bash
 node src/cli.mjs step --backend smollm --citation-by score --rule-arm anchor
 ```
+
+Ab 016 gilt ein anderer Auftrag. Statt einer Philosophie soll das Gewebe ein
+Register vier verschiedener Stellen anlegen, die **wörtlich** in den gelieferten
+Beobachtungen vorkommen. `acceptance_mode: "anchor"` nimmt jede urteilende Rolle
+aus der Schleife: `deriveNeeds` leitet je ein Bedürfnis pro noch nicht zitierter
+Beobachtung ab, die Zelle sieht genau diese Beobachtung, und das Gate entscheidet
+per Stringsuche gegen sie. Kein Review-Panel, kein Meta-Review, keine Frage,
+keine Synthese. Die sechs Läufe bilden drei Paare (360M und 1.7B) mit je einer
+Änderung, und die Marke stand vor jedem Paar fest — siehe `016-vorab.md`,
+`018-vorab.md` und `020-vorab.md`.
 
 Jeder Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
 Beide sind gegen den Code dieses Branches replay-stabil:
