@@ -15,6 +15,8 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `011` | wie 009, Zitat aus der Verteilung gelesen statt geschrieben | 25 | 25/64 | 0 |
 | `012` | wie 011, Panel blind: kein Arm sieht die Fragmente der anderen | 25 | 25/64 | 0 |
 | `013` | wie 011, Panel sichtbar, Überlappung protokolliert | 25 | 25/64 | 0 |
+| `014` | wie 012, dritter Panelarm ist eine deterministische Ankerregel | 17 | 17/64 | 0 |
+| `015` | wie 014, Regel durch den entarteten Kontrollarm ersetzt | 13 | 13/64 | 0 |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
@@ -39,6 +41,17 @@ node src/cli.mjs panel --state docs/runs/012/embryo.json
 
 aus jedem Gewebe auslesen; sie steht zusätzlich in den Receipts der Läufe mit
 `panel_independence` jenseits von `sighted`.
+
+014 und 015 ersetzen den dritten Panelarm durch eine Regel ohne Modell. In 014
+zitiert sie nur, was sie wörtlich in der Umgebung wiederfindet, und enthält sich
+sonst; in 015 zitiert sie die erste Beobachtung, ohne irgendetwas zu vergleichen.
+Der zweite ist der entartete Kontrollarm, den der Projektabschluss von
+[hstre/DESi](https://github.com/hstre/DESi) verlangt: wenn er so gut abschneidet
+wie der echte Arm, misst der Vergleich nichts.
+
+```bash
+node src/cli.mjs step --backend smollm --citation-by score --rule-arm anchor
+```
 
 Jeder Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
 Beide sind gegen den Code dieses Branches replay-stabil:

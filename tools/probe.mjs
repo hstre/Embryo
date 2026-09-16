@@ -8,6 +8,7 @@
 //   node tools/probe.mjs pairwise-swap         does a pairwise preference survive swapping the two candidates?
 import { SmolLmPolicy } from "../src/policies/smollm.mjs";
 import { readJson } from "../src/state.mjs";
+import { anchoredObservation, longestCommonSpan } from "../src/policies/rule.mjs";
 import { readReceipts } from "../src/ledger.mjs";
 import { replay } from "../src/replay.mjs";
 import { buildLocalView } from "../src/local-view.mjs";
@@ -570,6 +571,120 @@ const probes = {
     console.log(`  Siegerverteilung über ${3 * tally.total} Durchgänge: ${[...tally.winners].sort((a, b) => b[1] - a[1]).map(([id, n]) => `${id.slice(-2)}:${n}`).join("  ")}`);
     console.log(`\n  Etikettenkontrolle — Gewinner folgt dem Etikett: ${tally.label}/${tally.total}`);
     console.log(`  Etikettenkontrolle — Gewinner folgt dem Text:    ${tally.content}/${tally.total}`);
+  },
+
+  // Whether the deterministic arm has anything to work with. It loads no model —
+  // it is the rule — so it runs in a second and answers a question the panel
+  // cannot: is any proposal this project ever produced in verbatim contact with
+  // its environment at all?
+  //
+  // A count of zero means nothing unless the instrument can be shown to fire, so
+  // two positive controls are measured alongside the archive: a sentence that
+  // quotes a premise, and a German sentence on the same subject that quotes
+  // nothing. The second is DESi's negative-control shape — it must NOT fire.
+  async "rule-fire"() {
+    const seed = await readJson(new URL("../examples/seed-grounded.json", import.meta.url));
+    const observations = seed.observations.map(({ id, text }) => ({ id, text }));
+    const controls = [
+      { label: "Positivkontrolle", text: `Es gilt: ${observations[2].text} Daraus folgt eine Pflicht zur Aushandlung.`, expect: true },
+      { label: "Negativkontrolle", text: "Der erste Schritt ist, den Wert aller Wesen anzuerkennen und daraus eine Haltung abzuleiten.", expect: false },
+    ];
+
+    const rows = [];
+    for (const run of ["009", "010", "011", "012", "013"]) {
+      const state = await readJson(new URL(`../docs/runs/${run}/embryo.json`, import.meta.url));
+      for (const node of state.nodes) {
+        if (!["proposal", "synthesis"].includes(node.kind)) continue;
+        const longest = observations.map((observation) => longestCommonSpan(node.text, observation.text).length).reduce((a, b) => Math.max(a, b), 0);
+        rows.push({ label: `${run}/${node.id}`, chars: node.text.length, longest });
+      }
+    }
+
+    console.log("Kontrollen");
+    let controlsPass = true;
+    for (const control of controls) {
+      const hit = anchoredObservation(control.text, observations);
+      const fired = Boolean(hit);
+      if (fired !== control.expect) controlsPass = false;
+      console.log(`  ${control.label.padEnd(16)} feuert ${fired ? "ja " : "nein"}  erwartet ${control.expect ? "ja " : "nein"}  ${fired ? `${hit.length} zeichen aus ${hit.id}` : ""}${fired === control.expect ? "" : "   KONTROLLE GESCHEITERT"}`);
+    }
+    if (!controlsPass) {
+      console.log("\n  Das Instrument verhält sich nicht wie behauptet. Die Zahlen darunter sind nicht zu lesen.");
+      return;
+    }
+
+    console.log(`\nArchiv — ${rows.length} Vorschläge und Synthesen aus 009 bis 013`);
+    const buckets = new Map();
+    for (const row of rows) buckets.set(row.longest, (buckets.get(row.longest) ?? 0) + 1);
+    for (const [length, count] of [...buckets].sort((a, b) => a[0] - b[0])) {
+      console.log(`  längste wörtliche Spanne ${String(length).padStart(3)} zeichen: ${count}`);
+    }
+    for (const threshold of [8, 16, 24, 40]) {
+      const firing = rows.filter((row) => row.longest >= threshold).length;
+      console.log(`  Schwelle ${String(threshold).padStart(2)}: ${firing}/${rows.length} Vorschläge verankert`);
+    }
+    // The archive is English against German premises, so a zero here is partly a
+    // language artefact. Naming the bound is the point of printing it.
+    console.log(`\n  Die Vorschläge im Archiv sind englisch, die Prämissen deutsch — eine Null oben`);
+    console.log("  misst auch das und nicht nur fehlenden Bezug.");
+  },
+
+  // The model arm of run 012 cites observation-01 in every fragment, which is
+  // what the fifteen-line degenerate arm does by construction. All that is left
+  // to tell them apart is the stance. This asks whether that stance is a
+  // judgement: the same cell, the same view, the same observation, scored under
+  // three permutations of how the options are named. A judgement survives the
+  // permutation; an option-order artefact does not.
+  //
+  // Like run-position it replays the run to each decision and rebuilds the view
+  // that cell saw. A first pass in the probe's own words reproduced the run only
+  // 4/9 — it had left the question out of the context — so the reconstruction is
+  // checked against the recorded trace before anything else is read.
+  async "stance-order"() {
+    const run = process.env.RUN ?? "012";
+    const base = new URL(`../docs/runs/${run}/`, import.meta.url).pathname;
+    const seed = await readJson(`${base}seed.json`);
+    const receipts = await readReceipts(`${base}events.jsonl`);
+    const scoredAt = receipts.map((receipt, index) => (receipt.policy_trace?.stance ? index : -1)).filter((index) => index >= 0);
+
+    const orders = [
+      ["SUPPORTS", "CONTRADICTS", "UNRELATED"],
+      ["CONTRADICTS", "SUPPORTS", "UNRELATED"],
+      ["UNRELATED", "CONTRADICTS", "SUPPORTS"],
+    ];
+    let reproduced = 0;
+    let stable = 0;
+    for (const index of scoredAt) {
+      const state = replay(seed, receipts.slice(0, index));
+      const need = deriveNeeds(state).find((candidate) => candidate.id === receipts[index].need_id);
+      const { view } = buildLocalView(state, need);
+      const context = [
+        `Goal: ${view.goal.text}`,
+        ...(view.question ? [`Question: ${view.question.text}`] : []),
+        `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+      ];
+      const observationId = best(receipts[index].policy_trace.relevance, "mean").choice;
+      const observation = view.observations.find((candidate) => candidate.id === observationId);
+      const winners = [];
+      for (const order of orders) {
+        const scored = await policy.scoreChoices(
+          [
+            { role: "system", content: `You are the ${view.perspective} reviewer. Judge how the observation relates to the proposal.` },
+            { role: "user", content: [...context, `Observation ${observation.id}: ${observation.text}`, `Does it support or contradict the proposal? Answer ${order[0]}, ${order[1]} or ${order[2]}.`].join("\n") },
+          ],
+          ["SUPPORTS", "CONTRADICTS", "UNRELATED"],
+          "cell",
+        );
+        winners.push(best(scored, "mean").choice);
+      }
+      const recorded = receipts[index].policy_trace.decided;
+      if (winners[0] === recorded) reproduced += 1;
+      const distinct = new Set(winners);
+      if (distinct.size === 1) stable += 1;
+      console.log(`  ${view.target.id} ${String(view.perspective).padEnd(12)} Lauf ${recorded.padEnd(11)} | ${winners.map((winner) => winner.padEnd(11)).join(" ")}${distinct.size === 1 ? "  STABIL" : ""}`);
+    }
+    console.log(`\n  Rekonstruktion trifft den Lauf: ${reproduced}/${scoredAt.length}`);
+    console.log(`  Stance übersteht die Permutation: ${stable}/${scoredAt.length}`);
   },
 };
 

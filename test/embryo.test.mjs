@@ -4,7 +4,8 @@ import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createState, readJson } from "../src/state.mjs";
-import { deriveNeeds, canGrow } from "../src/needs.mjs";
+import { deriveNeeds, canGrow, reviewPerspective } from "../src/needs.mjs";
+import { PanelWithRulePolicy, RulePolicy } from "../src/policies/rule.mjs";
 import { applyProposal } from "../src/gate.mjs";
 import { buildLocalView } from "../src/local-view.mjs";
 import { runGeneration } from "../src/engine.mjs";
@@ -623,4 +624,88 @@ test("the accounting leaves a verdict-mode and a sighted run untouched", async (
     async () => createState({ ...(await readJson(seedPath)), config: { panel_independence: "blind" } }),
     /requires acceptance_mode citation/,
   );
+});
+
+// --- The arm that is not a model, with the controls DESi's closure asks for ---
+
+const ANCHORED = "Ein Vorschlag: Verantwortung und Begründung fallen auseinander, und eine Ordnung muss das aushalten.";
+const UNANCHORED = "Der erste Schritt ist, den Wert aller Wesen anzuerkennen und daraus eine Haltung abzuleiten.";
+
+async function ruleOn(text, options = {}) {
+  const state = await groundedState();
+  addQuestion(state);
+  addProposal(state, text);
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW_FRAGMENT" && reviewPerspective(candidate.stage) === "coherence");
+  const { view } = buildLocalView(state, need);
+  return new RulePolicy(options).propose(view);
+}
+
+test("the anchor arm cites what it can find verbatim and abstains otherwise", async () => {
+  // Positive control: the instrument has to be able to fire at all before a
+  // count of zero over the archive means anything.
+  const hit = await ruleOn(ANCHORED);
+  assert.equal(hit.action.type, "ADD_REVIEW_FRAGMENT");
+  assert.deepEqual(hit.action.payload.observation_ids, ["observation-01"]);
+  assert.ok(hit.trace.longest_span >= 24);
+  assert.ok(ANCHORED.includes(hit.trace.span));
+
+  // Negative control: on-topic German that quotes nothing.
+  const miss = await ruleOn(UNANCHORED);
+  assert.equal(miss.action.type, "ABSTAIN");
+  assert.ok(miss.trace.longest_span < 24);
+});
+
+test("the anchor arm can support and abstain, and has no way to reject", async () => {
+  // DESi's rule layer as a veto over model judgements made 0 repairs and 6
+  // damages in 80 cases. This arm therefore cannot send anything back: no
+  // input produces a contradicting stance, so it can never force a REVISE.
+  for (const text of [ANCHORED, UNANCHORED, "x".repeat(200)]) {
+    const { action } = await ruleOn(text);
+    assert.ok(["ADD_REVIEW_FRAGMENT", "ABSTAIN"].includes(action.type));
+    if (action.type === "ADD_REVIEW_FRAGMENT") assert.equal(action.payload.stance, "supports");
+  }
+});
+
+test("the degenerate arm cites without comparing, which is what makes it the control", async () => {
+  const degenerate = await ruleOn(UNANCHORED, { mode: "degenerate" });
+  assert.equal(degenerate.action.type, "ADD_REVIEW_FRAGMENT");
+  assert.deepEqual(degenerate.action.payload.observation_ids, ["observation-01"]);
+  assert.equal(degenerate.trace.compared, 0);
+  // Same output for a text it has every reason to treat differently.
+  const onAnchored = await ruleOn(ANCHORED, { mode: "degenerate" });
+  assert.deepEqual(onAnchored.action.payload, degenerate.action.payload);
+});
+
+test("the rule arm refuses roles that are not its own", async () => {
+  const state = await groundedState();
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "QUESTION");
+  const { view } = buildLocalView(state, need);
+  const { action } = await new RulePolicy().propose(view);
+  assert.equal(action.type, "ABSTAIN");
+  // And it abstains where there is no environment to cite, rather than inventing one.
+  const plain = await freshState();
+  addQuestion(plain);
+  addProposal(plain);
+  const review = deriveNeeds(plain).find((candidate) => candidate.kind === "REVIEW_FRAGMENT");
+  const bare = await new RulePolicy().propose(buildLocalView(plain, review).view);
+  assert.equal(bare.action.type, "ABSTAIN");
+});
+
+test("only the named stage is handed to the rule", async () => {
+  const model = { name: "model", propose: async () => ({ action: { type: "MODEL" } }) };
+  const panel = new PanelWithRulePolicy(model, new RulePolicy(), "coherence");
+  const state = await groundedState();
+  addQuestion(state);
+  addProposal(state, ANCHORED);
+  const seen = [];
+  while (deriveNeeds(state).some((candidate) => candidate.kind === "REVIEW_FRAGMENT")) {
+    const need = deriveNeeds(state).find((candidate) => candidate.kind === "REVIEW_FRAGMENT");
+    const { view } = buildLocalView(state, need);
+    const { action } = await panel.propose(view);
+    seen.push([view.perspective, action.type]);
+    applyProposal(state, action.type === "MODEL"
+      ? { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: need.target_id, text: `${view.perspective} note.`, observation_ids: ["observation-02"], stance: "supports" } }
+      : action, state.next_event_seq);
+  }
+  assert.deepEqual(seen, [["adversarial", "MODEL"], ["charitable", "MODEL"], ["coherence", "ADD_REVIEW_FRAGMENT"]]);
 });

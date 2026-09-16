@@ -8,6 +8,7 @@ import { replay } from "./replay.mjs";
 import { stateDigest } from "./canonical.mjs";
 import { DeterministicPolicy } from "./policies/deterministic.mjs";
 import { SmolLmPolicy } from "./policies/smollm.mjs";
+import { PanelWithRulePolicy, RulePolicy } from "./policies/rule.mjs";
 
 function parseArgs(argv) {
   const [command = "status", ...rest] = argv;
@@ -124,6 +125,9 @@ async function main() {
     if (options.citation_by && !["generate", "score"].includes(options.citation_by)) {
       throw new Error("citation-by must be generate or score");
     }
+    if (options.rule_arm && !["anchor", "degenerate"].includes(options.rule_arm)) {
+      throw new Error("rule-arm must be anchor or degenerate");
+    }
     const policy = options.backend === "smollm"
       ? new SmolLmPolicy({
           model: options.model,
@@ -135,11 +139,23 @@ async function main() {
           citationBy: options.citation_by,
         })
       : new DeterministicPolicy();
+    // One panel stage can be handed to a rule instead of a cell. It is always the
+    // last stage, so no model arm ever reads what the rule wrote.
+    const staffed = options.rule_arm
+      ? new PanelWithRulePolicy(
+          policy,
+          new RulePolicy({
+            mode: options.rule_arm,
+            minSpanChars: options.rule_min_span ? positiveInteger(options.rule_min_span, "rule-min-span") : undefined,
+          }),
+          "coherence",
+        )
+      : policy;
     const result = await runGeneration({
       state,
       statePath,
       eventsPath,
-      policy,
+      policy: staffed,
       maxCells: options.max_cells ? positiveInteger(options.max_cells, "max-cells") : undefined,
     });
     console.log(JSON.stringify(result, null, 2));
