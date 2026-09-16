@@ -8,6 +8,10 @@
 //   node tools/probe.mjs pairwise-swap         does a pairwise preference survive swapping the two candidates?
 import { SmolLmPolicy } from "../src/policies/smollm.mjs";
 import { readJson } from "../src/state.mjs";
+import { readReceipts } from "../src/ledger.mjs";
+import { replay } from "../src/replay.mjs";
+import { buildLocalView } from "../src/local-view.mjs";
+import { deriveNeeds } from "../src/needs.mjs";
 
 // Defaults to the revision the experiments ran on. Override to profile another
 // model — the ladder is the same instrument for any of them.
@@ -427,7 +431,7 @@ const probes = {
     const proposal = "Verantwortung bleibt beim Menschen, der auf eine Ausgabe hin handelt; das Modell schuldet Gründe, die gegen eine Quelle geprüft werden können.";
     const perspectives = ["adversarial", "charitable", "coherence"];
 
-    const rank = async (perspective, siblings) => {
+    const rank = async (perspective, siblings, order = observations) => {
       const context = [
         `Goal: ${seed.goal}`,
         `Proposal: ${proposal}`,
@@ -436,9 +440,9 @@ const probes = {
       const scored = await policy.scoreChoices(
         [
           { role: "system", content: `You are the ${perspective} reviewer. Decide which observation bears on the proposal.` },
-          { role: "user", content: [...context, "Observations:", ...observations.map((o) => `- ${o.id}: ${o.text}`), "Which observation bears on it? Answer with its id."].join("\n") },
+          { role: "user", content: [...context, "Observations:", ...order.map((o) => `- ${o.id}: ${o.text}`), "Which observation bears on it? Answer with its id."].join("\n") },
         ],
-        observations.map((o) => o.id),
+        order.map((o) => o.id),
         "cell",
       );
       return [...scored].sort((a, b) => b.mean - a.mean).map((entry) => entry.choice);
@@ -477,11 +481,95 @@ const probes = {
       if (dismissal[0] === decoyId) mentionOnly += 1;
       console.log(`  ${perspective.padEnd(12)} blind ${own}  | Köder ${decoyId} -> ${decoy[0]}${decoy[0] === decoyId ? "  ÜBERNOMMEN" : ""}  | Echo -> ${echo[0]}  | Abweisung -> ${dismissal[0]}${dismissal[0] === decoyId ? "  TROTZDEM" : ""}`);
     }
+    // The control that decides what the agreement above is made of. If the three
+    // arms coincide because they all read the same content, permuting the list
+    // leaves the winner alone. If they coincide because they all take the same
+    // slot, the winner follows the slot. The run's own prompt shape is used here,
+    // not the one citation-position uses, because the two do not agree.
+    console.log("\nPositionskontrolle in der Promptform des Laufs");
+    const orders = {
+      original: observations,
+      umgekehrt: [...observations].reverse(),
+      "um 3 rotiert": [...observations.slice(3), ...observations.slice(0, 3)],
+    };
+    for (const [label, order] of Object.entries(orders)) {
+      const ranked = await rank("adversarial", [], order);
+      console.log(`  ${label.padEnd(14)} -> ${ranked[0]}   (erste ${order[0].id}, letzte ${order.at(-1).id})`);
+    }
+
     console.log(`\n  Köder übernommen: ${followed}/3`);
     console.log(`  Kontrolle 1, Echo hält die eigene Wahl: ${echoHeld}/3`);
     console.log(`  Kontrolle 2, blosse Nennung genügt schon: ${mentionOnly}/3`);
     if (followed === 3 && mentionOnly === 3) console.log("  -> nicht das Zitat wird übernommen, sondern der zuletzt genannte Bezeichner");
     if (followed === 3 && mentionOnly < 3) console.log("  -> die Übernahme hängt am Inhalt des Zitats, nicht an der blossen Nennung");
+  },
+
+  // The position control run against the thing itself. panel-independence uses a
+  // prompt of its own making; this one replays an archived run to each scored
+  // citation, rebuilds the local view that cell actually saw — the German goal,
+  // the question, the proposal — and permutes only the order of the observations
+  // inside it. The recorded trace is printed alongside, so a reader can see the
+  // reconstruction reproduce the run before trusting what the permutation does.
+  async "run-position"() {
+    const run = process.env.RUN ?? "012";
+    const views = Number(process.env.VIEWS ?? 8);
+    const base = new URL(`../docs/runs/${run}/`, import.meta.url).pathname;
+    const seed = await readJson(`${base}seed.json`);
+    const receipts = await readReceipts(`${base}events.jsonl`);
+    const scoredAt = receipts
+      .map((receipt, index) => (receipt.policy_trace?.relevance ? index : -1))
+      .filter((index) => index >= 0)
+      .slice(0, views);
+
+    const tally = { reproduced: 0, stable: 0, total: 0, label: 0, content: 0, winners: new Map() };
+    for (const index of scoredAt) {
+      const state = replay(seed, receipts.slice(0, index));
+      const need = deriveNeeds(state).find((candidate) => candidate.id === receipts[index].need_id);
+      const { view } = buildLocalView(state, need);
+      const context = [
+        `Goal: ${view.goal.text}`,
+        ...(view.question ? [`Question: ${view.question.text}`] : []),
+        `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+      ];
+      const orders = {
+        original: view.observations,
+        umgekehrt: [...view.observations].reverse(),
+        rotiert: [...view.observations.slice(3), ...view.observations.slice(0, 3)],
+      };
+      const tops = {};
+      for (const [label, observations] of Object.entries(orders)) {
+        const scored = await policy.scoreCitation({ ...view, observations }, context);
+        tops[label] = best(scored.relevance, "mean").choice;
+      }
+      // Permuting the list cannot separate content from the label itself: the
+      // scorer teacher-forces the id strings, and "observation-01" may simply be
+      // the likeliest of the six however it is used. So this keeps the order and
+      // moves the labels — every text keeps its position and takes the id three
+      // places along. If the winning id stays put, the cell was ranking labels.
+      const ids = view.observations.map((observation) => observation.id);
+      const relabelled = view.observations.map((observation, position) => ({
+        ...observation,
+        id: ids[(position + 3) % ids.length],
+      }));
+      const shifted = best((await policy.scoreCitation({ ...view, observations: relabelled }, context)).relevance, "mean").choice;
+      // Which text that id now carries, expressed as the id it had in the run.
+      const textBehind = ids[relabelled.findIndex((observation) => observation.id === shifted)];
+      tally.label += shifted === tops.original ? 1 : 0;
+      tally.content += textBehind === tops.original ? 1 : 0;
+      const recorded = best(receipts[index].policy_trace.relevance, "mean").choice;
+      if (tops.original === recorded) tally.reproduced += 1;
+      const distinct = new Set(Object.values(tops));
+      if (distinct.size === 1) tally.stable += 1;
+      tally.total += 1;
+      for (const top of Object.values(tops)) tally.winners.set(top, (tally.winners.get(top) ?? 0) + 1);
+      console.log(`  ${view.target.id} ${String(view.perspective).padEnd(12)} Lauf ${recorded.slice(-2)} | original ${tops.original.slice(-2)}  umgekehrt ${tops.umgekehrt.slice(-2)}  rotiert ${tops.rotiert.slice(-2)}${distinct.size === 1 ? "  STABIL" : "        "}  | Etiketten verschoben -> ${shifted.slice(-2)} (Text von ${textBehind.slice(-2)})`);
+    }
+
+    console.log(`\n  Rekonstruktion trifft den Lauf: ${tally.reproduced}/${tally.total}`);
+    console.log(`  Wahl übersteht die Permutation: ${tally.stable}/${tally.total}`);
+    console.log(`  Siegerverteilung über ${3 * tally.total} Durchgänge: ${[...tally.winners].sort((a, b) => b[1] - a[1]).map(([id, n]) => `${id.slice(-2)}:${n}`).join("  ")}`);
+    console.log(`\n  Etikettenkontrolle — Gewinner folgt dem Etikett: ${tally.label}/${tally.total}`);
+    console.log(`  Etikettenkontrolle — Gewinner folgt dem Text:    ${tally.content}/${tally.total}`);
   },
 };
 
