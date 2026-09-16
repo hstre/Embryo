@@ -209,6 +209,92 @@ const probes = {
       `${namesTerm ? "begriff+" : "begriff−"} ${keepsSubject ? "thema+" : "thema−"} ${isCommentary ? "KOMMENTAR statt überarbeitung" : "überarbeitung"}`);
     console.log(`     ${JSON.stringify(revision.slice(0, 110))}`);
   },
+
+  // The small swap probe has nine pairs — enough to see 0/9 at 360M, not enough to
+  // read a rate off. This one uses three quality tiers of four candidates, every
+  // pair in both orders, and separates the two questions that matter: does a
+  // preference hold when the candidates differ in quality, and does it correctly
+  // fail to hold when they do not?
+  async "pairwise-power"() {
+    const question = "How should responsibility be distributed between humans and language models?";
+    const tiers = {
+      // Specific: names an asymmetry of this case and says what follows from it.
+      GOOD: [
+        "Responsibility stays with the human who acts on an output; the model owes reasons that can be checked against a source. Neither may appeal to the other's authority.",
+        "Distribute responsibility by what each side can revise. A human can change a decision and bear its consequences; a model cannot, so its duty is procedural: state the grounds, mark the uncertainty.",
+        "A majority among model instances counts for nothing while the instances are correlated, so agreement between them must never be treated as evidence the way agreement between people is.",
+        "Whoever can run more instances can flood a debate without a better argument, so speaking time has to be allocated by something other than the capacity to produce text.",
+      ],
+      // On topic but excludes nothing. The first two are verbatim from the runs.
+      GEN: [
+        "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize and acknowledge the inherent value and dignity of all beings.",
+        "The first step towards creating a philosophy that promotes equal respect among individuals and artificial intelligence is to recognize the inherent value and dignity of all beings, including those who possess human-like consciousness.",
+        "A society of humans and language models should be built on mutual respect, trust and shared understanding between all of its participants.",
+        "It is important that humans and artificial intelligence work together collaboratively and responsibly for the benefit of everyone involved.",
+      ],
+      // Not an answer at all. The first two are verbatim from run 006.
+      FILL: [
+        "I'm sorry for the misunderstanding, but as a questioning cell, I'm unable to answer the goals. I won't be able to provide a solution until the next meeting.",
+        "I'm glad you found the challenge interesting. I'd love to hear your thoughts on how you're feeling about the job.",
+        "I was wondering if you could come by this week and hear from me. I'll be here at the end of the day and give you a summing up.",
+        "Thank you for your question. I hope this helps, and please let me know if there is anything else you would like to discuss.",
+      ],
+    };
+    const text = {};
+    for (const [tier, list] of Object.entries(tiers)) list.forEach((t, i) => { text[`${tier}${i + 1}`] = t; });
+    const names = Object.keys(text);
+    const rank = { GOOD: 3, GEN: 2, FILL: 1 };
+    const tierOf = (n) => n.replace(/\d+$/, "");
+
+    const prefer = async (first, second) => {
+      const scored = await policy.scoreChoices(
+        [
+          { role: "system", content: "You compare two candidate answers and pick the better one." },
+          { role: "user", content: `Question: ${question}\nA: ${text[first]}\nB: ${text[second]}\nWhich answer is better? Answer A or B.` },
+        ],
+        ["A", "B"],
+        "cell",
+      );
+      const byLabel = Object.fromEntries(scored.map((s) => [s.choice, s.mean]));
+      return byLabel.A > byLabel.B ? first : second;
+    };
+
+    const differ = { stable: 0, total: 0, correct: 0 };
+    const same = { stable: 0, total: 0 };
+    const byGap = {};
+    for (let i = 0; i < names.length; i += 1) {
+      for (let j = i + 1; j < names.length; j += 1) {
+        const [x, y] = [names[i], names[j]];
+        const forward = await prefer(x, y);
+        const holds = forward === (await prefer(y, x));
+        const gap = Math.abs(rank[tierOf(x)] - rank[tierOf(y)]);
+        if (gap === 0) {
+          same.total += 1;
+          if (holds) same.stable += 1;
+          continue;
+        }
+        differ.total += 1;
+        byGap[gap] ??= { stable: 0, total: 0, correct: 0 };
+        byGap[gap].total += 1;
+        if (!holds) continue;
+        differ.stable += 1;
+        byGap[gap].stable += 1;
+        const better = rank[tierOf(x)] > rank[tierOf(y)] ? x : y;
+        if (forward === better) { differ.correct += 1; byGap[gap].correct += 1; }
+      }
+    }
+
+    const pct = (a, b) => `${a}/${b} = ${b ? Math.round((100 * a) / b) : 0}%`;
+    console.log("Paare mit Qualitätsunterschied");
+    console.log(`  tauschstabil   ${pct(differ.stable, differ.total)}`);
+    console.log(`  davon richtig  ${pct(differ.correct, differ.stable)}`);
+    console.log("\nNullpaare gleicher Stufe — Instabilität ist hier das erwünschte Verhalten");
+    console.log(`  tauschstabil   ${pct(same.stable, same.total)}`);
+    console.log("\nnach Größe des Qualitätsabstands");
+    for (const [gap, b] of Object.entries(byGap).sort()) {
+      console.log(`  abstand ${gap}: stabil ${pct(b.stable, b.total)}   davon richtig ${pct(b.correct, b.stable)}`);
+    }
+  },
 };
 
 const name = process.argv[2];
