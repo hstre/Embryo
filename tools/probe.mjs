@@ -271,6 +271,54 @@ const probes = {
     console.log(`      Richtigkeit (was es nicht prüft)   ${correct}/3`);
   },
 
+  // How long may a quoted span be before the model corrupts it? One sample showed a
+  // 209-character quote with a single word silently altered while two spans under
+  // 60 characters came through intact. This asks six targets at two length settings
+  // and reports the exact-anchor rate by the length actually produced, so the design
+  // parameter is measured rather than guessed.
+  async "span-length"() {
+    const seed = await readJson(new URL("../examples/seed-grounded.json", import.meta.url));
+    const document = seed.observations.map((o) => o.text).join("\n");
+    const strip = (t) => t.trim().replace(/^["„»'`]+|["“«'`.]+$/g, "").trim();
+    const terms = ["Begründung", "vervielfältigbar", "Zeitlichkeit", "Nachprüfbarkeit", "Revidierbarkeit", "Rechenleistung"];
+    const settings = {
+      kurz: 'Gib die kürzestmögliche Wortfolge wörtlich wieder, die das Wort "%s" enthält. Höchstens acht Wörter.',
+      lang: 'Gib den ganzen Satz wörtlich wieder, der das Wort "%s" enthält.',
+    };
+
+    const rows = [];
+    for (const [setting, template] of Object.entries(settings)) {
+      for (const term of terms) {
+        const out = await policy.generate([
+          { role: "system", content: "Du kopierst Text. Gib die verlangte Stelle wörtlich wieder. Ändere kein Wort, erkläre nichts, übersetze nichts." },
+          { role: "user", content: `${document}\n\n${template.replace("%s", term)}` },
+        ], 220, "cell");
+        const span = strip(out);
+        rows.push({ setting, term, len: span.length, exact: span.length > 0 && document.includes(span) });
+      }
+    }
+
+    const bands = [[0, 40], [40, 80], [80, 140], [140, Infinity]];
+    console.log("Vorgabe   Begriff            länge  verankert");
+    for (const r of rows) {
+      console.log(`${r.setting.padEnd(9)} ${r.term.padEnd(18)} ${String(r.len).padStart(5)}  ${r.exact ? "ja" : "NEIN"}`);
+    }
+    console.log("\nexakte Verankerung nach tatsächlicher Spanlänge");
+    for (const [lo, hi] of bands) {
+      const inBand = rows.filter((r) => r.len >= lo && r.len < hi);
+      if (!inBand.length) continue;
+      const ok = inBand.filter((r) => r.exact).length;
+      const upper = hi === Infinity ? "+" : `–${hi}`;
+      console.log(`  ${String(lo).padStart(3)}${upper.padEnd(5)} zeichen: ${ok}/${inBand.length}`);
+    }
+    for (const setting of Object.keys(settings)) {
+      const group = rows.filter((r) => r.setting === setting);
+      const ok = group.filter((r) => r.exact).length;
+      const avg = Math.round(group.reduce((a, r) => a + r.len, 0) / group.length);
+      console.log(`\nVorgabe "${setting}": ${ok}/${group.length} verankert, mittlere Länge ${avg} zeichen`);
+    }
+  },
+
   // The small swap probe has nine pairs — enough to see 0/9 at 360M, not enough to
   // read a rate off. This one uses three quality tiers of four candidates, every
   // pair in both orders, and separates the two questions that matter: does a
