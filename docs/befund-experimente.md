@@ -1291,7 +1291,141 @@ entartete Arm hat auch hier mehr gezeigt als der echte.
 
 [desi]: https://github.com/hstre/DESi
 
-## 16. Was offen bleibt
+## 16. Was die Zweige von budget-review über die semantische Stufe sagen
+
+`main` von [budget-review][br] trägt das Span-Gate, das Abschnitt 13 übernommen
+hat. Die siebzehn Zweige daneben tragen die Messreihe dahinter, und die ist für
+Embryos semantisches Problem erheblich informativer als das Gate selbst.
+
+Der ergiebigste ist `claude/gold-recall-echr`: rund vierzig Commits, zwei
+Gold-Korpora — Argumentspannen des Europäischen Gerichtshofs für Menschenrechte
+und argumentannotierte Fachartikel —, jedes Experiment mit einer vorab
+festgeschriebenen Erfolgsmarke, und ein Forschungsprotokoll mit einer
+Statusspalte, in der mehrere gut aussehende Befunde als **zurückgezogen**
+stehen. Die Methode ist dieselbe, die dieser Bericht führt; die Disziplin ist
+älter und strenger.
+
+Drei Ergebnisse von dort betreffen Embryo direkt.
+
+### Semantische Extraktion bricht mit der Länge, die deterministische Hälfte nicht
+
+| Dokument | Zeichen | Gold-Spannen | Ergebnis |
+| --- | ---: | ---: | --- |
+| Fixture | 1.707 | 25 | 25/25 bei 80 % Überlappung |
+| Gerichtsentscheidung | 10.308 | 24 | 16–20/24 |
+| Gerichtsentscheidung | 26.715 | 49 | keine Extraktion, Ausgabe abgeschnitten |
+
+Werden dieselben Gold-Spannen dem Gate direkt als Paket vorgelegt, lässt es alle
+24 beziehungsweise 49 zu, ohne eine einzige Ablehnung. **Die deterministische
+Hälfte skaliert, die Extraktion nicht.** Das ist dieselbe Trennlinie, an der
+Embryo steht, auf einem starken Modell und an echten Dokumenten gemessen.
+
+### Der Prompt-Effekt, der sich als Streuung herausstellte
+
+Ein „domänenneutraler" Prompt hob den Recall von 16/24 auf 20/24 — bei *weniger*
+Claims. Ein Sweep über fünf Entscheidungen nahm den Befund wieder zurück: in
+Summe 44 gegen 55 Spannen, auf einer Entscheidung Einbruch von 17/23 auf 7/23.
+Und dann die methodisch wichtigste Zeile: derselbe Prompt, dasselbe Modell,
+dasselbe Dokument, Temperatur 0, las einmal 16/24 und einmal 20/24. **Vier
+Spannen Streuung zwischen zwei Läufen einer Konfiguration — genau die Größe des
+gesamten „Prompt-Effekts".** Fünf Wiederholungen innerhalb von fünf Minuten
+zeigten eine Streuung von 1 und wurden als Fensterartefakt wieder zurückgezogen:
+*„a result that reproduces within five minutes has not reproduced."*
+
+Für diesen Bericht heißt das: mehrere meiner eigenen Einzelmessungen auf 1.7B —
+die Ankermessung mit 2/3, die Spanlänge mit 2/12 — sind ein Zug, kein Effekt.
+Embryos Zellen decodieren greedy und lokal, die Wiederholung eines identischen
+Prompts liefert also dasselbe Byte; aber jede Zahl, die aus *einem* Prompt pro
+Arm stammt, hat denselben Status wie die dortigen Einzelläufe.
+
+### Der Engpass war ein Zeilenumbruch
+
+Das ist der stärkste Einzelfund des Repos und zugleich der, der eine Aussage
+dieses Berichts widerlegt.
+
+Die Gerichtsentscheidung ist hart umbrochen — 28 Zeilen auf 10.308 Zeichen. Ein
+Modell, das eine Passage über einen Umbruch hinweg zitiert, schreibt sie als
+Fließtext, und `document.includes(span)` scheitert an einer Stelle, die das
+Dokument offensichtlich enthält. **Vierzehn von achtzehn abgelehnten Vorschlägen
+brachen genau so.**
+
+`relaxed_span` sucht den Anker auf einer leerraum-normalisierten Kopie und gibt
+**die Textstelle des Dokuments** zurück, nie den Wortlaut des Modells. Eine
+Passage, die das Dokument abseits von Leerraum nicht enthält, wird weiterhin
+abgelehnt: das toleriert Satzspiegel, keine Umformulierung. Drei Runden, beide
+vorab festgelegten Marken erfüllt, dreimal von drei: **20 → 23 von 24**, der
+höchste je auf diesem Dokument gemessene Wert, und keine einzige Ablehnung wegen
+fehlender Verankerung mehr.
+
+Abschnitt 13 dieses Berichts schloss aus Beleg K, das sei „zugleich ein Argument
+gegen Whitespace-Toleranz im Gate". Das ist falsch und steht dort jetzt
+korrigiert. Beleg K — „gemeinsame" zu „gemeines" — ist ein Argument gegen
+Toleranz gegenüber **Umformulierung**, und `relaxed_span` lässt genau die
+weiterhin durchfallen. Die beiden Toleranzen sind nicht dieselbe Sache.
+
+### Überträgt es sich? Nein — und die Bruchstelle sagt, warum
+
+Portiert als `relaxedSpan` und `divergence` in `src/policies/rule.mjs`, gegen
+dieselben zwölf Spannen auf 1.7B, die Abschnitt 13 misst:
+
+| | |
+| --- | ---: |
+| exakt verankert | 2/12 |
+| mit Leerraum-Toleranz | 2/12 |
+| allein durch Leerraum gerettet | **0** |
+
+Und über die vierzehn archivierten Vorschläge bleibt die längste Spanne mit und
+ohne Toleranz bei fünf Zeichen. Der Grund ist einfach: Embryos Beobachtungen
+sind einzeilig, es gibt keinen Satzspiegel zu verzeihen.
+
+Was die Fehlschläge stattdessen sind, sagt die Bruchstellendiagnose — der zweite
+Teil der Portierung, der die längste noch passende Präfixlänge binär sucht und
+beide Fortsetzungen zeigt:
+
+```text
+Dokument: " fallen auseinander. Ein Model"   Modell: "\" enthält die Wortfolge \"begru"
+Dokument: "Zeitlichkeit ist asymmetrisch."   Modell: "kürzeste Wortfolge für \"Rechen"
+Dokument: "teilbar, Zustimmung nicht. Ein"   Modell: "eine Bedingung, die keine Schw"
+```
+
+Vier der sechs sind **Kommentar über die Aufgabe** statt Zitat, zwei sind
+**Umformulierung**. Beides ist dieselbe Formattreue-Schwäche wie C1 und C2b und
+hat mit Satzspiegel nichts zu tun. Ohne diese Diagnose sah „2/12" nach einem
+Problem der Zitiergenauigkeit aus; es ist eines der Anweisungsbefolgung.
+
+### Die übrigen Zweige
+
+* `experiment/embedding-rag-baseline` vergleicht die semantische Schicht mit
+  einer Embedding-Retrieval-Obergrenze, budgetgleich pro Dokument, und misst
+  nicht nur Recall, sondern **Sprecher- und Argumenttyp-Reinheit** der
+  Repräsentationseinheiten: wie oft eine RAG-Passage zwei Sprecher oder zwei
+  Argumenttypen zusammenwirft. Das Instrument steht; ein Ergebnis ist auf dem
+  Zweig nicht protokolliert. Für Embryo ist das die naheliegendste offene
+  Messung, weil Embeddings genau die semantische Stufe wären, die 360M und 1.7B
+  nicht leisten — und weil die Reinheitsmetrik die Frage stellt, ob eine
+  abgerufene Passage überhaupt als *ein* Beleg zählen darf.
+* `independent-echr-benchmark-20260831` fährt denselben Benchmark aus einem
+  eigenen Workflow, unabhängig vom Produktionspfad.
+* `feature/content-reviewer` verallgemeinert Budget Review zu Content Review mit
+  Prüfprofilen; `feature/flash-only`, `feature/human-dossier`,
+  `fix/reject-invalid-relations` und `fix/general-smoke-control` sind
+  Produktionsarbeit ohne eigene Messreihe.
+
+### Was das für Embryo heißt
+
+Die semantische Stufe ist damit nicht gelöst, aber die Diagnose ist schärfer.
+Drei Fehlerarten, die bisher unter „das Zitat stimmt nicht" zusammenlagen, sind
+jetzt getrennt und einzeln messbar: **Satzspiegel** (hier nicht vorhanden),
+**Umformulierung** (Beleg K, 2 von 6) und **Kommentar statt Zitat** (4 von 6).
+Nur die dritte ist eine Formatfrage, und nur sie ist auf dieser Modellgröße die
+häufigste.
+
+Und die Methodenlehre des Zweigs gilt für diesen Bericht unmittelbar: eine
+Messung pro Arm ist ein Zug. Was hier auf 1.7B mit n=1 steht, steht damit auf
+demselben Fuß wie die dort zurückgezogenen Prompt-Befunde.
+
+
+## 17. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -1438,7 +1572,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 17. Nachprüfen
+## 18. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -1473,6 +1607,11 @@ node tools/probe.mjs rule-fire
 
 # Hängt die Stance des Modellarms an der Optionsreihenfolge?
 node tools/probe.mjs stance-order
+
+# Spanlänge mit Leerraum-Toleranz und Bruchstellendiagnose
+MODEL=HuggingFaceTB/SmolLM2-1.7B-Instruct \
+  REVISION=31b70e2e869a7173562077fd711b654946d38674 \
+  node tools/probe.mjs span-length
 
 # Einen Lauf mit Regelarm bzw. mit dem entarteten Kontrollarm fahren
 node src/cli.mjs step --backend smollm --citation-by score --rule-arm anchor
