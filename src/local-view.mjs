@@ -1,6 +1,6 @@
 import { digest } from "./canonical.mjs";
 import { reviewPerspective } from "./needs.mjs";
-import { acceptanceMode, panelIndependence } from "./schema.mjs";
+import { acceptanceMode, panelIndependence, showRegister } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 function linkedQuestion(state, proposal) {
@@ -46,6 +46,10 @@ export function buildLocalView(state, need) {
     )
     .slice(-limit)
     .map(({ id, kind, status, text }) => ({ id, kind, status, text }));
+
+  // Withheld only where a seed asks for it, so every run written before this
+  // switch existed keeps the view — and the hash — it was recorded with.
+  if (!showRegister(state)) acceptedProposals = [];
 
   const perspective = need.kind === "REVIEW_FRAGMENT" ? reviewPerspective(need.stage) : null;
   if (need.kind === "REVIEW_FRAGMENT" && perspective === "adversarial") acceptedProposals = [];
