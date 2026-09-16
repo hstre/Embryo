@@ -724,6 +724,105 @@ const probes = {
     console.log(`\n  Rekonstruktion trifft den Lauf: ${reproduced}/${scoredAt.length}`);
     console.log(`  Stance übersteht die Permutation: ${stable}/${scoredAt.length}`);
   },
+
+  // What is left after runs 020 and 021 is instruction-following: the cell
+  // translates, comments on the passage, or changes one word. The only knob this
+  // project has ever had for that is the prompt, and budget-review's gold-recall
+  // branch found that a prompt effect of the size in question cannot be told from
+  // one configuration's run-to-run spread. Here it can: decoding is greedy and
+  // local, so the same prompt must return the same bytes — but that is a claim,
+  // not an assumption, so a repeat of the baseline runs as the first arm. If it
+  // differs from the baseline anywhere, nothing below it is readable.
+  //
+  // Scored exactly as the gate scores it: wrapping stripped, whitespace relaxed,
+  // at least forty characters, matched against the observation the cell was shown.
+  async "quote-prompt"() {
+    const seed = await readJson(new URL("../examples/seed-anchored.json", import.meta.url));
+    const observations = seed.observations.map(({ id, text }) => ({ id, text }));
+    const unwrap = (text) => text.trim().replace(/^[-*\s"„»'`]+/, "").replace(/["“«'`\s]+$/, "").trim();
+    const admits = (observation, answer) => {
+      const offered = unwrap(answer ?? "");
+      if (!offered) return false;
+      const quoted = relaxedSpan(observation.text, offered);
+      return Boolean(quoted) && quoted.length >= 40;
+    };
+
+    const BASE_SYSTEM = "You copy text. Reply with one sentence copied word for word from the passage below.\nChange nothing, translate nothing, explain nothing. Output only the sentence.";
+    const arms = {
+      // The prompt runs 016 to 021 used, verbatim.
+      basis: { system: BASE_SYSTEM, user: (o) => `Passage:\n${o.text}` },
+      // The control. Identical to the baseline; any difference kills the comparison.
+      wiederholung: { system: BASE_SYSTEM, user: (o) => `Passage:\n${o.text}` },
+      // Against the translation failure: the instruction speaks the passage's language.
+      deutsch: {
+        system: "Du kopierst Text. Gib genau einen Satz wörtlich aus der Passage wieder.\nÄndere kein Wort, übersetze nicht, erkläre nichts. Gib nur den Satz aus.",
+        user: (o) => `Passage:\n${o.text}`,
+      },
+      // Against the commentary failure, named explicitly.
+      "kein-kommentar": {
+        system: `${BASE_SYSTEM}\nDo not describe the passage and do not write about it. Reproduce its words.`,
+        user: (o) => `Passage:\n${o.text}`,
+      },
+      // Removes the choice: not "a sentence" but the first one.
+      "erster-satz": {
+        system: "You copy text. Output the first sentence of the passage below, word for word.\nChange nothing, translate nothing, explain nothing.",
+        user: (o) => `Passage:\n${o.text}`,
+      },
+    };
+
+    const results = {};
+    for (const [name, arm] of Object.entries(arms)) {
+      results[name] = [];
+      for (const observation of observations) {
+        const answer = await policy.generate(
+          [{ role: "system", content: arm.system }, { role: "user", content: arm.user(observation) }],
+          220,
+          "cell",
+        );
+        results[name].push({ id: observation.id, ok: admits(observation, answer), answer: answer.trim() });
+      }
+    }
+
+    // Continuation rather than instruction: the assistant turn already begins with
+    // the passage's own opening, so the cheapest completion is to carry on copying.
+    results.fortsetzung = [];
+    for (const observation of observations) {
+      const prefix = observation.text.slice(0, 24);
+      const rest = await policy.continueFrom(
+        [{ role: "system", content: BASE_SYSTEM }, { role: "user", content: `Passage:\n${observation.text}` }],
+        prefix,
+        220,
+        "cell",
+      );
+      results.fortsetzung.push({ id: observation.id, ok: admits(observation, prefix + rest), answer: (prefix + rest).trim() });
+    }
+
+    const score = (rows) => rows.filter((row) => row.ok).length;
+    const basis = results.basis;
+    const identical = results.wiederholung.every((row, index) => row.answer === basis[index].answer);
+    console.log(`Kontrolle — Wiederholung des Basisprompts byteidentisch: ${identical ? "ja" : "NEIN"}`);
+    if (!identical) {
+      console.log("  Greedy-Decodierung liefert nicht dasselbe. Die Armvergleiche darunter sind nicht zu lesen.");
+      for (const [index, row] of results.wiederholung.entries()) {
+        if (row.answer !== basis[index].answer) console.log(`  ${row.id}\n    basis: ${JSON.stringify(basis[index].answer.slice(0, 70))}\n    wdh.:  ${JSON.stringify(row.answer.slice(0, 70))}`);
+      }
+      return;
+    }
+
+    console.log("\nArm                verankert  je Beobachtung");
+    for (const [name, rows] of Object.entries(results)) {
+      if (name === "wiederholung") continue;
+      console.log(`  ${name.padEnd(16)} ${String(score(rows)).padStart(2)}/6     ${rows.map((row) => (row.ok ? "+" : "·")).join(" ")}`);
+    }
+    console.log("\nwo ein Arm den Basisprompt schlägt");
+    for (const [name, rows] of Object.entries(results)) {
+      if (name === "basis" || name === "wiederholung") continue;
+      for (const [index, row] of rows.entries()) {
+        if (row.ok && !basis[index].ok) console.log(`  ${name} gewinnt ${row.id}: ${JSON.stringify(row.answer.slice(0, 66))}`);
+        if (!row.ok && basis[index].ok) console.log(`  ${name} VERLIERT ${row.id}: ${JSON.stringify(row.answer.slice(0, 66))}`);
+      }
+    }
+  },
 };
 
 const name = process.argv[2];
