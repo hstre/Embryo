@@ -1,5 +1,5 @@
 import { digest } from "./canonical.mjs";
-import { acceptanceMode, requiredSupport } from "./schema.mjs";
+import { acceptanceMode, panelIndependence, requiredSupport } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 const PRIORITY = Object.freeze({ REVIEW_FRAGMENT: 40, META_REVIEW: 35, PROPOSE: 30, SYNTHESIZE: 20, QUESTION: 10 });
@@ -94,6 +94,81 @@ function citedObservations(state, fragmentId) {
   return state.edges.filter((edge) => edge.from === fragmentId && edge.relation === "cites").map((edge) => edge.to);
 }
 
+// Anti-Delphi accounting, taken from hstre/budget-review, where several reviewer
+// arms run over the same claim graph without seeing each other and their
+// agreement is consolidated as overlap — recorded, never read as confirmation.
+//
+// Embryo needs it because its panel is three runs of one model that differ by a
+// prompt word, and every arm after the first reads the fragments before it. The
+// seed's second premise — "Eine Mehrheit unter ihnen ist kein Beleg, solange die
+// Instanzen korreliert sind" — was in the environment from the start and in the
+// code nowhere: the old rule counted distinct observations without asking who
+// cited them or what that cell had already read.
+//
+// The ledger classifies every supporting citation:
+//   support    the first arm to cite this observation, and independent of the
+//              arms before it
+//   overlap    a later arm citing the same observation. Between blind arms this
+//              is convergence; between sighted arms it may be copying. Either
+//              way it adds nothing, and the flag says which case it was.
+//   correlated a citation from an arm that could read the arms before it. It may
+//              be right. It is not a second instance, so it does not count.
+// Only "support" entries meet required_support. Nothing here marks a claim true.
+export function supportLedger(state, target) {
+  const mode = panelIndependence(state);
+  const fragments = reviewFragments(state, target.id)
+    .slice()
+    .sort((a, b) => a.created_event - b.created_event || a.id.localeCompare(b.id));
+  const firstCiter = new Map();
+  const support = [];
+  const overlap = [];
+  const correlated = [];
+  const contradictions = [];
+  let supportingArms = 0;
+
+  for (const [index, fragment] of fragments.entries()) {
+    // A contradiction is a counterexample, not a vote. One arm finding one is
+    // informative however many arms agreed, and an arm that dissents after
+    // reading agreement is if anything less correlated, not more. So the
+    // discount below does not apply to it — but the ledger records whether it
+    // was blind, so the receipt does not have to be taken on trust.
+    if (fragment.stance === "contradicts") {
+      contradictions.push({ fragment_id: fragment.id, perspective: fragment.perspective ?? null, blind: mode === "blind" || supportingArms === 0 });
+      continue;
+    }
+    if (fragment.stance !== "supports") continue;
+    // In a sighted panel only the first arm judged on its own. Later arms saw
+    // what it cited, so their citations are recorded and not counted.
+    const independent = mode === "blind" || supportingArms === 0;
+    supportingArms += 1;
+    for (const observationId of citedObservations(state, fragment.id)) {
+      const entry = { observation_id: observationId, fragment_id: fragment.id, perspective: fragment.perspective ?? null };
+      const first = firstCiter.get(observationId);
+      if (first !== undefined) {
+        overlap.push({ ...entry, first_cited_by: first, independent });
+        continue;
+      }
+      firstCiter.set(observationId, fragment.id);
+      if (independent) support.push(entry);
+      // Creation order, not the event counter: two fragments can share an event
+      // sequence, and the node ids are minted in order either way.
+      else correlated.push({ ...entry, could_have_read: fragments.slice(0, index).map((earlier) => earlier.id) });
+    }
+  }
+
+  return {
+    mode,
+    arms: fragments.length,
+    supporting_arms: supportingArms,
+    support,
+    overlap,
+    correlated,
+    contradictions,
+    independent_support: support.length,
+    required_support: requiredSupport(state),
+  };
+}
+
 // The verdict nobody casts. Once a review panel is complete, the gate reads what
 // the panel accumulated — which observations were cited in support, and whether
 // any reviewer found a contradiction — and derives the outcome from that. No cell
@@ -102,12 +177,16 @@ function citedObservations(state, fragmentId) {
 export function citationVerdict(state, target) {
   const fragments = reviewFragments(state, target.id);
   if (fragments.some((fragment) => fragment.stance === "contradicts")) return "REVISE";
-  const supporting = new Set();
-  for (const fragment of fragments) {
-    if (fragment.stance !== "supports") continue;
-    for (const id of citedObservations(state, fragment.id)) supporting.add(id);
+  if (panelIndependence(state) === "sighted") {
+    const supporting = new Set();
+    for (const fragment of fragments) {
+      if (fragment.stance !== "supports") continue;
+      for (const id of citedObservations(state, fragment.id)) supporting.add(id);
+    }
+    return supporting.size >= requiredSupport(state) ? "ACCEPT" : "REJECT";
   }
-  return supporting.size >= requiredSupport(state) ? "ACCEPT" : "REJECT";
+  const ledger = supportLedger(state, target);
+  return ledger.independent_support >= ledger.required_support ? "ACCEPT" : "REJECT";
 }
 
 // Applies that derived verdict, mirroring the transitions a META_REVIEW would make.
@@ -116,6 +195,9 @@ export function resolveByCitations(state, target) {
   if (!["proposal", "synthesis"].includes(target.kind) || target.status !== "unreviewed") return null;
   if (!panelComplete(state, target.id)) return null;
   const verdict = citationVerdict(state, target);
+  // Recorded only where the accounting is switched on, so a run from before it
+  // existed replays to the same receipt hashes it was written with.
+  const ledger = panelIndependence(state) === "sighted" ? null : supportLedger(state, target);
   const mutations = [`node:${target.id}`];
   target.status = verdict === "ACCEPT" ? "accepted" : verdict === "REVISE" ? "revision_requested" : "rejected";
   if (target.kind === "proposal") {
@@ -129,7 +211,7 @@ export function resolveByCitations(state, target) {
     goal.status = "accepted";
     mutations.push(`node:${goal.id}`);
   }
-  return { verdict, mutations };
+  return { verdict, mutations, ...(ledger ? { ledger } : {}) };
 }
 
 export function registerAttemptFailure(state, need) {

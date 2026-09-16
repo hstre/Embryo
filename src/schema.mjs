@@ -17,7 +17,12 @@ const REQUIRED_CONFIG_KEYS = new Set([
 // Optional, so that states written before the citation mechanism existed stay
 // valid and keep their digest. A seed opts in by setting them.
 const ACCEPTANCE_MODES = new Set(["verdict", "citation"]);
-const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support"]);
+// How much the reviewers of one panel may know of each other. "sighted" is the
+// behaviour every run before 012 had and stays the default, so their receipts
+// keep their hashes. "logged" keeps the arms sighted but makes the gate account
+// for what each could have read; "blind" additionally withholds the siblings.
+const PANEL_INDEPENDENCE = new Set(["sighted", "logged", "blind"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence"]);
 const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
@@ -48,6 +53,15 @@ function validateOptionalConfig(config) {
   if (Object.hasOwn(config, "required_support")) {
     invariant(Number.isInteger(config.required_support) && config.required_support > 0, "config.required_support must be a positive integer");
   }
+  if (Object.hasOwn(config, "panel_independence")) {
+    invariant(PANEL_INDEPENDENCE.has(config.panel_independence), "config.panel_independence must be sighted, logged or blind");
+    // The accounting is about citations. Asking for it where acceptance comes from
+    // a cell's verdict would record a ledger that decides nothing.
+    invariant(
+      config.panel_independence === "sighted" || config.acceptance_mode === "citation",
+      "config.panel_independence beyond sighted requires acceptance_mode citation",
+    );
+  }
 }
 
 // Acceptance is decided either by a cell emitting a verdict, or by the gate
@@ -59,6 +73,14 @@ export function acceptanceMode(state) {
 
 export function requiredSupport(state) {
   return state.config.required_support ?? 2;
+}
+
+// Whether the reviewers of a panel could read each other, and therefore whether
+// their agreement is worth anything. The seed's second premise says a majority
+// among correlated instances is not evidence; this is the knob that lets a run
+// answer that question about its own panel instead of assuming it away.
+export function panelIndependence(state) {
+  return state.config.panel_independence ?? "sighted";
 }
 
 export function validateSeed(seed) {

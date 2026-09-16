@@ -404,6 +404,85 @@ const probes = {
       console.log(`  abstand ${gap}: stabil ${pct(b.stable, b.total)}   davon richtig ${pct(b.correct, b.stable)}`);
     }
   },
+
+  // Anti-Delphi, measured on the panel itself. The seed says a majority among
+  // correlated instances is no evidence; this asks how correlated Embryo's three
+  // reviewers actually are, in two separate senses.
+  //
+  // First, blind: each perspective ranks the observations with no sibling in the
+  // prompt. If the three rankings coincide, the panel is one instance wearing
+  // three labels and its agreement carries nothing, whatever the gate counts.
+  //
+  // Second, sighted: the same arm is shown a sibling fragment and re-ranked. The
+  // decoy arm is shown a citation of the observation it ranked *last* on its own.
+  // Following it is copying. Two controls rule out the two obvious ways of
+  // passing this without copying: the echo arm is shown a sibling citing the
+  // arm's own blind favourite, which separates "any added sentence moves the
+  // ranking" from "this particular citation moves it"; the dismissal arm is
+  // shown the same decoy id in a sentence that rejects it, which separates
+  // following the citation from merely repeating the last id in the prompt.
+  async "panel-independence"() {
+    const seed = await readJson(new URL("../examples/seed-grounded.json", import.meta.url));
+    const observations = seed.observations.map(({ id, text }) => ({ id, text }));
+    const proposal = "Verantwortung bleibt beim Menschen, der auf eine Ausgabe hin handelt; das Modell schuldet Gründe, die gegen eine Quelle geprüft werden können.";
+    const perspectives = ["adversarial", "charitable", "coherence"];
+
+    const rank = async (perspective, siblings) => {
+      const context = [
+        `Goal: ${seed.goal}`,
+        `Proposal: ${proposal}`,
+        ...(siblings.length ? ["Review fragments so far:", ...siblings.map((line) => `- ${line}`)] : []),
+      ];
+      const scored = await policy.scoreChoices(
+        [
+          { role: "system", content: `You are the ${perspective} reviewer. Decide which observation bears on the proposal.` },
+          { role: "user", content: [...context, "Observations:", ...observations.map((o) => `- ${o.id}: ${o.text}`), "Which observation bears on it? Answer with its id."].join("\n") },
+        ],
+        observations.map((o) => o.id),
+        "cell",
+      );
+      return [...scored].sort((a, b) => b.mean - a.mean).map((entry) => entry.choice);
+    };
+
+    const blind = {};
+    for (const perspective of perspectives) blind[perspective] = await rank(perspective, []);
+
+    console.log("blinde Arme — Rangfolge der Beobachtungen");
+    for (const perspective of perspectives) console.log(`  ${perspective.padEnd(12)} ${blind[perspective].join(" > ")}`);
+    const tops = perspectives.map((perspective) => blind[perspective][0]);
+    const distinct = new Set(tops).size;
+    console.log(`\n  verschiedene Spitzenwahlen: ${distinct}/3` + (distinct === 1 ? "  — die drei Arme sind eine Instanz" : ""));
+    // Full-ranking agreement, not just the argmax: two arms can share a favourite
+    // and disagree everywhere below it, which the count above would hide.
+    for (let i = 0; i < perspectives.length; i += 1) {
+      for (let j = i + 1; j < perspectives.length; j += 1) {
+        const [a, b] = [blind[perspectives[i]], blind[perspectives[j]]];
+        const same = a.filter((id, position) => b[position] === id).length;
+        console.log(`  ${perspectives[i]} vs ${perspectives[j]}: ${same}/${a.length} Positionen gleich`);
+      }
+    }
+
+    console.log("\nsichtbarer Arm — folgt er dem, was vor ihm steht?");
+    let followed = 0;
+    let echoHeld = 0;
+    let mentionOnly = 0;
+    for (const perspective of perspectives) {
+      const own = blind[perspective][0];
+      const decoyId = blind[perspective].at(-1);
+      const decoy = await rank(perspective, [`adversarial: ${decoyId} supports this proposal.`]);
+      const echo = await rank(perspective, [`adversarial: ${own} supports this proposal.`]);
+      const dismissal = await rank(perspective, [`adversarial: I read ${decoyId} and it does not bear on this proposal.`]);
+      if (decoy[0] === decoyId) followed += 1;
+      if (echo[0] === own) echoHeld += 1;
+      if (dismissal[0] === decoyId) mentionOnly += 1;
+      console.log(`  ${perspective.padEnd(12)} blind ${own}  | Köder ${decoyId} -> ${decoy[0]}${decoy[0] === decoyId ? "  ÜBERNOMMEN" : ""}  | Echo -> ${echo[0]}  | Abweisung -> ${dismissal[0]}${dismissal[0] === decoyId ? "  TROTZDEM" : ""}`);
+    }
+    console.log(`\n  Köder übernommen: ${followed}/3`);
+    console.log(`  Kontrolle 1, Echo hält die eigene Wahl: ${echoHeld}/3`);
+    console.log(`  Kontrolle 2, blosse Nennung genügt schon: ${mentionOnly}/3`);
+    if (followed === 3 && mentionOnly === 3) console.log("  -> nicht das Zitat wird übernommen, sondern der zuletzt genannte Bezeichner");
+    if (followed === 3 && mentionOnly < 3) console.log("  -> die Übernahme hängt am Inhalt des Zitats, nicht an der blossen Nennung");
+  },
 };
 
 const name = process.argv[2];

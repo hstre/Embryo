@@ -134,7 +134,16 @@ export function applyProposal(state, proposal, eventSeq) {
     const resolved = resolveByCitations(state, target);
     if (!resolved) return { accepted: true, code: "REVIEW_FRAGMENT_ADDED", message: id, mutations };
     mutations.push(...resolved.mutations);
-    return { accepted: true, code: `PANEL_${resolved.verdict}`, message: target.id, mutations };
+    // The overlap ledger travels in the decision and therefore into the receipt,
+    // so what the panel agreed on — and what that agreement was worth — is in the
+    // hash chain rather than reconstructed afterwards from the graph.
+    return {
+      accepted: true,
+      code: `PANEL_${resolved.verdict}`,
+      message: target.id,
+      mutations,
+      ...(resolved.ledger ? { support_ledger: resolved.ledger } : {}),
+    };
   }
 
   if (proposal.type === "META_REVIEW") {

@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { createState, readJson, readState, writeState } from "./state.mjs";
 import { resetLedger, runGeneration } from "./engine.mjs";
 import { readReceipts, validateLedger } from "./ledger.mjs";
-import { canGrow, deriveNeeds } from "./needs.mjs";
+import { canGrow, deriveNeeds, supportLedger } from "./needs.mjs";
 import { replay } from "./replay.mjs";
 import { stateDigest } from "./canonical.mjs";
 import { DeterministicPolicy } from "./policies/deterministic.mjs";
@@ -88,6 +88,21 @@ async function main() {
     console.log(JSON.stringify({ valid: true, events: receipts.length, state_digest: stateDigest(state) }, null, 2));
     return;
   }
+  if (command === "panel") {
+    // Reads the overlap accounting straight off the tissue for every target a
+    // panel has reviewed. The same function the gate used, so the answer here and
+    // the answer in the receipts cannot drift apart.
+    const reviewed = state.nodes.filter((node) =>
+      ["proposal", "synthesis"].includes(node.kind)
+      && state.edges.some((edge) => edge.to === node.id && edge.relation === "reviews"),
+    );
+    console.log(JSON.stringify(
+      reviewed.map((target) => ({ target_id: target.id, status: target.status, ...supportLedger(state, target) })),
+      null,
+      2,
+    ));
+    return;
+  }
   if (command === "replay") {
     const seed = await readJson(seedPath);
     const receipts = await readReceipts(eventsPath);
@@ -104,6 +119,11 @@ async function main() {
     if (options.backend && !["smollm", "deterministic"].includes(options.backend)) {
       throw new Error("backend must be smollm or deterministic");
     }
+    // 011 was driven from a one-off script because this switch did not exist, which
+    // made its policy string the only record of how it ran. It is a flag now.
+    if (options.citation_by && !["generate", "score"].includes(options.citation_by)) {
+      throw new Error("citation-by must be generate or score");
+    }
     const policy = options.backend === "smollm"
       ? new SmolLmPolicy({
           model: options.model,
@@ -112,6 +132,7 @@ async function main() {
           metaModel: options.meta_model,
           metaRevision: options.meta_revision,
           metaDtype: options.meta_dtype,
+          citationBy: options.citation_by,
         })
       : new DeterministicPolicy();
     const result = await runGeneration({

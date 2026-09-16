@@ -1,6 +1,6 @@
 import { digest } from "./canonical.mjs";
 import { reviewPerspective } from "./needs.mjs";
-import { acceptanceMode } from "./schema.mjs";
+import { acceptanceMode, panelIndependence } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 function linkedQuestion(state, proposal) {
@@ -51,6 +51,14 @@ export function buildLocalView(state, need) {
   if (need.kind === "REVIEW_FRAGMENT" && perspective === "adversarial") acceptedProposals = [];
   if (need.kind === "REVIEW_FRAGMENT" && perspective === "charitable") negativeTraces = [];
 
+  // Stigmergy everywhere else: a proposer reads accepted and rejected traces, a
+  // reviser reads the reviews. The panel is the one place where a trace is later
+  // counted, and a count of instances that read each other counts one instance.
+  // So a blind panel withholds the sibling fragments — from the reviewers only,
+  // and only for the target they are reviewing.
+  const independence = panelIndependence(state);
+  const blindPanel = independence === "blind" && need.kind === "REVIEW_FRAGMENT";
+
   const view = {
     embryo_id: state.embryo_id,
     generation: state.generation,
@@ -70,11 +78,12 @@ export function buildLocalView(state, need) {
     // A cell has to know which kind of contribution the gate will accept: asking for
     // a citation the gate would refuse is a different experiment, not a control.
     ...(acceptanceMode(state) === "citation" ? { acceptance_mode: "citation" } : {}),
+    ...(independence === "sighted" ? {} : { panel_independence: independence }),
     ...(observations.length ? { observations } : {}),
     target: { id: target.id, kind: target.kind, status: target.status, text: target.text },
     question: question ? { id: question.id, status: question.status, text: question.text } : null,
     reviews: reviewsFor(state, target.id).slice(-limit).map(({ id, text }) => ({ id, text })),
-    review_fragments: reviewFragmentsFor(state, target.id),
+    review_fragments: blindPanel ? [] : reviewFragmentsFor(state, target.id),
     accepted_proposals: acceptedProposals,
     negative_traces: negativeTraces,
   };

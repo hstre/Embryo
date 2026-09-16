@@ -526,3 +526,101 @@ test("a scored citation ranks the environment and can still decline", async () =
   }));
   assert.equal((await policy.propose(view)).action.type, "ABSTAIN");
 });
+
+// --- Anti-Delphi: what the panel agreed on, and what that agreement was worth ---
+
+const PANEL = ["adversarial", "charitable", "coherence"];
+
+function spreadPlan(view) {
+  return { observation_ids: [view.observations[PANEL.indexOf(view.perspective)].id], stance: "supports" };
+}
+
+test("a blind reviewer is not shown what the reviewers before it wrote", async () => {
+  const state = await groundedState({ panel_independence: "blind" });
+  addQuestion(state);
+  addProposal(state);
+  const first = deriveNeeds(state).find((need) => need.kind === "REVIEW_FRAGMENT");
+  applyProposal(state, { type: "ADD_REVIEW_FRAGMENT", need_id: first.id, payload: { target_id: first.target_id, text: "observation-01 supports this.", observation_ids: ["observation-01"], stance: "supports" } }, state.next_event_seq);
+  const second = deriveNeeds(state).find((need) => need.kind === "REVIEW_FRAGMENT");
+  const { view } = buildLocalView(state, second);
+  assert.equal(view.panel_independence, "blind");
+  assert.deepEqual(view.review_fragments, []);
+  // The proposer is not blinded: stigmergy is withheld from the panel only.
+  const sighted = await groundedState();
+  addQuestion(sighted);
+  addProposal(sighted);
+  const need = deriveNeeds(sighted).find((candidate) => candidate.kind === "REVIEW_FRAGMENT");
+  assert.equal(buildLocalView(sighted, need).view.panel_independence, undefined);
+});
+
+test("a sighted panel gets one independent support however many arms agree", async () => {
+  const logged = await groundedState({ panel_independence: "logged" });
+  addQuestion(logged);
+  addProposal(logged);
+  // Three different observations — the old rule accepted exactly this.
+  const results = citeReviewPanel(logged, spreadPlan);
+  assert.equal(results.at(-1).code, "PANEL_REJECT");
+  const ledger = results.at(-1).support_ledger;
+  assert.equal(ledger.mode, "logged");
+  assert.equal(ledger.supporting_arms, 3);
+  assert.equal(ledger.independent_support, 1);
+  assert.equal(ledger.correlated.length, 2);
+  // Each correlated citation names the fragments its arm could have read.
+  assert.ok(ledger.correlated.every((entry) => entry.could_have_read.length > 0));
+
+  const blind = await groundedState({ panel_independence: "blind" });
+  addQuestion(blind);
+  addProposal(blind);
+  const accepted = citeReviewPanel(blind, spreadPlan);
+  assert.equal(accepted.at(-1).code, "PANEL_ACCEPT");
+  assert.equal(accepted.at(-1).support_ledger.independent_support, 3);
+  assert.equal(accepted.at(-1).support_ledger.correlated.length, 0);
+});
+
+test("agreement between blind arms is recorded as overlap and counts nothing", async () => {
+  const state = await groundedState({ panel_independence: "blind" });
+  addQuestion(state);
+  addProposal(state);
+  const results = citeReviewPanel(state, (view) => ({
+    // Two arms land on the same observation without having seen each other.
+    observation_ids: [view.perspective === "coherence" ? "observation-02" : "observation-01"],
+    stance: "supports",
+  }));
+  const ledger = results.at(-1).support_ledger;
+  assert.equal(ledger.independent_support, 2);
+  assert.equal(ledger.overlap.length, 1);
+  assert.equal(ledger.overlap[0].first_cited_by, ledger.support[0].fragment_id);
+  assert.equal(ledger.overlap[0].independent, true);
+  // Nothing in the ledger calls the overlap a confirmation: it raised no count.
+  assert.equal(ledger.support.length, ledger.independent_support);
+});
+
+test("a contradiction keeps its weight and says whether it was blind", async () => {
+  const state = await groundedState({ panel_independence: "logged" });
+  addQuestion(state);
+  addProposal(state);
+  const results = citeReviewPanel(state, (view) => ({
+    ...spreadPlan(view),
+    stance: view.perspective === "coherence" ? "contradicts" : "supports",
+  }));
+  assert.equal(results.at(-1).code, "PANEL_REVISE");
+  const ledger = results.at(-1).support_ledger;
+  assert.equal(ledger.contradictions.length, 1);
+  assert.equal(ledger.contradictions[0].perspective, "coherence");
+  // It dissented after reading two supporting arms, so it was not blind — the
+  // receipt says so rather than leaving the reader to assume either way.
+  assert.equal(ledger.contradictions[0].blind, false);
+});
+
+test("the accounting leaves a verdict-mode and a sighted run untouched", async () => {
+  const sighted = await groundedState();
+  addQuestion(sighted);
+  addProposal(sighted);
+  const results = citeReviewPanel(sighted, spreadPlan);
+  assert.equal(results.at(-1).code, "PANEL_ACCEPT");
+  assert.equal(results.at(-1).support_ledger, undefined);
+  await assert.rejects(
+    async () => createState({ ...(await readJson(seedPath)), config: { panel_independence: "blind" } }),
+    /requires acceptance_mode citation/,
+  );
+});
