@@ -911,8 +911,8 @@ diesem Vergleich ist nichts zu lesen.
 
 ### Wie oft die Messung selbst das Ergebnis war
 
-Diese Session hat sieben Zahlen produziert, die bei genauerem Hinsehen etwas
-anderes maßen als behauptet, und alle sieben stammen von mir:
+Diese Session hat acht Zahlen produziert, die bei genauerem Hinsehen etwas
+anderes maßen als behauptet, und alle acht stammen von mir:
 
 - Die Einzelmessung des Meta-Reviewers lieferte ein Verdikt, das im vollständigen
   Lauf nie zustande kam — die Ansicht war nicht repräsentativ.
@@ -929,6 +929,10 @@ anderes maßen als behauptet, und alle sieben stammen von mir:
   wurden verworfen und angeheftet neu gefahren.
 - Die Stance-Messung ließ im ersten Anlauf die Frage aus dem Kontext weg und traf
   den Lauf nur 4/9. Über den Replay-Pfad rekonstruiert trifft sie ihn 9/9.
+- Die Positivkontrolle der Relationsmessung baute zwei angeblich verschiedene
+  Paare mit Stringersetzungen, die ins Leere liefen. Beide waren derselbe Text
+  und lieferten auf vier Nachkommastellen dieselben Werte — eine arithmetische
+  Identität, die wie der stärkste Befund der Messung aussah.
 
 Keiner dieser Fehler hat die Richtung des Gesamtbefunds gedreht, aber fünf
 hätten eine falsche Zahl in diesem Bericht hinterlassen. Sie stehen hier, weil
@@ -1649,7 +1653,128 @@ Damit ist die Prompt-Stellschraube gemessen und nicht bloß vermutet. Sie bewegt
 den Zitierer nicht, und zwei naheliegende Verbesserungen verschlechtern ihn.
 
 
-## 18. Was offen bleibt
+## 18. Sammeln und vernetzen
+
+Der Auftrag ab 023 hat zwei Verben:
+
+> Sammle Wissen darüber, wie man herausarbeitet, was in einem Text steht — und
+> vernetze die gesammelten Stücke.
+
+Zwei Stufen, in der Reihenfolge, die das Gate von [budget-review][br] nennt:
+*„Admit anchored claims and then relations between admitted endpoints."*
+
+**Sammeln** ist der Mechanismus aus 016–021, unverändert. **Vernetzen** ist neu:
+sobald das Register voll ist, leitet das Substrat je ein Bedürfnis pro
+unentschiedenem Paar ab. Die Zelle **wählt keinen Eintrag aus** — sie bekommt
+beide und entscheidet nur zwischen vier geschlossenen Relationen: `requires`,
+`refines`, `contradicts`, `unrelated`. Gescort, nicht generiert. Das Gate prüft
+Endpunkte, Relationsart, Paarzugehörigkeit und Graph-Integrität, und nichts
+darüber, ob die Relation zutrifft. `unrelated` ist eine protokollierte Absage,
+keine Ablehnung — DESis Disziplin: ein Arm, der immer antwortet, ist schlechter
+als einer, der sich enthalten kann.
+
+Die Umgebung sind acht gemessene Aussagen über das Herausarbeiten von
+Textinhalt, jede mit Quelle, aus budget-review und DESi — keine von mir
+erfunden. **Sie sind englisch**, was die Fehlerart „Übersetzung statt Kopie" per
+Konstruktion beseitigt; der Vergleich der Sammelstufe mit 021 ist dadurch nicht
+sauber, und das ist eine Änderung neben der Aufgabe.
+
+### Das Sammeln erreicht zum ersten Mal sein Ziel
+
+| | Marke | Ergebnis |
+| --- | --- | --- |
+| 023, 1.7B | ≥ 3 von 4 | **4 von 4, Ziel akzeptiert** |
+| 024, 360M | — | 2 von 4, Vernetzen nie erreicht |
+
+023 ist der erste Lauf dieses Projekts, der sein Ziel erreicht hat. Im Gewebe
+stehen vier Stellen der Umgebung, jede über eine Stringsuche gegen die
+Beobachtung zugelassen, auf die ihr Bedürfnis zeigte, jede als Textstelle der
+Quelle gespeichert:
+
+```text
+Checking that a quoted span occurs in the document verifies provenance a…
+A passage no claim reaches is a question for the reader and not a defect…
+An anchor that reaches into the text of two speakers merges two position…
+A rule can settle whether two strings share a passage.
+```
+
+Danach hat es alle sechs Paare entschieden. **Jedes einzelne als `unrelated`.**
+
+### Was die Kanten wert sind
+
+Die Marke dafür stand vorab und war eine Kontrolle, keine Leistung: die Relation
+muss die Permutation der Optionsnamen in **≥ 5 von 6** Paaren überstehen.
+
+| | |
+| --- | ---: |
+| Relation übersteht die Permutation | **0/6** |
+
+Und das Muster ist schärfer als die Zahl. Alle sechs Paare liefern das
+**identische Tripel** — Reihenfolge 1 ergibt `unrelated`, Reihenfolge 2 und 3
+ergeben `contradicts`, für jedes Paar gleich. Achtzehn Bewertungen, und welche
+zwei Aussagen in Beziehung gesetzt werden, spielt für das Ergebnis keine Rolle;
+nur wie die vier Optionen benannt werden.
+
+Die Positivkontrolle sagt, wie weit das geht. Dieselbe Aussage gegen sich
+selbst, gegen ihre eigene Verneinung, gegen eine verschärfte Fassung und gegen
+einen Satz über einen Wasserkessel:
+
+| Paar | Wahl | Abstand zur zweitbesten |
+| --- | --- | ---: |
+| identisch | `unrelated` | 1,96 nats |
+| Negation | `unrelated` | 1,73 nats |
+| Verschärfung | `unrelated` | 1,77 nats |
+| fremdes Thema | `unrelated` | 2,29 nats |
+
+Der Text des zweiten Partners bewegt die Werte leicht — anders als in einer
+ersten, fehlerhaften Fassung dieser Kontrolle —, aber nie genug, um die
+Rangfolge zu ändern. Und die Richtung ist verkehrt herum: das wirklich fremde
+Paar bekommt **weniger** `unrelated`-Masse als die Aussage gegen sich selbst.
+Bei n=1 je Zelle ist das keine Zahl, auf die man etwas baut; als Richtung steht
+sie da.
+
+Damit ist der Graph aus 023 **strukturell gültig und semantisch leer**. Das Gate
+hat getan, was es verspricht: es hat Endpunkte, Relationsart und
+Graph-Integrität geprüft und über den Inhalt nichts behauptet. Genau deshalb
+lässt sich hier sagen, dass der Inhalt fehlt — ein Gate, das Qualität
+behauptete, hätte sechs plausible Kanten protokolliert.
+
+### Eine Kontrolle, die zuerst nichts kontrollierte
+
+Die erste Fassung der Positivkontrolle baute das identische und das verneinte
+Paar mit zwei Stringersetzungen, die beide **ins Leere liefen**: der Ausschnitt
+endete nicht auf einen Punkt und enthielt das ersetzte Wort nicht. Beide Paare
+waren derselbe Text und bekamen auf vier Nachkommastellen dieselben Werte.
+
+Das sah aus wie der stärkste Befund der Messung — „der Partner hat null
+Einfluss" — und war eine arithmetische Identität. Aufgefallen ist es nur, weil
+zwei angeblich verschiedene Eingaben bitgleiche Ausgaben lieferten, was bei
+einer echten Änderung nicht vorkommt. Der Eintrag steht in der Liste in
+Abschnitt 13.
+
+### Was daraus folgt
+
+Die beiden Verben des Auftrags trennen sich sauber, und die Trennlinie liegt
+dort, wo die Fähigkeitsleiter sie vorhergesagt hat.
+
+**Sammeln trägt.** Wörtliches Kopieren gegen eine deterministische Prüfung
+erreicht auf 1.7B das volle Ziel. Das ist die lexikalische Verankerung aus
+Abschnitt 13, und sie hält auch unter einer Aufgabe, die vier verschiedene
+Quellen verlangt statt einer.
+
+**Vernetzen trägt nicht.** Die Relation zwischen zwei Aussagen ist genau die
+semantische Stufe, die C3b misst und die auf 1.7B fällt. Dass die Zelle hier
+nicht einmal mehr auswählen muss — beide Enden kommen vom Substrat, die Optionen
+sind vier — ändert daran nichts. Die Aufgabe ist so weit zerlegt, wie sie sich
+zerlegen lässt, und das, was übrig bleibt, ist der Kern.
+
+Was ein Register ohne Kanten trotzdem ist: eine nachprüfbare Sammlung mit
+Herkunft. Was es nicht ist: Wissen im Sinne der Aufgabe. Der Unterschied ist
+genau die Kante, und die fehlt.
+
+[br]: https://github.com/hstre/Budget-Review
+
+## 19. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -1796,7 +1921,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 19. Nachprüfen
+## 20. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -1834,6 +1959,9 @@ node tools/probe.mjs stance-order
 
 # Bewegt ein Prompt die Zitierzelle? Kontrollarm bricht die Messung ab, wenn nicht
 node tools/probe.mjs quote-prompt
+
+# Übersteht die Relationswahl die Permutation der Optionsnamen? Mit Positivkontrolle
+node tools/probe.mjs relation-order
 
 # Spanlänge mit Leerraum-Toleranz und Bruchstellendiagnose
 MODEL=HuggingFaceTB/SmolLM2-1.7B-Instruct \
