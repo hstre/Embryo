@@ -867,6 +867,34 @@ const probes = {
         console.log(`  Paar ${i + 1}-${j + 1}  ${chosen.map((choice) => choice.padEnd(12)).join(" ")}${distinct.size === 1 ? "  STABIL" : ""}`);
       }
     }
+    // Positive control for the instrument, in the baseline naming only. If a
+    // statement paired with its own negation does not read differently from a
+    // statement paired with an unrelated one, the scorer is not registering the
+    // pair at all, and the instability above has nothing underneath it.
+    // Written out rather than derived by replace. A first version built them with
+    // two string replacements that both silently matched nothing, so the identical
+    // and the negated pair were the same text and scored the same to four decimals
+    // — an arithmetic identity I nearly reported as a finding.
+    const CLAIM = "A quoted span that occurs in the document verifies provenance.";
+    const controls = [
+      ["identisch", CLAIM, CLAIM],
+      ["Negation", CLAIM, "A quoted span that occurs in the document does not verify provenance."],
+      ["Verschärfung", CLAIM, "A quoted span that occurs in the document verifies provenance and nothing else."],
+      ["fremdes Thema", CLAIM, "The kettle boils at one hundred degrees celsius at sea level."],
+    ];
+    console.log("\nPositivkontrolle, Basisbenennung");
+    for (const [label, a, b] of controls) {
+      const scored = await policy.scoreChoices(
+        [
+          { role: "system", content: `You relate two statements about reading a text. Answer with exactly one of: ${kinds.join(", ")}.` },
+          { role: "user", content: [`A: ${a}`, `B: ${b}`, `How does A relate to B? Answer ${kinds.slice(0, 3).join(", ")} or ${kinds[3]}.`].join("\n") },
+        ],
+        kinds,
+        "cell",
+      );
+      console.log(`  ${label.padEnd(14)} -> ${best(scored, "mean").choice.padEnd(12)}  ${scored.map((entry) => `${entry.choice}:${entry.mean}`).join("  ")}`);
+    }
+
     console.log(`\n  Relation übersteht die Permutation: ${stable}/${total}`);
     console.log(`  Verteilung über ${3 * total} Durchgänge: ${[...winners].sort((a, b) => b[1] - a[1]).map(([kind, count]) => `${kind}:${count}`).join("  ")}`);
   },

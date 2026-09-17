@@ -23,6 +23,8 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `019` | wie 018 auf 1.7B | 14 | 14/64 | 2 |
 | `020` | wie 018, Gate toleriert die Rahmung der Antwort | 16 | 16/64 | **2** |
 | `021` | wie 020 auf 1.7B | 12 | 12/64 | **3** |
+| `023` | **neuer Auftrag:** sammeln *und* vernetzen, 1.7B | 19 | 19/96 | **4 + 6 Kanten** |
+| `024` | wie 023 auf 360M | 20 | 20/96 | 2, Vernetzen nie erreicht |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
@@ -68,6 +70,17 @@ per Stringsuche gegen sie. Kein Review-Panel, kein Meta-Review, keine Frage,
 keine Synthese. Die sechs Läufe bilden drei Paare (360M und 1.7B) mit je einer
 Änderung, und die Marke stand vor jedem Paar fest — siehe `016-vorab.md`,
 `018-vorab.md` und `020-vorab.md`.
+
+Ab 023 gilt wieder ein anderer Auftrag: Wissen darüber sammeln, wie man
+herausarbeitet was in einem Text steht — und die gesammelten Stücke vernetzen.
+Zwei Stufen in der Reihenfolge, die das Gate von budget-review nennt: erst
+verankerte Einträge, dann Relationen zwischen zugelassenen Endpunkten. Das
+Substrat leitet je ein Bedürfnis pro unentschiedenem Paar ab; die Zelle wählt
+keinen Eintrag aus, sondern entscheidet zwischen vier geschlossenen Relationen,
+darunter `unrelated` als protokollierte Absage. Das Gate prüft Endpunkte,
+Relationsart, Paarzugehörigkeit und Graph-Integrität — und nichts darüber, ob
+die Relation zutrifft. 023 ist der erste Lauf des Projekts, der sein Ziel
+erreicht hat.
 
 Jeder Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
 Beide sind gegen den Code dieses Branches replay-stabil:
