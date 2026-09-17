@@ -3,24 +3,43 @@ const NODE_STATUSES = new Set([
   "given", "open", "under_review", "answered", "abandoned", "unreviewed",
   "accepted", "revision_requested", "rejected", "superseded", "recorded",
 ]);
-const NEED_KINDS = new Set(["QUESTION", "PROPOSE", "REVIEW_FRAGMENT", "META_REVIEW", "SYNTHESIZE"]);
+const NEED_KINDS = new Set(["QUESTION", "PROPOSE", "REVIEW_FRAGMENT", "META_REVIEW", "SYNTHESIZE", "RELATE"]);
 const NEED_STATUSES = new Set(["open", "resolved", "exhausted"]);
-const ACTION_TYPES = new Set(["ADD_QUESTION", "ADD_PROPOSAL", "ADD_REVIEW_FRAGMENT", "META_REVIEW", "ADD_SYNTHESIS", "ABSTAIN"]);
+const ACTION_TYPES = new Set(["ADD_QUESTION", "ADD_PROPOSAL", "ADD_REVIEW_FRAGMENT", "META_REVIEW", "ADD_SYNTHESIS", "ADD_RELATION", "ABSTAIN"]);
+// Closed, the way DESi's extractor keeps its claim kinds closed, and small enough
+// that a cell picks from it rather than inventing. "unrelated" is the abstention
+// the gate needs to be able to hear: an arm that always answers is worse than one
+// that can decline. Nothing here is a truth claim — the gate admits a relation on
+// structure and provenance, never because it holds.
+const RELATION_KINDS = new Set(["requires", "refines", "contradicts", "unrelated"]);
 const STATE_KEYS = new Set([
   "schema_version", "embryo_id", "generation", "energy_spent", "next_node_seq",
   "next_event_seq", "ledger_head", "config", "nodes", "edges", "needs",
 ]);
-const CONFIG_KEYS = new Set([
+const REQUIRED_CONFIG_KEYS = new Set([
   "target_proposals", "max_attempts_per_need", "max_cells_per_generation", "max_generations",
   "energy_budget", "max_text_chars", "local_context_limit",
 ]);
+// Optional, so that states written before the citation mechanism existed stay
+// valid and keep their digest. A seed opts in by setting them.
+// "anchor" is the precondition task: no cell judges anything, the gate checks
+// whether a proposal quotes its observation, and nothing else can be accepted.
+const ACCEPTANCE_MODES = new Set(["verdict", "citation", "anchor"]);
+// How much the reviewers of one panel may know of each other. "sighted" is the
+// behaviour every run before 012 had and stays the default, so their receipts
+// keep their hashes. "logged" keeps the arms sighted but makes the gate account
+// for what each could have read; "blind" additionally withholds the siblings.
+const PANEL_INDEPENDENCE = new Set(["sighted", "logged", "blind"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping", "relate"]);
+const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
   ADD_QUESTION: { required: ["text"], allowed: ["text"] },
   ADD_PROPOSAL: { required: ["text"], allowed: ["text"] },
-  ADD_REVIEW_FRAGMENT: { required: ["target_id", "text"], allowed: ["target_id", "text"] },
+  ADD_REVIEW_FRAGMENT: { required: ["target_id", "text"], allowed: ["target_id", "text", "observation_ids", "stance"] },
   META_REVIEW: { required: ["target_id", "verdict", "text"], allowed: ["target_id", "verdict", "text"] },
   ADD_SYNTHESIS: { required: ["text", "proposal_ids"], allowed: ["text", "proposal_ids"] },
+  ADD_RELATION: { required: ["from_id", "to_id", "relation"], allowed: ["from_id", "to_id", "relation"] },
   ABSTAIN: { required: ["reason"], allowed: ["reason"] },
 });
 
@@ -36,20 +55,88 @@ function hasOnlyKeys(object, allowed) {
   return Object.keys(object).every((key) => allowed.has(key));
 }
 
+function validateOptionalConfig(config) {
+  if (Object.hasOwn(config, "acceptance_mode")) {
+    invariant(ACCEPTANCE_MODES.has(config.acceptance_mode), "config.acceptance_mode must be verdict or citation");
+  }
+  if (Object.hasOwn(config, "required_support")) {
+    invariant(Number.isInteger(config.required_support) && config.required_support > 0, "config.required_support must be a positive integer");
+  }
+  if (Object.hasOwn(config, "tolerate_wrapping")) {
+    invariant(typeof config.tolerate_wrapping === "boolean", "config.tolerate_wrapping must be a boolean");
+  }
+  if (Object.hasOwn(config, "relate")) {
+    invariant(typeof config.relate === "boolean", "config.relate must be a boolean");
+    invariant(config.relate === false || config.acceptance_mode === "anchor", "config.relate requires acceptance_mode anchor");
+  }
+  if (Object.hasOwn(config, "show_register")) {
+    invariant(typeof config.show_register === "boolean", "config.show_register must be a boolean");
+  }
+  if (Object.hasOwn(config, "min_span_chars")) {
+    invariant(Number.isInteger(config.min_span_chars) && config.min_span_chars > 0, "config.min_span_chars must be a positive integer");
+  }
+  if (Object.hasOwn(config, "panel_independence")) {
+    invariant(PANEL_INDEPENDENCE.has(config.panel_independence), "config.panel_independence must be sighted, logged or blind");
+    // The accounting is about citations. Asking for it where acceptance comes from
+    // a cell's verdict would record a ledger that decides nothing.
+    invariant(
+      config.panel_independence === "sighted" || config.acceptance_mode === "citation",
+      "config.panel_independence beyond sighted requires acceptance_mode citation",
+    );
+  }
+}
+
+// Acceptance is decided either by a cell emitting a verdict, or by the gate
+// reading the citations a review panel has accumulated. The mode is part of the
+// recorded state so a run says for itself which mechanism produced its tissue.
+export function acceptanceMode(state) {
+  return state.config.acceptance_mode ?? "verdict";
+}
+
+export function requiredSupport(state) {
+  return state.config.required_support ?? 2;
+}
+
+// Whether the reviewers of a panel could read each other, and therefore whether
+// their agreement is worth anything. The seed's second premise says a majority
+// among correlated instances is not evidence; this is the knob that lets a run
+// answer that question about its own panel instead of assuming it away.
+// How much of an observation a quote has to reproduce before it counts. Below
+// this a proposal can anchor on a comma and pass.
+export function minSpanChars(state) {
+  return state.config.min_span_chars ?? 40;
+}
+
+// Whether a quoting cell is shown what the register already holds. It was shown
+// it in 016 and 017 so that it would quote something else; both runs suggest it
+// copies that instead. Default true keeps those two replaying unchanged.
+// Whether the gate looks past quotation marks and a list bullet around a cell's
+// answer. Default false: runs 018 and 019 recorded four rejections of exactly
+// that shape, and their receipts have to keep saying so.
+export function tolerateWrapping(state) {
+  return state.config.tolerate_wrapping ?? false;
+}
+
+// Whether the second stage runs at all. Off by default, so runs 016 to 021 —
+// which collected and never connected — keep deriving exactly the needs they did.
+export function relateEnabled(state) {
+  return state.config.relate ?? false;
+}
+
+export function showRegister(state) {
+  return state.config.show_register ?? true;
+}
+
+export function panelIndependence(state) {
+  return state.config.panel_independence ?? "sighted";
+}
+
 export function validateSeed(seed) {
   invariant(seed && typeof seed === "object" && !Array.isArray(seed), "seed must be an object");
   invariant(isNonEmptyString(seed.embryo_id, 80), "seed.embryo_id is required");
-  invariant(isNonEmptyString(seed.goal, 2000), "seed.goal is required");
   invariant(Array.isArray(seed.observations), "seed.observations must be an array");
-  const ids = new Set();
-  for (const observation of seed.observations) {
-    invariant(isNonEmptyString(observation.id, 80), "every observation needs an id");
-    invariant(!ids.has(observation.id), `duplicate observation id: ${observation.id}`);
-    ids.add(observation.id);
-    invariant(isNonEmptyString(observation.text, 4000), `observation ${observation.id} needs text`);
-    invariant(isNonEmptyString(observation.source, 1000), `observation ${observation.id} needs source`);
-  }
   const config = seed.config ?? {};
+  const effective = {};
   for (const [key, fallback] of Object.entries({
     target_proposals: 4,
     max_attempts_per_need: 3,
@@ -61,6 +148,25 @@ export function validateSeed(seed) {
   })) {
     const value = config[key] ?? fallback;
     invariant(Number.isInteger(value) && value > 0, `config.${key} must be a positive integer`);
+    effective[key] = value;
+  }
+  validateOptionalConfig(config);
+  // A synthesis must cite target_proposals accepted proposals, but a cell only ever
+  // sees local_context_limit of them, so a larger target can never be satisfied.
+  invariant(
+    effective.target_proposals <= effective.local_context_limit,
+    "config.target_proposals must not exceed config.local_context_limit",
+  );
+  // Seed text becomes state text, which the gate caps at max_text_chars. Checking the
+  // same bound here keeps a schema-valid seed from failing later inside createState.
+  invariant(isNonEmptyString(seed.goal, effective.max_text_chars), `seed.goal is required and must not exceed config.max_text_chars (${effective.max_text_chars})`);
+  const ids = new Set();
+  for (const observation of seed.observations) {
+    invariant(isNonEmptyString(observation.id, 80), "every observation needs an id");
+    invariant(!ids.has(observation.id), `duplicate observation id: ${observation.id}`);
+    ids.add(observation.id);
+    invariant(isNonEmptyString(observation.text, effective.max_text_chars), `observation ${observation.id} needs text within config.max_text_chars (${effective.max_text_chars})`);
+    invariant(isNonEmptyString(observation.source, 1000), `observation ${observation.id} needs source`);
   }
 }
 
@@ -78,12 +184,13 @@ export function validateState(state) {
   invariant(Array.isArray(state.needs), "needs must be an array");
   invariant(state.config && typeof state.config === "object" && !Array.isArray(state.config), "config must be an object");
   invariant(hasOnlyKeys(state.config, CONFIG_KEYS), "config contains unknown fields");
-  for (const key of CONFIG_KEYS) invariant(Number.isInteger(state.config[key]) && state.config[key] > 0, `config.${key} must be a positive integer`);
+  for (const key of REQUIRED_CONFIG_KEYS) invariant(Number.isInteger(state.config[key]) && state.config[key] > 0, `config.${key} must be a positive integer`);
+  validateOptionalConfig(state.config);
 
   const nodeIds = new Set();
   for (const node of state.nodes) {
     invariant(
-      hasOnlyKeys(node, new Set(["id", "kind", "status", "text", "source", "created_event", "ordinal", "perspective"])),
+      hasOnlyKeys(node, new Set(["id", "kind", "status", "text", "source", "created_event", "ordinal", "perspective", "stance"])),
       `node contains unknown fields: ${node.id}`,
     );
     invariant(isNonEmptyString(node.id, 80), "node id invalid");
@@ -102,7 +209,7 @@ export function validateState(state) {
   const needIds = new Set();
   for (const need of state.needs) {
     invariant(
-      hasOnlyKeys(need, new Set(["id", "kind", "target_id", "status", "attempts", "created_generation", "priority", "stage"])),
+      hasOnlyKeys(need, new Set(["id", "kind", "target_id", "status", "attempts", "created_generation", "priority", "stage", "pair_id"])),
       `need contains unknown fields: ${need.id}`,
     );
     invariant(isNonEmptyString(need.id, 120), "need id invalid");
@@ -130,11 +237,26 @@ export function validateActionShape(action, maxTextChars) {
   for (const [key, value] of Object.entries(payload)) {
     if (typeof value === "string") invariant(value.length <= maxTextChars, `payload.${key} is too long`);
   }
+  if (Object.hasOwn(payload, "stance")) invariant(STANCES.has(payload.stance), "payload.stance must be supports or contradicts");
+  if (action.type === "ADD_RELATION") {
+    invariant(RELATION_KINDS.has(payload.relation), `payload.relation must be one of ${[...RELATION_KINDS].join(", ")}`);
+    invariant(isNonEmptyString(payload.from_id, 80) && isNonEmptyString(payload.to_id, 80), "a relation needs two endpoint ids");
+    invariant(payload.from_id !== payload.to_id, "a relation cannot join an entry to itself");
+  }
+  if (Object.hasOwn(payload, "observation_ids")) {
+    invariant(Array.isArray(payload.observation_ids) && payload.observation_ids.length > 0, "payload.observation_ids must be a non-empty array");
+    invariant(payload.observation_ids.every((value) => isNonEmptyString(value, 80)), "payload.observation_ids contains an invalid id");
+    invariant(new Set(payload.observation_ids).size === payload.observation_ids.length, "payload.observation_ids contains a duplicate id");
+  }
   if (Object.hasOwn(payload, "proposal_ids")) {
     invariant(Array.isArray(payload.proposal_ids), "payload.proposal_ids must be an array");
     invariant(payload.proposal_ids.every((value) => isNonEmptyString(value, 80)), "payload.proposal_ids contains an invalid id");
+    // Matches uniqueItems in schemas/action.schema.json: citing one proposal N times
+    // is not the same as gathering N proposals.
+    invariant(new Set(payload.proposal_ids).size === payload.proposal_ids.length, "payload.proposal_ids contains a duplicate id");
   }
   return true;
 }
 
-export const enums = { actionTypes: [...ACTION_TYPES], needKinds: [...NEED_KINDS] };
+export const relationKinds = [...RELATION_KINDS];
+export const enums = { actionTypes: [...ACTION_TYPES], needKinds: [...NEED_KINDS], relationKinds: [...RELATION_KINDS] };

@@ -3,11 +3,12 @@ import { resolve } from "node:path";
 import { createState, readJson, readState, writeState } from "./state.mjs";
 import { resetLedger, runGeneration } from "./engine.mjs";
 import { readReceipts, validateLedger } from "./ledger.mjs";
-import { canGrow, deriveNeeds } from "./needs.mjs";
+import { canGrow, deriveNeeds, supportLedger } from "./needs.mjs";
 import { replay } from "./replay.mjs";
 import { stateDigest } from "./canonical.mjs";
 import { DeterministicPolicy } from "./policies/deterministic.mjs";
 import { SmolLmPolicy } from "./policies/smollm.mjs";
+import { PanelWithRulePolicy, RulePolicy } from "./policies/rule.mjs";
 
 function parseArgs(argv) {
   const [command = "status", ...rest] = argv;
@@ -88,10 +89,25 @@ async function main() {
     console.log(JSON.stringify({ valid: true, events: receipts.length, state_digest: stateDigest(state) }, null, 2));
     return;
   }
+  if (command === "panel") {
+    // Reads the overlap accounting straight off the tissue for every target a
+    // panel has reviewed. The same function the gate used, so the answer here and
+    // the answer in the receipts cannot drift apart.
+    const reviewed = state.nodes.filter((node) =>
+      ["proposal", "synthesis"].includes(node.kind)
+      && state.edges.some((edge) => edge.to === node.id && edge.relation === "reviews"),
+    );
+    console.log(JSON.stringify(
+      reviewed.map((target) => ({ target_id: target.id, status: target.status, ...supportLedger(state, target) })),
+      null,
+      2,
+    ));
+    return;
+  }
   if (command === "replay") {
     const seed = await readJson(seedPath);
     const receipts = await readReceipts(eventsPath);
-    const rebuilt = replay(seed, receipts);
+    const rebuilt = replay(seed, receipts, state.generation);
     if (stateDigest(rebuilt) !== stateDigest(state)) throw new Error("replayed state differs from persisted state");
     console.log(JSON.stringify({ replay_stable: true, events: receipts.length, state_digest: stateDigest(state) }, null, 2));
     return;
@@ -104,6 +120,14 @@ async function main() {
     if (options.backend && !["smollm", "deterministic"].includes(options.backend)) {
       throw new Error("backend must be smollm or deterministic");
     }
+    // 011 was driven from a one-off script because this switch did not exist, which
+    // made its policy string the only record of how it ran. It is a flag now.
+    if (options.citation_by && !["generate", "score"].includes(options.citation_by)) {
+      throw new Error("citation-by must be generate or score");
+    }
+    if (options.rule_arm && !["anchor", "degenerate"].includes(options.rule_arm)) {
+      throw new Error("rule-arm must be anchor or degenerate");
+    }
     const policy = options.backend === "smollm"
       ? new SmolLmPolicy({
           model: options.model,
@@ -112,13 +136,26 @@ async function main() {
           metaModel: options.meta_model,
           metaRevision: options.meta_revision,
           metaDtype: options.meta_dtype,
+          citationBy: options.citation_by,
         })
       : new DeterministicPolicy();
+    // One panel stage can be handed to a rule instead of a cell. It is always the
+    // last stage, so no model arm ever reads what the rule wrote.
+    const staffed = options.rule_arm
+      ? new PanelWithRulePolicy(
+          policy,
+          new RulePolicy({
+            mode: options.rule_arm,
+            minSpanChars: options.rule_min_span ? positiveInteger(options.rule_min_span, "rule-min-span") : undefined,
+          }),
+          "coherence",
+        )
+      : policy;
     const result = await runGeneration({
       state,
       statePath,
       eventsPath,
-      policy,
+      policy: staffed,
       maxCells: options.max_cells ? positiveInteger(options.max_cells, "max-cells") : undefined,
     });
     console.log(JSON.stringify(result, null, 2));

@@ -4,7 +4,7 @@ import { buildLocalView } from "./local-view.mjs";
 import { deriveNeeds, registerAttemptFailure } from "./needs.mjs";
 import { createState } from "./state.mjs";
 
-export function replay(seed, receipts) {
+export function replay(seed, receipts, expectedGeneration) {
   validateLedger(receipts);
   const state = createState(seed);
   for (const recorded of receipts) {
@@ -33,7 +33,19 @@ export function replay(seed, receipts) {
     state.ledger_head = rebuilt.hash;
     state.next_event_seq += 1;
   }
-  state.generation = receipts.length === 0 ? 0 : Math.max(...receipts.map((receipt) => receipt.generation)) + 1;
+  // The generation counter is bumped once a generation has run every one of its cells,
+  // so the ledger alone cannot tell a completed generation from an interrupted one: both
+  // leave the same receipts. Accept the persisted counter when it is one of those two
+  // values instead of assuming the run finished.
+  const last = receipts.length === 0 ? -1 : Math.max(...receipts.map((receipt) => receipt.generation));
+  if (expectedGeneration === undefined) {
+    state.generation = last + 1;
+  } else {
+    if (expectedGeneration !== last + 1 && expectedGeneration !== Math.max(last, 0)) {
+      throw new Error(`persisted generation ${expectedGeneration} is not reachable from the ledger`);
+    }
+    state.generation = expectedGeneration;
+  }
   deriveNeeds(state);
   return state;
 }
