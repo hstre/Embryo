@@ -1,4 +1,4 @@
-import { acceptanceMode, minSpanChars, tolerateWrapping, validateActionShape } from "./schema.mjs";
+import { acceptanceMode, minSpanChars, relationKinds, tolerateWrapping, validateActionShape } from "./schema.mjs";
 import { relaxedSpan } from "./policies/rule.mjs";
 import { registerAttemptFailure, resolveByCitations, reviewPerspective } from "./needs.mjs";
 import { nextNodeId, nodeById } from "./state.mjs";
@@ -7,10 +7,12 @@ const ALLOWED = Object.freeze({
   QUESTION: new Set(["ADD_QUESTION", "ABSTAIN"]),
   PROPOSE: new Set(["ADD_PROPOSAL", "ABSTAIN"]),
   REVIEW_FRAGMENT: new Set(["ADD_REVIEW_FRAGMENT", "ABSTAIN"]),
+  RELATE: new Set(["ADD_RELATION", "ABSTAIN"]),
   META_REVIEW: new Set(["META_REVIEW", "ABSTAIN"]),
   SYNTHESIZE: new Set(["ADD_SYNTHESIS", "ABSTAIN"]),
 });
 const VERDICTS = new Set(["ACCEPT", "REVISE", "REJECT"]);
+const RELATIONS = new Set(relationKinds);
 
 function reject(code, message) {
   return { accepted: false, code, message, mutations: [] };
@@ -183,6 +185,26 @@ export function applyProposal(state, proposal, eventSeq) {
       mutations,
       ...(resolved.ledger ? { support_ledger: resolved.ledger } : {}),
     };
+  }
+
+  // The second stage. The gate checks that both endpoints are entries this tissue
+  // admitted, that the relation is one of the closed kinds, and that the pair is
+  // not already decided. It checks nothing about whether the relation holds —
+  // there is no operation here that can mark one true.
+  if (proposal.type === "ADD_RELATION") {
+    const from = nodeById(state, payload.from_id);
+    const to = nodeById(state, payload.to_id);
+    if (!from || !to || from.kind !== "proposal" || to.kind !== "proposal") return reject("ENDPOINT_UNKNOWN", "a relation must join two register entries");
+    if (from.status !== "accepted" || to.status !== "accepted") return reject("ENDPOINT_NOT_ADMITTED", "both endpoints must already be admitted");
+    const wanted = new Set([need.target_id, need.pair_id]);
+    if (!wanted.has(from.id) || !wanted.has(to.id)) return reject("PAIR_MISMATCH", "this relation is not the pair the need names");
+    const key = [from.id, to.id].sort().join("|");
+    if (state.edges.some((edge) => RELATIONS.has(edge.relation) && [edge.from, edge.to].sort().join("|") === key)) {
+      return reject("PAIR_DECIDED", "this pair already carries a relation");
+    }
+    const edgeId = addEdge(state, from.id, to.id, payload.relation, eventSeq);
+    need.status = "resolved";
+    return { accepted: true, code: `RELATED_${payload.relation.toUpperCase()}`, message: `${from.id}->${to.id}`, mutations: [`edge:${edgeId}`, `need:${need.id}`] };
   }
 
   if (proposal.type === "META_REVIEW") {

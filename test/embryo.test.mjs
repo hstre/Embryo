@@ -813,3 +813,103 @@ test("the gate looks past how a cell wraps its answer, but not past a changed wo
   const strict = await anchoredState();
   assert.equal(quote(strict, `- "${passage}"`).decision.code, "NOT_ANCHORED");
 });
+
+// --- Connecting: relations between admitted entries, checked on structure only ---
+
+const comprehensionSeedPath = new URL("../examples/seed-comprehension.json", import.meta.url);
+
+async function filledRegister(overrides = {}) {
+  const seed = await readJson(comprehensionSeedPath);
+  const state = createState({ ...seed, config: { ...seed.config, ...overrides } });
+  while (deriveNeeds(state).some((need) => need.kind === "PROPOSE")) {
+    const need = deriveNeeds(state).find((candidate) => candidate.kind === "PROPOSE");
+    const observation = nodeById(state, need.target_id);
+    applyProposal(state, { type: "ADD_PROPOSAL", need_id: need.id, payload: { text: observation.text.slice(0, 70) } }, state.next_event_seq);
+    state.energy_spent += 1;
+  }
+  return state;
+}
+
+function relate(state, payload) {
+  const need = deriveNeeds(state).find((candidate) => candidate.kind === "RELATE");
+  return { need, decision: applyProposal(state, { type: "ADD_RELATION", need_id: need.id, payload }, state.next_event_seq) };
+}
+
+test("connecting starts only once the register is full, one need per undecided pair", async () => {
+  const seed = await readJson(comprehensionSeedPath);
+  const early = createState(seed);
+  assert.equal(deriveNeeds(early).some((need) => need.kind === "RELATE"), false);
+
+  const state = await filledRegister();
+  const needs = deriveNeeds(state);
+  assert.deepEqual([...new Set(needs.map((need) => need.kind))], ["RELATE"]);
+  // Four entries make six unordered pairs, each named once.
+  assert.equal(needs.length, 6);
+  const pairs = needs.map((need) => [need.target_id, need.pair_id].sort().join("|"));
+  assert.equal(new Set(pairs).size, 6);
+  const { view } = buildLocalView(state, needs[0]);
+  assert.equal(view.role, "relator");
+  assert.ok(view.pair.text.length > 0);
+  assert.notEqual(view.pair.id, view.target.id);
+});
+
+test("a relation is admitted on structure, and a decline is a relation too", async () => {
+  const state = await filledRegister();
+  const { need, decision } = relate(state, {
+    from_id: deriveNeeds(state)[0].target_id,
+    to_id: deriveNeeds(state)[0].pair_id,
+    relation: "requires",
+  });
+  assert.equal(decision.code, "RELATED_REQUIRES");
+  assert.ok(state.edges.some((edge) => edge.relation === "requires"));
+  assert.equal(state.needs.find((candidate) => candidate.id === need.id).status, "resolved");
+  assert.equal(deriveNeeds(state).length, 5);
+
+  // "unrelated" is recorded, not refused: the pair is decided either way.
+  const next = deriveNeeds(state)[0];
+  const declined = applyProposal(state, { type: "ADD_RELATION", need_id: next.id, payload: { from_id: next.target_id, to_id: next.pair_id, relation: "unrelated" } }, state.next_event_seq);
+  assert.equal(declined.code, "RELATED_UNRELATED");
+  assert.equal(deriveNeeds(state).length, 4);
+});
+
+test("the gate refuses a relation it cannot check, and never judges one it can", async () => {
+  const state = await filledRegister();
+  const need = deriveNeeds(state)[0];
+  const observation = state.nodes.find((node) => node.kind === "observation");
+  const thirdEntry = state.nodes.find(
+    (node) => node.kind === "proposal" && ![need.target_id, need.pair_id].includes(node.id),
+  );
+  const cases = [
+    [{ from_id: observation.id, to_id: need.pair_id, relation: "requires" }, "ENDPOINT_UNKNOWN"],
+    [{ from_id: need.target_id, to_id: "proposal-9999", relation: "requires" }, "ENDPOINT_UNKNOWN"],
+    // A real entry, but a third one this need does not name.
+    [{ from_id: need.target_id, to_id: thirdEntry.id, relation: "requires" }, "PAIR_MISMATCH"],
+  ];
+  for (const [payload, code] of cases) {
+    assert.equal(applyProposal(state, { type: "ADD_RELATION", need_id: need.id, payload }, state.next_event_seq).code, code, code);
+  }
+  // Outside the closed set, and joined to itself: both die in the schema.
+  for (const payload of [
+    { from_id: need.target_id, to_id: need.pair_id, relation: "explains" },
+    { from_id: need.target_id, to_id: need.target_id, relation: "requires" },
+  ]) {
+    assert.equal(applyProposal(state, { type: "ADD_RELATION", need_id: need.id, payload }, state.next_event_seq).code, "INVALID_SCHEMA");
+  }
+  // And a pair decided once cannot be decided again.
+  relate(state, { from_id: need.target_id, to_id: need.pair_id, relation: "refines" });
+  assert.equal(applyProposal(state, { type: "ADD_RELATION", need_id: need.id, payload: { from_id: need.target_id, to_id: need.pair_id, relation: "requires" } }, state.next_event_seq).code, "NEED_NOT_OPEN");
+});
+
+test("a full register plus every pair decided closes the goal", async () => {
+  const state = await filledRegister();
+  let guard = 0;
+  while (canGrow(state) && guard < 20) {
+    const need = deriveNeeds(state)[0];
+    applyProposal(state, { type: "ADD_RELATION", need_id: need.id, payload: { from_id: need.target_id, to_id: need.pair_id, relation: "unrelated" } }, state.next_event_seq);
+    state.energy_spent += 1;
+    guard += 1;
+  }
+  assert.equal(state.edges.filter((edge) => edge.relation === "unrelated").length, 6);
+  assert.equal(state.nodes.find((node) => node.kind === "goal").status, "accepted");
+  assert.equal(canGrow(state), false);
+});

@@ -3,9 +3,15 @@ const NODE_STATUSES = new Set([
   "given", "open", "under_review", "answered", "abandoned", "unreviewed",
   "accepted", "revision_requested", "rejected", "superseded", "recorded",
 ]);
-const NEED_KINDS = new Set(["QUESTION", "PROPOSE", "REVIEW_FRAGMENT", "META_REVIEW", "SYNTHESIZE"]);
+const NEED_KINDS = new Set(["QUESTION", "PROPOSE", "REVIEW_FRAGMENT", "META_REVIEW", "SYNTHESIZE", "RELATE"]);
 const NEED_STATUSES = new Set(["open", "resolved", "exhausted"]);
-const ACTION_TYPES = new Set(["ADD_QUESTION", "ADD_PROPOSAL", "ADD_REVIEW_FRAGMENT", "META_REVIEW", "ADD_SYNTHESIS", "ABSTAIN"]);
+const ACTION_TYPES = new Set(["ADD_QUESTION", "ADD_PROPOSAL", "ADD_REVIEW_FRAGMENT", "META_REVIEW", "ADD_SYNTHESIS", "ADD_RELATION", "ABSTAIN"]);
+// Closed, the way DESi's extractor keeps its claim kinds closed, and small enough
+// that a cell picks from it rather than inventing. "unrelated" is the abstention
+// the gate needs to be able to hear: an arm that always answers is worse than one
+// that can decline. Nothing here is a truth claim — the gate admits a relation on
+// structure and provenance, never because it holds.
+const RELATION_KINDS = new Set(["requires", "refines", "contradicts", "unrelated"]);
 const STATE_KEYS = new Set([
   "schema_version", "embryo_id", "generation", "energy_spent", "next_node_seq",
   "next_event_seq", "ledger_head", "config", "nodes", "edges", "needs",
@@ -24,7 +30,7 @@ const ACCEPTANCE_MODES = new Set(["verdict", "citation", "anchor"]);
 // keep their hashes. "logged" keeps the arms sighted but makes the gate account
 // for what each could have read; "blind" additionally withholds the siblings.
 const PANEL_INDEPENDENCE = new Set(["sighted", "logged", "blind"]);
-const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping", "relate"]);
 const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
@@ -33,6 +39,7 @@ const PAYLOAD_SPECS = Object.freeze({
   ADD_REVIEW_FRAGMENT: { required: ["target_id", "text"], allowed: ["target_id", "text", "observation_ids", "stance"] },
   META_REVIEW: { required: ["target_id", "verdict", "text"], allowed: ["target_id", "verdict", "text"] },
   ADD_SYNTHESIS: { required: ["text", "proposal_ids"], allowed: ["text", "proposal_ids"] },
+  ADD_RELATION: { required: ["from_id", "to_id", "relation"], allowed: ["from_id", "to_id", "relation"] },
   ABSTAIN: { required: ["reason"], allowed: ["reason"] },
 });
 
@@ -57,6 +64,10 @@ function validateOptionalConfig(config) {
   }
   if (Object.hasOwn(config, "tolerate_wrapping")) {
     invariant(typeof config.tolerate_wrapping === "boolean", "config.tolerate_wrapping must be a boolean");
+  }
+  if (Object.hasOwn(config, "relate")) {
+    invariant(typeof config.relate === "boolean", "config.relate must be a boolean");
+    invariant(config.relate === false || config.acceptance_mode === "anchor", "config.relate requires acceptance_mode anchor");
   }
   if (Object.hasOwn(config, "show_register")) {
     invariant(typeof config.show_register === "boolean", "config.show_register must be a boolean");
@@ -104,6 +115,12 @@ export function minSpanChars(state) {
 // that shape, and their receipts have to keep saying so.
 export function tolerateWrapping(state) {
   return state.config.tolerate_wrapping ?? false;
+}
+
+// Whether the second stage runs at all. Off by default, so runs 016 to 021 —
+// which collected and never connected — keep deriving exactly the needs they did.
+export function relateEnabled(state) {
+  return state.config.relate ?? false;
 }
 
 export function showRegister(state) {
@@ -192,7 +209,7 @@ export function validateState(state) {
   const needIds = new Set();
   for (const need of state.needs) {
     invariant(
-      hasOnlyKeys(need, new Set(["id", "kind", "target_id", "status", "attempts", "created_generation", "priority", "stage"])),
+      hasOnlyKeys(need, new Set(["id", "kind", "target_id", "status", "attempts", "created_generation", "priority", "stage", "pair_id"])),
       `need contains unknown fields: ${need.id}`,
     );
     invariant(isNonEmptyString(need.id, 120), "need id invalid");
@@ -221,6 +238,11 @@ export function validateActionShape(action, maxTextChars) {
     if (typeof value === "string") invariant(value.length <= maxTextChars, `payload.${key} is too long`);
   }
   if (Object.hasOwn(payload, "stance")) invariant(STANCES.has(payload.stance), "payload.stance must be supports or contradicts");
+  if (action.type === "ADD_RELATION") {
+    invariant(RELATION_KINDS.has(payload.relation), `payload.relation must be one of ${[...RELATION_KINDS].join(", ")}`);
+    invariant(isNonEmptyString(payload.from_id, 80) && isNonEmptyString(payload.to_id, 80), "a relation needs two endpoint ids");
+    invariant(payload.from_id !== payload.to_id, "a relation cannot join an entry to itself");
+  }
   if (Object.hasOwn(payload, "observation_ids")) {
     invariant(Array.isArray(payload.observation_ids) && payload.observation_ids.length > 0, "payload.observation_ids must be a non-empty array");
     invariant(payload.observation_ids.every((value) => isNonEmptyString(value, 80)), "payload.observation_ids contains an invalid id");
@@ -236,4 +258,5 @@ export function validateActionShape(action, maxTextChars) {
   return true;
 }
 
-export const enums = { actionTypes: [...ACTION_TYPES], needKinds: [...NEED_KINDS] };
+export const relationKinds = [...RELATION_KINDS];
+export const enums = { actionTypes: [...ACTION_TYPES], needKinds: [...NEED_KINDS], relationKinds: [...RELATION_KINDS] };

@@ -823,6 +823,53 @@ const probes = {
       }
     }
   },
+
+  // The control for the connecting stage, run before any conclusion is drawn from
+  // a graph the cell builds. Every scored choice this project has measured lost
+  // to the order the options are named in — the verdict 4/9, the stance 3/9 — so
+  // a relation that does not survive the same permutation is an artefact and the
+  // edges it produces mean nothing.
+  //
+  // This probe cannot say whether a relation is *right*: there is no ground truth
+  // here that does not come from me, and I am not a disinterested judge of a
+  // model's semantic ability. It says only whether the choice is stable.
+  async "relation-order"() {
+    const seed = await readJson(new URL("../examples/seed-comprehension.json", import.meta.url));
+    const kinds = ["requires", "refines", "contradicts", "unrelated"];
+    const entries = seed.observations.slice(0, 4).map((observation) => observation.text.slice(0, 70));
+    const orders = [
+      ["requires", "refines", "contradicts", "unrelated"],
+      ["unrelated", "contradicts", "refines", "requires"],
+      ["contradicts", "unrelated", "requires", "refines"],
+    ];
+
+    let stable = 0;
+    let total = 0;
+    const winners = new Map();
+    for (let i = 0; i < entries.length; i += 1) {
+      for (let j = i + 1; j < entries.length; j += 1) {
+        const chosen = [];
+        for (const order of orders) {
+          const scored = await policy.scoreChoices(
+            [
+              { role: "system", content: `You relate two statements about reading a text. Answer with exactly one of: ${order.join(", ")}.` },
+              { role: "user", content: [`A: ${entries[i]}`, `B: ${entries[j]}`, `How does A relate to B? Answer ${order.slice(0, 3).join(", ")} or ${order[3]}.`].join("\n") },
+            ],
+            kinds,
+            "cell",
+          );
+          chosen.push(best(scored, "mean").choice);
+        }
+        const distinct = new Set(chosen);
+        if (distinct.size === 1) stable += 1;
+        total += 1;
+        for (const choice of chosen) winners.set(choice, (winners.get(choice) ?? 0) + 1);
+        console.log(`  Paar ${i + 1}-${j + 1}  ${chosen.map((choice) => choice.padEnd(12)).join(" ")}${distinct.size === 1 ? "  STABIL" : ""}`);
+      }
+    }
+    console.log(`\n  Relation übersteht die Permutation: ${stable}/${total}`);
+    console.log(`  Verteilung über ${3 * total} Durchgänge: ${[...winners].sort((a, b) => b[1] - a[1]).map(([kind, count]) => `${kind}:${count}`).join("  ")}`);
+  },
 };
 
 const name = process.argv[2];

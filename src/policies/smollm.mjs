@@ -219,6 +219,35 @@ export class SmolLmPolicy {
       };
     }
 
+    // The connecting cell. It selects nothing: the tissue hands it a pair, and it
+    // picks one of four closed relation kinds, one of which is a decline. The
+    // choice is scored rather than generated, because every measurement in this
+    // project that let a cell write a label instead of ranking one lost the
+    // label to formatting. Whether the ranking carries anything is a separate
+    // question, and tools/probe.mjs relation-order is the control for it.
+    if (view.role === "relator") {
+      const kinds = ["requires", "refines", "contradicts", "unrelated"];
+      const messages = [
+        { role: "system", content: "You relate two statements about reading a text. Answer with exactly one of: requires, refines, contradicts, unrelated." },
+        { role: "user", content: [
+          `A: ${view.target.text}`,
+          `B: ${view.pair.text}`,
+          "How does A relate to B? Answer requires, refines, contradicts or unrelated.",
+        ].join("\n") },
+      ];
+      const scored = await this.scoreChoices(messages, kinds, "cell");
+      const best = scored.reduce((a, b) => (b.mean > a.mean ? b : a));
+      const trace = { decided_by: "mean_logprob", relation: scored, decided: best.choice };
+      return {
+        action: {
+          type: "ADD_RELATION",
+          need_id: need.id,
+          payload: { from_id: view.target.id, to_id: view.pair.id, relation: best.choice },
+        },
+        trace,
+      };
+    }
+
     // The quoting cell. It is given the passage to quote from — C3c0 measured that
     // copying without a target fails on both model sizes — and asked for nothing
     // but a copy. No selection, no judgement, no language production.

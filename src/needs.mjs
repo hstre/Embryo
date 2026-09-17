@@ -1,8 +1,8 @@
 import { digest } from "./canonical.mjs";
-import { acceptanceMode, panelIndependence, requiredSupport } from "./schema.mjs";
+import { acceptanceMode, panelIndependence, relateEnabled, requiredSupport } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
-const PRIORITY = Object.freeze({ REVIEW_FRAGMENT: 40, META_REVIEW: 35, PROPOSE: 30, SYNTHESIZE: 20, QUESTION: 10 });
+const PRIORITY = Object.freeze({ REVIEW_FRAGMENT: 40, META_REVIEW: 35, PROPOSE: 30, RELATE: 25, SYNTHESIZE: 20, QUESTION: 10 });
 const PERSPECTIVES = Object.freeze(["adversarial", "charitable", "coherence"]);
 
 export function reviewPerspective(stage) {
@@ -36,6 +36,14 @@ function conditionStillHolds(state, need) {
   if (need.kind === "QUESTION") {
     const accepted = state.nodes.filter((node) => node.kind === "proposal" && node.status === "accepted").length;
     return target.kind === "goal" && target.status === "open" && accepted < state.config.target_proposals;
+  }
+  if (need.kind === "RELATE") {
+    const other = nodeById(state, need.pair_id);
+    if (!other || target.status !== "accepted" || other.status !== "accepted") return false;
+    const key = [target.id, other.id].sort().join("|");
+    return !state.edges.some(
+      (edge) => RELATION_RELATIONS.has(edge.relation) && [edge.from, edge.to].sort().join("|") === key,
+    );
   }
   if (need.kind === "PROPOSE") {
     // In the anchor task a need points at an observation and stays open until
@@ -281,21 +289,67 @@ export function registerAttemptFailure(state, need) {
 // no question, no review panel and no synthesis — every capability the ladder
 // measured as absent is out of the loop, and what is left is the one it
 // measured as present.
+// Pairs of admitted entries the tissue has not yet decided about, in a fixed
+// order so recruitment is a property of the graph and not of call order.
+function openPairs(state) {
+  const entries = state.nodes
+    .filter((node) => node.kind === "proposal" && node.status === "accepted")
+    .sort((a, b) => a.created_event - b.created_event || a.id.localeCompare(b.id));
+  const decided = new Set(
+    state.edges
+      .filter((edge) => RELATION_RELATIONS.has(edge.relation))
+      .map((edge) => [edge.from, edge.to].sort().join("|")),
+  );
+  const pairs = [];
+  for (let i = 0; i < entries.length; i += 1) {
+    for (let j = i + 1; j < entries.length; j += 1) {
+      const key = [entries[i].id, entries[j].id].sort().join("|");
+      if (!decided.has(key)) pairs.push({ key, from: entries[i], to: entries[j] });
+    }
+  }
+  return pairs;
+}
+
+const RELATION_RELATIONS = new Set(["requires", "refines", "contradicts", "unrelated"]);
+
+// Two stages, in the order budget-review's gate states them: admit anchored
+// entries, then relations between admitted endpoints. Collecting recruits one
+// need per unquoted observation; connecting recruits one need per undecided pair
+// of entries. Neither stage asks a cell what anything means.
 function deriveAnchorNeeds(state) {
   const quoted = quotedObservations(state);
   const goal = state.nodes.find((node) => node.kind === "goal");
-  if (quoted.size >= state.config.target_proposals) {
-    goal.status = "accepted";
-    for (const need of state.needs) if (need.status === "open") need.status = "resolved";
-    return [];
+  const collected = quoted.size >= state.config.target_proposals;
+
+  if (!collected) {
+    for (const node of state.nodes) {
+      if (node.kind !== "observation" || quoted.has(node.id)) continue;
+      ensureNeed(state, "PROPOSE", node.id);
+    }
+  } else {
+    // The register is full: collecting stops even where observations are left,
+    // because the goal names a number and not the whole environment.
+    for (const need of state.needs) if (need.kind === "PROPOSE" && need.status === "open") need.status = "resolved";
   }
-  for (const node of state.nodes) {
-    if (node.kind !== "observation" || quoted.has(node.id)) continue;
-    ensureNeed(state, "PROPOSE", node.id);
+  if (collected && relateEnabled(state)) {
+    // Connecting starts only once collecting has met its target, so a pair is
+    // never proposed against a register that is still filling.
+    for (const pair of openPairs(state)) {
+      const need = ensureNeed(state, "RELATE", pair.from.id, pair.to.id);
+      need.pair_id = pair.to.id;
+    }
   }
-  return state.needs
-    .filter((need) => need.status === "open")
-    .sort((a, b) => (nodeById(state, a.target_id)?.ordinal ?? 0) - (nodeById(state, b.target_id)?.ordinal ?? 0) || a.id.localeCompare(b.id));
+
+  // The goal is met by the register reaching its number, never by the tissue
+  // running out of things to try. A run that exhausts every need short of the
+  // target leaves the goal open, which is what 016 to 021 recorded.
+  const open = state.needs.filter((need) => need.status === "open");
+  if (collected && !open.length) goal.status = "accepted";
+  if (!open.length) return [];
+  return open.sort((a, b) =>
+    b.priority - a.priority
+    || (nodeById(state, a.target_id)?.ordinal ?? 0) - (nodeById(state, b.target_id)?.ordinal ?? 0)
+    || a.id.localeCompare(b.id));
 }
 
 export function deriveNeeds(state) {

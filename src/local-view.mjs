@@ -67,8 +67,10 @@ export function buildLocalView(state, need) {
     embryo_id: state.embryo_id,
     generation: state.generation,
     max_text_chars: state.config.max_text_chars,
-    role: acceptanceMode(state) === "anchor"
-      ? "quoter"
+    role: need.kind === "RELATE"
+      ? "relator"
+      : acceptanceMode(state) === "anchor"
+        ? "quoter"
       : need.kind === "QUESTION"
       ? "questioner"
       : need.kind === "REVIEW_FRAGMENT"
@@ -87,6 +89,10 @@ export function buildLocalView(state, need) {
     ...(independence === "sighted" ? {} : { panel_independence: independence }),
     ...(observations.length ? { observations } : {}),
     target: { id: target.id, kind: target.kind, status: target.status, text: target.text },
+    // The second endpoint of a pair the tissue chose. The cell selects neither
+    // entry; it is handed both and asked only which of the closed relation kinds
+    // holds between them, or none.
+    ...(need.kind === "RELATE" ? { pair: (() => { const other = nodeById(state, need.pair_id); return { id: other.id, text: other.text }; })() } : {}),
     question: question ? { id: question.id, status: question.status, text: question.text } : null,
     reviews: reviewsFor(state, target.id).slice(-limit).map(({ id, text }) => ({ id, text })),
     review_fragments: blindPanel ? [] : reviewFragmentsFor(state, target.id),
