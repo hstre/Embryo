@@ -65,6 +65,16 @@ ersten beiden sind behoben. **021 erreicht 3 von 4** — das erste Mal in diesem
 Projekt, dass etwas angenommen wurde, dessen Annahme an einer Prüfung gegen die
 Umgebung hing.
 
+**Ab 023 kommt ein zweites Verb dazu:** sammeln *und* vernetzen. Das Sammeln
+erreicht auf 1.7B **4 von 4** und schließt das Ziel — der erste Lauf dieses
+Projekts, der seines erreicht. Das Vernetzen entscheidet alle sechs Paare, jedes
+als `unrelated`, und die vorab festgelegte Kontrolle sagt, was das wert ist:
+**0 von 6** Relationen überstehen die Permutation der Optionsnamen, alle sechs
+Paare liefern das identische Tripel, und eine Aussage gegen ihre eigene
+Verneinung liest sich wie eine Aussage gegen einen Satz über einen Wasserkessel.
+Der Graph ist strukturell gültig und semantisch leer — was sich nur deshalb sagen
+lässt, weil das Gate über Inhalt nie etwas behauptet hat.
+
 ## 2. Befund
 
 | Lauf | Policy | Gen. | Energie | Abstains | Akzeptierte Arbeit |
@@ -90,12 +100,14 @@ Umgebung hing.
 | 019 | dasselbe, 1.7B | 4 | 14/64 | 0 | 2 von 4 |
 | 020 | zusätzlich Rahmung toleriert, 360M | 4 | 16/64 | 0 | **2 von 4** |
 | 021 | dasselbe, 1.7B | 3 | 12/64 | 0 | **3 von 4** |
+| 023 | **sammeln und vernetzen**, 1.7B | 5 | 19/96 | 0 | **4 von 4 + 6 Kanten, Ziel erreicht** |
+| 024 | dasselbe, 360M | 5 | 20/96 | 0 | 2 von 4, Vernetzen nie erreicht |
 
 006 bis 021 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular
 (Behauptungen und Einwände statt Frage-Vorschlag-Review) und sind nur
 eingeschränkt vergleichbar. In 003 bis 005 endeten 75 von 192 Zellen — 39
-Prozent — in einem Abstain. Ab 016 gilt der neue Auftrag aus Abschnitt 17; die
+Prozent — in einem Abstain. Ab 016 gilt der neue Auftrag aus Abschnitt 17, ab 023 der aus Abschnitt 18; die
 Spalte zählt dort Registereinträge statt akzeptierter Vorschläge.
 
 ## 3. Ein Fehlerbild, viermal protokolliert
