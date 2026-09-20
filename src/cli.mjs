@@ -9,6 +9,7 @@ import { stateDigest } from "./canonical.mjs";
 import { DeterministicPolicy } from "./policies/deterministic.mjs";
 import { SmolLmPolicy } from "./policies/smollm.mjs";
 import { PanelWithRulePolicy, RulePolicy } from "./policies/rule.mjs";
+import { DeepSeekPolicy } from "./policies/deepseek.mjs";
 
 function parseArgs(argv) {
   const [command = "status", ...rest] = argv;
@@ -117,8 +118,8 @@ async function main() {
       console.log(JSON.stringify({ outcomes: [], can_grow: false, generation: state.generation }, null, 2));
       return;
     }
-    if (options.backend && !["smollm", "deterministic"].includes(options.backend)) {
-      throw new Error("backend must be smollm or deterministic");
+    if (options.backend && !["smollm", "deterministic", "deepseek"].includes(options.backend)) {
+      throw new Error("backend must be smollm, deterministic or deepseek");
     }
     // 011 was driven from a one-off script because this switch did not exist, which
     // made its policy string the only record of how it ran. It is a flag now.
@@ -128,7 +129,9 @@ async function main() {
     if (options.rule_arm && !["anchor", "degenerate"].includes(options.rule_arm)) {
       throw new Error("rule-arm must be anchor or degenerate");
     }
-    const policy = options.backend === "smollm"
+    const policy = options.backend === "deepseek"
+      ? new DeepSeekPolicy({ model: options.model, thinking: Boolean(options.thinking), effort: options.effort })
+      : options.backend === "smollm"
       ? new SmolLmPolicy({
           model: options.model,
           revision: options.revision,
