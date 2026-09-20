@@ -9,6 +9,7 @@
 import { SmolLmPolicy } from "../src/policies/smollm.mjs";
 import { readJson } from "../src/state.mjs";
 import { anchoredObservation, divergence, longestCommonSpan, relaxedSpan } from "../src/policies/rule.mjs";
+import { DeepSeekPolicy } from "../src/policies/deepseek.mjs";
 import { readReceipts } from "../src/ledger.mjs";
 import { replay } from "../src/replay.mjs";
 import { buildLocalView } from "../src/local-view.mjs";
@@ -834,6 +835,29 @@ const probes = {
   // here that does not come from me, and I am not a disinterested judge of a
   // model's semantic ability. It says only whether the choice is stable.
   async "relation-order"() {
+    // The same control for a hosted model, which has no teacher-forced scoring:
+    // the answer is generated and read back against the closed set, and a reply
+    // naming none or several of the four is an abstention.
+    //   BACKEND=deepseek THINKING=1 node tools/probe.mjs relation-order
+    const remote = process.env.BACKEND === "deepseek"
+      ? new DeepSeekPolicy({ thinking: process.env.THINKING === "1" })
+      : null;
+    const decide = async (system, user) => {
+      if (remote) {
+        const answer = await remote.chat(
+          [{ role: "system", content: system }, { role: "user", content: user }],
+          remote.thinking ? 16384 : 32,
+        );
+        return DeepSeekPolicy.relationFrom(answer) ?? `ENTHALTUNG(${answer.slice(0, 20)})`;
+      }
+      const scored = await policy.scoreChoices(
+        [{ role: "system", content: system }, { role: "user", content: user }],
+        ["requires", "refines", "contradicts", "unrelated"],
+        "cell",
+      );
+      return best(scored, "mean").choice;
+    };
+
     const seed = await readJson(new URL("../examples/seed-comprehension.json", import.meta.url));
     const kinds = ["requires", "refines", "contradicts", "unrelated"];
     const entries = seed.observations.slice(0, 4).map((observation) => observation.text.slice(0, 70));
@@ -850,15 +874,10 @@ const probes = {
       for (let j = i + 1; j < entries.length; j += 1) {
         const chosen = [];
         for (const order of orders) {
-          const scored = await policy.scoreChoices(
-            [
-              { role: "system", content: `You relate two statements about reading a text. Answer with exactly one of: ${order.join(", ")}.` },
-              { role: "user", content: [`A: ${entries[i]}`, `B: ${entries[j]}`, `How does A relate to B? Answer ${order.slice(0, 3).join(", ")} or ${order[3]}.`].join("\n") },
-            ],
-            kinds,
-            "cell",
-          );
-          chosen.push(best(scored, "mean").choice);
+          chosen.push(await decide(
+            `You relate two statements about reading a text. Answer with exactly one of: ${order.join(", ")}.`,
+            [`A: ${entries[i]}`, `B: ${entries[j]}`, `How does A relate to B? Answer ${order.slice(0, 3).join(", ")} or ${order[3]}.`].join("\n"),
+          ));
         }
         const distinct = new Set(chosen);
         if (distinct.size === 1) stable += 1;
@@ -883,17 +902,25 @@ const probes = {
       ["fremdes Thema", CLAIM, "The kettle boils at one hundred degrees celsius at sea level."],
     ];
     console.log("\nPositivkontrolle, Basisbenennung");
+    // The two marks fixed before the hosted run: the negation must read
+    // contradicts and the kettle must read unrelated. They are the only
+    // correctness claims available here that do not rest on my own judgement.
+    const expected = { Negation: "contradicts", "fremdes Thema": "unrelated" };
+    let controlsMet = 0;
+    let controlsChecked = 0;
     for (const [label, a, b] of controls) {
-      const scored = await policy.scoreChoices(
-        [
-          { role: "system", content: `You relate two statements about reading a text. Answer with exactly one of: ${kinds.join(", ")}.` },
-          { role: "user", content: [`A: ${a}`, `B: ${b}`, `How does A relate to B? Answer ${kinds.slice(0, 3).join(", ")} or ${kinds[3]}.`].join("\n") },
-        ],
-        kinds,
-        "cell",
+      const chosen = await decide(
+        `You relate two statements about reading a text. Answer with exactly one of: ${kinds.join(", ")}.`,
+        [`A: ${a}`, `B: ${b}`, `How does A relate to B? Answer ${kinds.slice(0, 3).join(", ")} or ${kinds[3]}.`].join("\n"),
       );
-      console.log(`  ${label.padEnd(14)} -> ${best(scored, "mean").choice.padEnd(12)}  ${scored.map((entry) => `${entry.choice}:${entry.mean}`).join("  ")}`);
+      const want = expected[label];
+      if (want) {
+        controlsChecked += 1;
+        if (chosen === want) controlsMet += 1;
+      }
+      console.log(`  ${label.padEnd(14)} -> ${chosen.padEnd(14)}${want ? `  erwartet ${want}${chosen === want ? "" : "   VERFEHLT"}` : ""}`);
     }
+    console.log(`  Positivkontrolle: ${controlsMet}/${controlsChecked} Marken erfüllt`);
 
     console.log(`\n  Relation übersteht die Permutation: ${stable}/${total}`);
     console.log(`  Verteilung über ${3 * total} Durchgänge: ${[...winners].sort((a, b) => b[1] - a[1]).map(([kind, count]) => `${kind}:${count}`).join("  ")}`);

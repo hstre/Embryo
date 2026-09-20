@@ -343,8 +343,12 @@ function deriveAnchorNeeds(state) {
   // The goal is met by the register reaching its number, never by the tissue
   // running out of things to try. A run that exhausts every need short of the
   // target leaves the goal open, which is what 016 to 021 recorded.
+  // With connecting switched on the goal names both verbs, so a register whose
+  // pairs are not all decided has not met it. Run 026 closed at four of six
+  // pairs under the older rule, which only asked whether anything was still open.
   const open = state.needs.filter((need) => need.status === "open");
-  if (collected && !open.length) goal.status = "accepted";
+  const connected = !relateEnabled(state) || openPairs(state).length === 0;
+  if (collected && connected && !open.length) goal.status = "accepted";
   if (!open.length) return [];
   return open.sort((a, b) =>
     b.priority - a.priority

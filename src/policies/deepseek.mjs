@@ -63,6 +63,13 @@ export class DeepSeekPolicy {
         if (!response.ok) throw new Error(`deepseek ${response.status}`);
         const payload = await response.json();
         const usage = payload.usage ?? {};
+        // max_tokens counts the reasoning trace as well as the answer, so a
+        // budget that fits the answer can still return an empty one. Run 026's
+        // first attempt lost six relations that way and was discarded; a
+        // truncated reply is an error here, not a silent abstention.
+        if (payload.choices?.[0]?.finish_reason === "length" && !payload.choices?.[0]?.message?.content) {
+          throw new Error(`deepseek truncated before any content (reasoning ${usage.completion_tokens_details?.reasoning_tokens ?? "?"} of ${maxTokens})`);
+        }
         this.calls += 1;
         this.tokens.prompt += usage.prompt_tokens ?? 0;
         this.tokens.completion += usage.completion_tokens ?? 0;
@@ -92,7 +99,7 @@ export class DeepSeekPolicy {
       const answer = await this.chat([
         { role: "system", content: `You relate two statements about reading a text. Answer with exactly one of: ${RELATIONS.join(", ")}. Output that one word and nothing else.` },
         { role: "user", content: [`A: ${view.target.text}`, `B: ${view.pair.text}`, `How does A relate to B? Answer ${RELATIONS.slice(0, 3).join(", ")} or ${RELATIONS[3]}.`].join("\n") },
-      ], this.thinking ? 2048 : 32);
+      ], this.thinking ? 16384 : 32);
       const relation = DeepSeekPolicy.relationFrom(answer);
       return {
         action: relation
@@ -109,7 +116,7 @@ export class DeepSeekPolicy {
           `Passage:\n${view.target.text}`,
           ...(view.accepted_proposals.length ? ["Already in the register; copy a different sentence:", ...bullets(view.accepted_proposals)] : []),
         ].join("\n") },
-      ], this.thinking ? 2048 : 220);
+      ], this.thinking ? 16384 : 220);
       return {
         action: answer
           ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text: answer } }

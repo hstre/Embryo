@@ -25,6 +25,8 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `021` | wie 020 auf 1.7B | 12 | 12/64 | **3** |
 | `023` | **neuer Auftrag:** sammeln *und* vernetzen, 1.7B | 19 | 19/96 | **4 + 6 Kanten** |
 | `024` | wie 023 auf 360M | 20 | 20/96 | 2, Vernetzen nie erreicht |
+| `025` | wie 023, Zellen auf `deepseek-flash`, ohne Denkmodus | 10 | 10/96 | **4 + 6 Kanten, Ziel erreicht** |
+| `026` | wie 025, Denkmodus an, Effort `high` | 10 | 10/96 | **4 + 6 Kanten, Ziel erreicht** |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
@@ -81,6 +83,19 @@ darunter `unrelated` als protokollierte Absage. Das Gate prüft Endpunkte,
 Relationsart, Paarzugehörigkeit und Graph-Integrität — und nichts darüber, ob
 die Relation zutrifft. 023 ist der erste Lauf des Projekts, der sein Ziel
 erreicht hat.
+
+025 und 026 fahren dieselbe Aufgabe wie 023 gegen ein großes gehostetes Modell
+und beantworten die Frage, die alle bisherigen Läufe offen ließen: ob die Wand
+der Architektur gehört oder der Modellgröße. Sie gehört der Größe. Beide
+erreichen das Ziel in zehn Zellen ohne eine einzige Ablehnung. Ein erster
+Versuch von 026 wurde verworfen: `max_tokens` zählt bei DeepSeek den
+Denk-Verlauf mit, und sechs Relationen kamen deshalb leer zurück.
+
+```bash
+DEEPSEEK_API_KEY=… node src/cli.mjs step --backend deepseek --thinking \
+  --seed docs/runs/026/seed.json --state docs/runs/026/embryo.json \
+  --events docs/runs/026/events.jsonl
+```
 
 Jeder Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
 Beide sind gegen den Code dieses Branches replay-stabil:
