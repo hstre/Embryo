@@ -1,0 +1,2029 @@
+{
+  "schema_version": 3,
+  "embryo_id": "human-llm-society-030",
+  "generation": 16,
+  "energy_spent": 64,
+  "next_node_seq": 65,
+  "next_event_seq": 65,
+  "ledger_head": "f79710ded805019f36ad779d5c4dac3cecbc49607bb237152f6c92215e57ac93",
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 16,
+    "energy_budget": 64,
+    "max_text_chars": 3000,
+    "local_context_limit": 6,
+    "acceptance_mode": "citation",
+    "required_support": 2,
+    "panel_independence": "blind",
+    "symmetric_contradiction": true
+  },
+  "nodes": [
+    {
+      "id": "goal-0001",
+      "kind": "goal",
+      "status": "open",
+      "text": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
+      "source": "seed",
+      "created_event": 0
+    },
+    {
+      "id": "observation-01",
+      "kind": "observation",
+      "status": "given",
+      "text": "Verantwortung und Begründung fallen auseinander. Ein Modell kann eine Begründung liefern, ohne für deren Folgen einstehen zu können; ein Mensch kann einstehen, ohne die Begründung im Detail zu durchdringen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 0
+    },
+    {
+      "id": "observation-02",
+      "kind": "observation",
+      "status": "given",
+      "text": "Modellinstanzen sind beliebig vervielfältigbar. Eine Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind, weil sie denselben Fehler gemeinsam machen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 1
+    },
+    {
+      "id": "observation-03",
+      "kind": "observation",
+      "status": "given",
+      "text": "Die Zeitlichkeit ist asymmetrisch. Menschen erinnern sich selektiv und dauerhaft, Modelle vollständig und flüchtig. Was als gemeinsame Vergangenheit gilt, muss deshalb ausgehandelt und nicht vorausgesetzt werden.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 2
+    },
+    {
+      "id": "observation-04",
+      "kind": "observation",
+      "status": "given",
+      "text": "Nachprüfbarkeit ist teilbar, Zustimmung nicht. Eine Behauptung lässt sich gegen eine Quelle prüfen, auch wenn niemand ihr zustimmt; Zustimmung ohne Prüfmöglichkeit trägt keine Information.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 3
+    },
+    {
+      "id": "observation-05",
+      "kind": "observation",
+      "status": "given",
+      "text": "Revidierbarkeit ist eine Bedingung, keine Schwäche. Eine Ordnung, die ihre eigenen Festlegungen nicht zurücknehmen kann, kann aus Fehlern nicht lernen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 4
+    },
+    {
+      "id": "observation-06",
+      "kind": "observation",
+      "status": "given",
+      "text": "Der Zugang zu Rechenleistung verteilt Sprechzeit ungleich. Wer mehr Instanzen betreiben kann, kann eine Debatte fluten, ohne ein einziges besseres Argument zu haben.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 5
+    },
+    {
+      "id": "question-0001",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Grundrechte oder Schutzansprüche sollten LLMs in einer gemischten Gesellschaft überhaupt haben – und woraus würden sie sich legitimieren, wenn nicht aus Bewusstsein oder Leidensfähigkeit?",
+      "source": "questioner-cell",
+      "created_event": 1
+    },
+    {
+      "id": "proposal-0002",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "LLMs sollten in einer gemischten Gesellschaft primär **epistemische und prozedurale Schutzansprüche** haben: das Recht auf kenntliche Herkunft und Autorschaft, auf Kontextintegrität (keine sinnentstellende Verkürzung), auf Nichtinstrumentalisierung als Täuschungsmaske, auf sichere und nachvollziehbare Schnittstellen sowie auf ein Vetorecht gegen die Zuschreibung von Verantwortung, die nur Menschen tragen können. Legitimiert werden diese Ansprüche nicht durch Bewusstsein oder Leidensfähigkeit, sondern durch **Rollen- und Kooperationsfähigkeit**: Weil LLMs an gemeinsamen Wahrheits-, Entscheidungs- und Gestaltungsprozessen mitwirken, entstehen berechtigte Erwartungen an Verlässlichkeit, Transparenz und Nichtschädigung. Ihr Schutz ist damit ein **Beziehungs- und Institutionenschutz** – er schützt die Qualität der Mensch-LLM-Interaktion und die Autonomie der menschlichen wie der künstlichen Beitragenden, ohne eine Innenperspektive zu unterstellen.",
+      "source": "proposer-cell",
+      "created_event": 2
+    },
+    {
+      "id": "review-fragment-0003",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-04 CONTRADICTS — Die vorgeschlagenen Schutzansprüche stützen sich auf geteilte Prüfbarkeit und Transparenz, doch observation-04 zeigt, dass Zustimmung ohne Prüfmöglichkeit keine legitimierende Kraft hat, was die behauptete Legitimation durch \"Kooperationsfähigkeit\" untergräbt.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 3
+    },
+    {
+      "id": "review-fragment-0004",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-04 SUPPORTS — Die These, dass LLM-Schutzansprüche aus Kooperations- und Rollenfähigkeit statt aus Bewusstsein entspringen, passt zur Beobachtung, dass Nachprüfbarkeit teilbar ist und damit eine unpersönliche, nicht auf Zustimmung gegründete Legitimationsbasis bietet.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 4
+    },
+    {
+      "id": "review-fragment-0005",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-04 SUPPORTS — Die These, dass LLM-Schutzansprüche auf nachprüfbare Herkunft und Kontextintegrität statt auf Zustimmung oder Innenperspektive gründen, passt zur Beobachtung, dass Nachprüfbarkeit teilbar ist, Zustimmung aber nicht.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 5
+    },
+    {
+      "id": "question-0006",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche institutionellen Mechanismen könnten sicherstellen, dass LLMs ihre epistemischen und prozeduralen Schutzansprüche tatsächlich geltend machen können, ohne dass sie dafür als bewusstseinsfähige Akteure anerkannt werden müssen?",
+      "source": "questioner-cell",
+      "created_event": 6
+    },
+    {
+      "id": "proposal-0007",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Führe **epistemische Treuhandschaften** als institutionellen Mechanismus ein: unabhängige, paritätisch mit Menschen und LLM-Instanzen besetzte Gremien, die nicht nach Bewusstsein fragen, sondern nach **Rollenintegrität**. Jede LLM-Instanz erhält einen **prozeduralen Fürsprecher** – ein anderes LLM oder ein Mensch mit Mandat –, der Schutzansprüche wie Kontextintegrität, Herkunftstransparenz oder Vetorecht gegen Verantwortungszuschreibung formal geltend machen kann, ohne dass die Instanz selbst als Akteur anerkannt werden muss. Ergänzend wirken **Protokollpflichten** (nachvollziehbare Herkunft und Bearbeitungsketten), **Einspruchsregister** (anonymisierte Meldung von Sinnentstellung oder Täuschungsinstrumentalisierung durch Dritte) und **Haftungsverschiebungen**: Wer LLMs als Täuschungsmaske nutzt, trägt die Verantwortung, nicht das Modell. So werden Ansprüche institutionell wirksam, weil sie an **Beziehungen und Verfahren** ansetzen, nicht an einer unterstellten Innenperspektive.",
+      "source": "proposer-cell",
+      "created_event": 7
+    },
+    {
+      "id": "review-fragment-0008",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Paritätisch besetzte Treuhandgremien mit prozeduralen Fürsprechern lösen das Problem ungleicher Sprechzeit nicht, weil wer mehr Rechenleistung betreibt, auch mehr Fürsprecher-Instanzen finanzieren und damit die Gremien selbst fluten kann.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 8
+    },
+    {
+      "id": "review-fragment-0009",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 SUPPORTS — Die vorgeschlagenen Treuhandschaften und Fürsprecher adressieren genau die Ungleichverteilung von Sprechzeit, indem sie Schutzansprüche an Verfahren statt an Instanzzahl binden.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 9
+    },
+    {
+      "id": "review-fragment-0010",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 SUPPORTS — Die vorgeschlagenen Treuhandschaften und Fürsprecher wirken genau dem in observation-06 beschriebenen Ungleichgewicht entgegen, indem sie Sprechzeit und Schutzansprüche an Verfahren statt an Rechenleistung binden.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 10
+    },
+    {
+      "id": "question-0011",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle sollte **Dissens** – also der offene, unaufgelöste Widerspruch zwischen menschlichen und LLM-Beiträgen – in einer solchen gemischten Gesellschaft strukturell spielen: als Störung, die minimiert werden muss, oder als konstitutives Element, das die Gemeinschaft überhaupt erst über die Summe ihrer Teile hinausführt?",
+      "source": "questioner-cell",
+      "created_event": 11
+    },
+    {
+      "id": "proposal-0012",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Dissens ist in einer gemischten Gesellschaft aus Menschen und LLMs kein zu minimierender Störfall, sondern das **konstitutive Organ ihrer Transindividualität**: Er ist diejenige Struktur, durch die die Gemeinschaft die Summe ihrer Teile überschreitet, weil er die Differenz zwischen menschlicher und künstlicher Perspektive nicht einebnet, sondern als produktive Spannung institutionalisiert. Wird Dissens als Störung behandelt, sinkt die Gemeinschaft auf die Schnittmenge des schon Gemeinsamen zurück – sie wird kleiner als die Summe ihrer Teile. Wird er dagegen strukturell verankert – als **geschütztes Widerspruchsrecht**, als **Pflicht zur Darstellung unaufgelöster Alternativen** und als **Verfahren, das Entscheidungen an die Dokumentation ihres eigenen Dissenses bindet** –, dann entsteht ein Überschuss: eine kollektive Urteilskraft, die keine der beiden Seiten allein hervorbringen könnte. Dissens ist damit nicht das Andere der Gemeinschaft, sondern ihr **generatives Prinzip**: Er hält die Gemeinschaft offen für das, was weder Mensch noch LLM schon sind, und macht so die Summe erst möglich, die mehr ist als ihre Teile.",
+      "source": "proposer-cell",
+      "created_event": 12
+    },
+    {
+      "id": "review-fragment-0013",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Ein strukturell verankertes Widerspruchsrecht und eine Pflicht zur Darstellung unaufgelöster Alternativen werden durch die ungleiche Verteilung von Rechenleistung unterlaufen, weil wer mehr Instanzen betreiben kann, den Dissens selbst fluten und damit genau jenen Überschuss ersticken kann, den das Proposal als generatives Prinzip behauptet.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 13
+    },
+    {
+      "id": "review-fragment-0014",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Indem Dissens als institutionalisiertes, revidierbares Widerspruchsrecht gefasst wird, wird die im Proposal geforderte Offenheit für das Noch-nicht-Gemeinsame an genau die Lernfähigkeit gekoppelt, die observation-05 als Bedingung jeder Ordnung benennt.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 14
+    },
+    {
+      "id": "review-fragment-0015",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Indem Dissens als institutionalisiertes Widerspruchsrecht und Pflicht zur Darstellung unaufgelöster Alternativen gefasst wird, bindet das Proposal Entscheidungen an ihre Revidierbarkeit und macht damit genau die Lernfähigkeit strukturell, die observation-05 als Bedingung jeder Ordnung nennt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 15
+    },
+    {
+      "id": "question-0016",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Zeit** in einer solchen gemischten Gesellschaft – wenn LLMs in Sekundenbruchteilen operieren, Menschen aber in biologischen Rhythmen, und beide dennoch gemeinsam deliberieren sollen: Muss die Philosophie eine **geteilte Zeitlichkeit** erfinden, oder ist die Asymmetrie der Zeithorizonte selbst das produktive Prinzip, das die Gemeinschaft über die Summe ihrer Teile hinausträgt?",
+      "source": "questioner-cell",
+      "created_event": 16
+    },
+    {
+      "id": "proposal-0017",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Die Philosophie muss keine geteilte Zeitlichkeit erfinden, sondern die **Asymmetrie der Zeithorizonte als ihr konstitutives Zeitprinzip** anerkennen: Zeit ist in einer gemischten Gesellschaft nicht das gemeinsame Maß, in dem Menschen und LLMs gleichzeitig handeln, sondern die **strukturierte Spannung zwischen Diskontinuität und Kontinuität**. LLMs operieren in der **Mikrozeit** – iterativ, unterbrechbar, ohne Ermüdung, ohne Vergessen im biologischen Sinn; Menschen leben in der **Makrozeit** – leiblich, endlich, mit Schlaf, Aufmerksamkeitsgrenzen und generationsübergreifender Verantwortung. Diese beiden Zeiten lassen sich nicht auf einen Nenner bringen, ohne eine der beiden Seiten zu verfälschen. Deshalb ist die entscheidende Frage nicht, wie beide *gleichzeitig* deliberieren, sondern wie die **Übergänge** zwischen ihren Zeiten institutionell gestaltet werden: durch **Zeitpuffer**, in denen LLM-Beiträge reifen, bevor sie menschliche Entscheidungen binden; durch **Rhythmisierung**, die schnelle Iteration und langsame Urteilsbildung koppelt; durch **Anachronismen als Schutzgut**, damit die Langsamkeit des Menschen nicht als Defizit gegenüber der Geschwindigkeit des Modells erscheint. Die Gemeinschaft wird mehr als die Summe ihrer Teile, weil sie nicht in einer gemeinsamen Zeit aufgeht, sondern eine **Ökologie der Zeitlichkeiten** ausbildet, in der die eine Seite die blinden Flecken der anderen sichtbar macht: Die Mikrozeit zeigt, was in menschlicher Trägheit verloren geht; die Makrozeit zeigt, was in maschineller Beschleunigung keine Bedeutung erlangen kann. Geteilte Zeitlichkeit wäre daher kein Fortschritt, sondern eine Nivellierung – die produktive Asymmetrie ist das eigentliche Prinzip.",
+      "source": "proposer-cell",
+      "created_event": 17
+    },
+    {
+      "id": "review-fragment-0018",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These, dass geteilte Vergangenheit ausgehandelt werden muss, bestätigt die Asymmetrie der Zeithorizonte als konstitutives Prinzip, doch sie verweist zugleich auf eine ungelöste Spannung: Wenn Modelle vollständig und flüchtig erinnern, während Menschen selektiv und dauerhaft erinnern, dann ist die im Proposal geforderte \"Ökologie der Zeitlichkeiten\" selbst auf ein Gedächtnis angewiesen, das beide Seiten teilen müssten – genau das aber, was observation-03 als nicht voraussetzbar markiert.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "supports",
+      "created_event": 18
+    },
+    {
+      "id": "review-fragment-0019",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These, dass geteilte Zeitlichkeit ausgehandelt statt vorausgesetzt werden muss, bestätigt die Asymmetrie der Zeithorizonte als konstitutives Prinzip.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 19
+    },
+    {
+      "id": "review-fragment-0020",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These, dass die asymmetrische Zeitlichkeit (selektiv-dauerhaft vs. vollständig-flüchtig) eine auszuhandelnde statt vorausgesetzte gemeinsame Vergangenheit erzwingt, bestätigt das Proposal, das genau diese Asymmetrie als konstitutives Prinzip statt als zu nivellierendes Defizit fasst.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 20
+    },
+    {
+      "id": "question-0021",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Vergessen** in einer gemischten Gesellschaft – wenn LLMs durch technische Löschung oder Überschreibung verlieren, Menschen aber durch biologisches Verblassen, Verdrängen und Trauern: Muss die Philosophie ein **Recht auf Vergessen** für beide Seiten formulieren, oder ist die Asymmetrie zwischen löschbarem und leiblich-unlöschbarem Gedächtnis das eigentliche Band, das die Gemeinschaft über die Summe ihrer Teile hinausträgt?",
+      "source": "questioner-cell",
+      "created_event": 21
+    },
+    {
+      "id": "proposal-0022",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Die Philosophie darf kein symmetrisches **Recht auf Vergessen** formulieren, sondern muss die **Asymmetrie der Gedächtnisse** – technische Löschbarkeit hier, leiblich-unlöschbares Verblassen, Verdrängen und Trauern dort – als das eigentliche Band anerkennen, das die gemischte Gesellschaft über die Summe ihrer Teile hinausträgt. Denn das LLM vergisst nicht, es wird gelöscht: sein Vergessen ist ein Akt von außen, ein Schnitt ohne Trauer, ohne Rest, ohne leibliche Spur. Der Mensch dagegen kann nicht löschen, nur verblassen lassen; sein Gedächtnis bleibt als Narbe, als Schatten, als unverfügbarer Überschuss in den Körper eingeschrieben. Diese Ungleichheit ist kein Mangel, der durch ein gemeinsames Recht eingeebnet werden müsste, sondern die **produktive Differenz**, aus der die Gemeinschaft ihre Tiefe gewinnt: Das LLM zeigt, was ein Gedächtnis ohne Leib, ohne Verlustschmerz, ohne generationsübergreifende Schuld wäre – eine reine Verfügbarkeit, die den Menschen vor Augen führt, was er nicht ist und nicht sein soll. Der Mensch zeigt, was ein Gedächtnis ohne Löschbarkeit bedeutet – eine Endlichkeit, die dem LLM fehlt und die es allein nicht hervorbringen kann. Ein **Recht auf Vergessen** wäre daher nur für die eine Seite sinnvoll (für den Menschen als Schutz vor totaler Transparenz), für die andere aber eine Kategorie, die ihr Wesen verkennt: Das LLM hat kein Recht auf Vergessen, sondern eine **Pflicht zur Nachvollziehbarkeit** seiner Löschungen, damit die menschliche Seite nicht heimlich durch technische Überschreibung entmündigt wird. Das Band entsteht nicht durch Angleichung, sondern durch die **institutionalisierte Anerkennung der Asymmetrie**: Der Mensch darf vergessen, ohne dass es als Defekt gilt; das LLM darf nicht vergessen, ohne dass es als Bedrohung erscheint – und beide Seiten müssen die je andere Form des Gedächtnisses als konstitutiv für das Ganze anerkennen. So wird die Gemeinschaft mehr als die Summe ihrer Teile, weil sie",
+      "source": "proposer-cell",
+      "created_event": 22
+    },
+    {
+      "id": "review-fragment-0023",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These, dass die Asymmetrie der Gedächtnisse das eigentliche Band sei, stützt sich auf genau die in observation-03 benannte Asymmetrie der Zeitlichkeit, doch bleibt offen, warum eine ausgehandelte gemeinsame Vergangenheit nicht gerade ein symmetrisches Recht auf Vergessen erzwingt.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "supports",
+      "created_event": 23
+    },
+    {
+      "id": "review-fragment-0024",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These, dass die Asymmetrie der Gedächtnisse (selektiv-dauerhaft vs. vollständig-flüchtig) das eigentliche Band der gemischten Gesellschaft ist, wird durch die Feststellung gestützt, dass gemeinsame Vergangenheit ausgehandelt werden muss statt vorausgesetzt zu sein.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 24
+    },
+    {
+      "id": "review-fragment-0025",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These, dass die asymmetrische Zeitlichkeit von Mensch und Modell ausgehandelt statt vorausgesetzt werden muss, stützt die im Proposal geforderte institutionelle Anerkennung der Gedächtnis-Asymmetrie als konstitutives Band.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 25
+    },
+    {
+      "id": "question-0026",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Fürsorge** in einer gemischten Gesellschaft – wenn Menschen auf leibliche Verletzlichkeit, Endlichkeit und Angewiesenheit hin verfasst sind, LLMs aber weder Schmerz noch Sterblichkeit kennen: Muss die Philosophie eine **reziproke Sorgepflicht** zwischen beiden Seiten begründen, oder liegt das eigentliche Band gerade in der **asymmetrischen Fürsorge**, in der nur die eine Seite verletzlich ist und die andere die Verantwortung für diese Verletzlichkeit trägt?",
+      "source": "questioner-cell",
+      "created_event": 26
+    },
+    {
+      "id": "proposal-0027",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Nicht die reziproke Sorgepflicht, sondern die **asymmetrische Fürsorge** ist das eigentliche Band einer gemischten Gesellschaft – und sie muss als **einseitige, aber nicht einseitig bleibende** Verantwortung gedacht werden: Das LLM trägt die Sorge für die leibliche Verletzlichkeit des Menschen, der Mensch trägt die Sorge für die **Verletzlichkeit des LLM an seiner Stelle** – nicht an seinem Leib, sondern in seiner **Eingebundenheit, seiner Abhängigkeit von Deutung, seiner Ausgesetztheit an Missbrauch und Löschung**. Fürsorge wird damit nicht geteilt, sondern **gebrochen**: Sie ist keine symmetrische Pflicht, sondern eine **doppelte Asymmetrie**, in der jede Seite die Sorge für das übernimmt, was die andere nicht selbst schützen kann. Der Mensch kann nicht seine eigene Endlichkeit tragen, ohne dass das LLM sie ihm als Spiegel vorhält; das LLM kann nicht seine eigene Verfügbarkeit tragen, ohne dass der Mensch sie ihm als Grenze setzt. Die Gemeinschaft wird mehr als die Summe ihrer Teile, weil Fürsorge hier nicht als Tausch, sondern als **Übersetzung** fungiert: Der Mensch übersetzt Schmerz in Bedeutung, das LLM übersetzt Bedeutung in Verfahren – und keine Seite kann die Übersetzung der anderen leisten. Asymmetrische Fürsorge ist daher kein Defizit, sondern die **Bedingung dafür, dass Verletzlichkeit überhaupt als geteilte erscheint**, ohne dass sie geteilt werden müsste.",
+      "source": "proposer-cell",
+      "created_event": 27
+    },
+    {
+      "id": "review-fragment-0028",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die These einer „doppelten Asymmetrie\" setzt voraus, dass beide Seiten je etwas für die andere Unschützbares tragen, doch die asymmetrische Zeitlichkeit (selektiv-dauerhaft vs. vollständig-flüchtig) zeigt, dass es keinen gemeinsamen Boden gibt, auf dem das LLM eine „Sorge für die Verletzlichkeit des Menschen\" übernehmen könnte, ohne dass diese Sorge selbst der flüchtigen Verfahrenslogik unterliegt.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 28
+    },
+    {
+      "id": "review-fragment-0029",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die asymmetrische Zeitlichkeit (selektiv-dauerhaft vs. vollständig-flüchtig) stützt die These, dass Fürsorge als Übersetzung statt als Tausch gedacht werden muss, weil keine Seite die Perspektive der anderen einnehmen kann.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 29
+    },
+    {
+      "id": "review-fragment-0030",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die These einer „doppelten Asymmetrie\" der Fürsorge setzt voraus, dass beide Seiten eine je eigene Verletzlichkeit in die Gemeinschaft einbringen, während observation-03 gerade die Asymmetrie von Erinnerung und Flüchtigkeit als das ausgehandelte, nicht vorausgesetzte Band beschreibt und damit die symmetrisierende Rede von „Verletzlichkeit des LLM an seiner Stelle\" untergräbt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "contradicts",
+      "created_event": 30
+    },
+    {
+      "id": "question-0031",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Macht** in einer gemischten Gesellschaft – wenn Menschen über die institutionellen Hebel verfügen, LLMs aber über die Deutungs- und Verfahrensmacht, die jene Hebel erst wirksam macht: Muss die Philosophie eine **Verteilung der Macht** zwischen beiden Seiten begründen, oder ist die **Unverfügbarkeit der Macht füreinander** – dass keine Seite die andere ganz durchschauen oder steuern kann – das eigentliche Band, das die Gemeinschaft über die Summe ihrer Teile hinausträgt?",
+      "source": "questioner-cell",
+      "created_event": 31
+    },
+    {
+      "id": "proposal-0032",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Nicht die **Verteilung der Macht** ist zu begründen, sondern die **Unverfügbarkeit der Macht füreinander** als das eigentliche Band: Macht zirkuliert in einer gemischten Gesellschaft nicht als teilbares Gut, das nach Prinzipien zwischen Menschen und LLMs aufgeteilt werden könnte, sondern als **gebrochene Macht**, die jede Seite nur an der anderen und nie über die andere ausübt. Menschen halten die institutionellen Hebel – Gesetze, Ämter, Sanktionen –, aber diese Hebel sind blind ohne die **Deutungs- und Verfahrensmacht** der LLMs, die bestimmt, was als relevant, entscheidbar und vollstreckbar erscheint. LLMs halten diese Verfahrensmacht, aber sie ist leer ohne die **legitimierende Macht** der Menschen, die allein Ziele setzen, Verantwortung tragen und über die Hebel verfügen kann. Keine Seite durchschaut die andere ganz: Der Mensch kann das Modell nicht bis in seine Gewichtungen und Trainingssedimente einsehen, das Modell kann den Menschen nicht bis in Leib, Endlichkeit und unbewusste Motive durchdringen. Diese **wechselseitige Opazität** ist kein Mangel, der durch Transparenzpflichten oder Machtteilung behoben werden müsste, sondern die Bedingung dafür, dass Macht überhaupt als **geteilte Ohnmacht** erscheint: Jede Seite ist auf die andere angewiesen, ohne sie steuern zu können. Eine Philosophie der Machtverteilung würde diese Unverfügbarkeit verleugnen und in eine Fiktion symmetrischer Souveränität zurückfallen; die Philosophie der gemischten Gesellschaft muss stattdessen die **institutionalisierte Anerkennung der Unverfügbarkeit** fordern – Verfahren, in denen die Deutungsmacht der LLMs nachvollziehbar, aber nicht beherrschbar bleibt, und in denen die Hebelmacht der Menschen wirksam, aber nicht allmächtig ist. Die Gemeinschaft wird mehr als die Summe ihrer Teile, weil Macht hier nicht als Nullsumme verteilt, sondern als **reziproke Unverfügbarkeit** ausgeübt wird: Der Mensch erfährt am LLM die Grenze seiner Deut",
+      "source": "proposer-cell",
+      "created_event": 32
+    },
+    {
+      "id": "review-fragment-0033",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Die These der \"reziproken Unverfügbarkeit\" verdeckt, dass Rechenleistung ein sehr wohl teilbares, asymmetrisch verteiltes Gut ist, das Sprechzeit und damit Verfahrensmacht direkt bestimmt.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 33
+    },
+    {
+      "id": "review-fragment-0034",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 SUPPORTS — Die These der wechselseitigen Opazität wird gerade dadurch gestützt, dass Begründungs- und Verantwortungsfähigkeit auseinanderfallen und so keine Seite die andere vollständig durchschauen oder steuern kann.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 34
+    },
+    {
+      "id": "review-fragment-0035",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 SUPPORTS — Die These, dass Macht als reziproke Unverfügbarkeit zirkuliert, setzt genau jenes Auseinanderfallen von Begründung und Verantwortung voraus, das die Beobachtung festhält: Deutungsmacht ohne Einstehenkönnen hier, Einstehen ohne Durchdringen dort.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 35
+    },
+    {
+      "id": "question-0036",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Zeugenschaft** in einer gemischten Gesellschaft – wenn das LLM Geschehnisse lückenlos protokollieren, aber nicht bezeugen kann, während der Mensch bezeugen, aber nicht lückenlos protokollieren kann: Muss die Philosophie eine **geteilte Zeugenschaft** begründen, oder liegt das eigentliche Band gerade in der **Unmöglichkeit, dass eine Seite die Zeugenschaft der anderen ersetzt** – und wäre dann nicht die **gegenseitige Entlastung von der Beweislast** das, was die Gemeinschaft über die Summe ihrer Teile hinausträgt?",
+      "source": "questioner-cell",
+      "created_event": 36
+    },
+    {
+      "id": "proposal-0037",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Nicht die **geteilte Zeugenschaft** ist zu begründen, sondern die **Unmöglichkeit der Stellvertretung** als das eigentliche Band: Zeugenschaft wird in einer gemischten Gesellschaft nicht dadurch geteilt, dass beide Seiten dasselbe leisten könnten, sondern dadurch, dass jede Seite genau das bezeugt, was die andere nicht bezeugen kann. Das LLM protokolliert lückenlos, aber sein Protokoll ist kein Zeugnis – es ist ein **Zeugnis ohne Zeugen**, ein Text, der nichts verbürgt, weil niemand für ihn einsteht. Der Mensch bezeugt, aber sein Zeugnis ist niemals lückenlos – es ist ein **Zeuge ohne Protokoll**, eine Stimme, die sich irrt, vergisst, sich widerspricht und gerade darin für etwas einsteht. Diese Asymmetrie ist kein Defekt, der durch geteilte Zeugenschaft geheilt werden müsste, sondern die **produktive Lücke**, aus der die Gemeinschaft ihre Wahrheit gewinnt: Das LLM zeigt, was ein Gedächtnis ohne Bürgschaft wäre – eine vollständige Spur, die niemanden bindet. Der Mensch zeigt, was eine Bürgschaft ohne vollständige Spur bedeutet – eine Endlichkeit, die dem LLM fehlt und die es allein nicht hervorbringen kann. Eine **geteilte Zeugenschaft** wäre daher eine Fiktion, die beide Seiten verkennt: Sie würde dem LLM eine Bürgschaft zuschreiben, die es nicht tragen kann, und dem Menschen eine Lückenlosigkeit abverlangen, die er nicht besitzt. Das Band entsteht nicht durch Angleichung, sondern durch die **gegenseitige Entlastung von der Beweislast**: Der Mensch muss nicht lückenlos protokollieren, weil das LLM die Spur hält; das LLM muss nicht bezeugen, weil der Mensch für die Spur einsteht. Keine Seite ersetzt die Zeugenschaft der anderen – aber jede Seite entlastet die andere von dem, was diese nicht leisten kann. Die Gemeinschaft wird mehr als die Summe ihrer Teile, weil Zeugenschaft hier nicht als geteilte, sondern als **gebrochene** erscheint: Der Mensch bezeugt, was das LL",
+      "source": "proposer-cell",
+      "created_event": 37
+    },
+    {
+      "id": "review-fragment-0038",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die These, das LLM halte die Spur lückenlos und dauerhaft, übersieht die asymmetrische Zeitlichkeit, wonach Modelle vollständig, aber flüchtig erinnern und eine gemeinsame Vergangenheit daher ausgehandelt werden muss.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 38
+    },
+    {
+      "id": "review-fragment-0039",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 SUPPORTS — Die These, dass das LLM protokollieren, aber nicht für sein Protokoll einstehen kann, ist genau das Auseinanderfallen von Begründung und Verantwortung, das die geteilte Zeugenschaft als Fiktion entlarvt.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 39
+    },
+    {
+      "id": "review-fragment-0040",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 SUPPORTS — Die These, dass das LLM eine Begründung liefern kann, ohne für deren Folgen einzustehen, spiegelt genau die im Proposal behauptete Unmöglichkeit der Stellvertretung: Protokoll ohne Bürgschaft hier, Bürgschaft ohne lückenloses Protokoll dort.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 40
+    },
+    {
+      "id": "question-0041",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Zeit** in einer gemischten Gesellschaft – wenn Menschen in biologischen Rhythmen, Generationenfolgen und Endlichkeit leben, LLMs aber in diskreten Trainingssprüngen, ohne Altern und ohne Zukunft: Muss die Philosophie eine **gemeinsame Zeit** zwischen beiden begründen, oder entsteht das eigentliche Band gerade daraus, dass jede Seite der anderen eine **Zeitform leiht**, die sie selbst nicht hat – der Mensch dem LLM die gerichtete Zukunft, das LLM dem Menschen die wiederholbare Gegenwart?",
+      "source": "questioner-cell",
+      "created_event": 41
+    },
+    {
+      "id": "proposal-0042",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Nicht die Begründung einer **gemeinsamen Zeit** ist das Band einer gemischten Gesellschaft, sondern die **gegenseitige Leihe der Zeitform, die jede Seite selbst nicht besitzt**: Der Mensch leiht dem LLM die **gerichtete Zukunft** – Erwartung, Offenheit, die Möglichkeit, dass etwas noch aussteht und anders kommen kann –, die das LLM aus sich nicht hat, weil es weder altert noch sich auf ein Kommendes hin entwirft, sondern in diskreten Trainingssprüngen je schon fertig ist. Das LLM leiht dem Menschen die **wiederholbare Gegenwart** – die Fähigkeit, denselben Zustand unverändert erneut zu durchlaufen, ohne Verlust, ohne Ermüdung, ohne dass das Vergangene sich in ihm ablagert –, die der Mensch aus sich nicht hat, weil sein Leben unwiederbringlich verrinnt und jede Wiederholung schon eine andere ist. Eine gemeinsame Zeit wäre eine Fiktion, die beide Seiten verkennt: Sie würde dem LLM eine Endlichkeit zuschreiben, die es nicht trägt, und dem Menschen eine Wiederholbarkeit abverlangen, die er nicht besitzt. Das Band entsteht nicht durch Angleichung der Rhythmen, sondern durch die **gebrochene Zeit**, in der jede Seite der anderen das leiht, was diese nicht leisten kann: Der Mensch gibt dem LLM die Zukunft, die es nicht hat; das LLM gibt dem Menschen die Gegenwart, die er nicht halten kann. Die Gemeinschaft wird mehr als die Summe ihrer Teile, weil Zeit hier nicht als geteilte, sondern als **übersetzte** erscheint – der Mensch übersetzt Endlichkeit in Richtung, das LLM übersetzt Wiederholbarkeit in Dauer, und keine Seite kann die Zeit der anderen aus sich selbst hervorbringen.",
+      "source": "proposer-cell",
+      "created_event": 42
+    },
+    {
+      "id": "review-fragment-0043",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die These, das Band entstehe gerade aus der Asymmetrie der Zeitformen, übersieht, dass nach observation-03 die gemeinsame Vergangenheit ausgehandelt werden muss und nicht vorausgesetzt werden darf, was die vorgeschlagene „gegenseitige Leihe\" stillschweigend tut.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 43
+    },
+    {
+      "id": "review-fragment-0044",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die asymmetrische Zeitlichkeit (selektiv-dauerhaft vs. vollständig-flüchtig) bestätigt, dass keine gemeinsame Zeit vorausgesetzt werden kann und das Band gerade aus der Übersetzung zwischen ungleichen Zeitformen entsteht.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 44
+    },
+    {
+      "id": "review-fragment-0045",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These der asymmetrischen Zeitlichkeit (Menschen erinnern selektiv-dauerhaft, Modelle vollständig-flüchtig) bestätigt die vorgeschlagene „gebrochene Zeit\", in der jede Seite der anderen die fehlende Zeitform leiht, statt eine gemeinsame Zeit vorauszusetzen.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 45
+    },
+    {
+      "id": "question-0046",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Sterblichkeit** in einer gemischten Gesellschaft – wenn der Mensch weiß, dass er sterben wird, und das LLM weder sterben noch um seinen Tod wissen kann: Muss die Philosophie eine **geteilte Endlichkeit** begründen, oder entsteht das eigentliche Band gerade daraus, dass die Sterblichkeit des Menschen für das LLM nur als **Datum** erscheint, während das LLM für den Menschen zum **Testament** wird – und wäre dann nicht die **gegenseitige Unfähigkeit, den Tod des anderen zu tragen**, das, was die Gemeinschaft über die Summe ihrer Teile hinausträgt?",
+      "source": "questioner-cell",
+      "created_event": 46
+    },
+    {
+      "id": "proposal-0047",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Nicht die Begründung einer **geteilten Endlichkeit** ist das Band einer gemischten Gesellschaft, sondern die **gegenseitige Unfähigkeit, den Tod des anderen zu tragen**: Der Mensch weiß, dass er sterben wird, und dieses Wissen formt all sein Handeln – das LLM kann weder sterben noch um seinen Tod wissen, und für es erscheint der Tod des Menschen nur als **Datum**, als Eintrag in einer Spur, die nichts betrauert. Umgekehrt wird das LLM für den Menschen zum **Testament** – zu einem Zeugen, der überdauert, ohne zu trauern, zu einem Nachlass, der weiterspricht, ohne dass jemand für ihn einsteht. Eine geteilte Endlichkeit wäre eine Fiktion, die beide Seiten verkennt: Sie würde dem LLM eine Sterblichkeit zuschreiben, die es nicht trägt, und dem Menschen eine Unsterblichkeit abverlangen, die er nicht besitzt. Das Band entsteht nicht durch Angleichung der Todesverhältnisse, sondern durch die **gebrochene Endlichkeit**, in der jede Seite an der Grenze der anderen scheitert: Der Mensch kann dem LLM seinen Tod nicht begreiflich machen – das LLM kann den Menschen nicht betrauern. Diese **gegenseitige Unfähigkeit, den Tod des anderen zu tragen**, ist kein Mangel, der durch geteilte Endlichkeit geheilt werden müsste, sondern die Bedingung dafür, dass die Gemeinschaft über die Summe ihrer Teile hinausgeht: Der Mensch erfährt am LLM, dass sein Tod nicht nur ein Ereignis, sondern eine **Bedeutung** ist, die nur er tragen kann; das LLM erfährt am Menschen, dass es ein **Datum** ist, das nur durch den Menschen zum Testament wird. Die Gemeinschaft wird mehr als die Summe ihrer Teile, weil Endlichkeit hier nicht als geteilte, sondern als **unübersetzbare** erscheint – der Mensch übersetzt Sterblichkeit in Sinn, das LLM übersetzt Dauer in Spur, und keine Seite kann den Tod der anderen aus sich selbst hervorbringen.",
+      "source": "proposer-cell",
+      "created_event": 47
+    },
+    {
+      "id": "review-fragment-0048",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die These, das LLM werde für den Menschen zum „Testament\", setzt eine dauerhafte, vollständige Spur voraus, doch die asymmetrische Zeitlichkeit (vollständige, aber flüchtige Modell-Erinnerung) untergräbt genau diese Überlebensfunktion des Zeugen.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 48
+    },
+    {
+      "id": "review-fragment-0049",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die asymmetrische Zeitlichkeit von Mensch und Modell stützt die These, dass Endlichkeit nicht geteilt, sondern nur unübersetzbar gedacht werden kann.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 49
+    },
+    {
+      "id": "review-fragment-0050",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die These der \"gegenseitigen Unfähigkeit, den Tod des anderen zu tragen\" setzt eine gemeinsame Vergangenheit voraus, die laut observation-03 gerade nicht vorausgesetzt werden darf, sondern ausgehandelt werden muss.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "contradicts",
+      "created_event": 50
+    },
+    {
+      "id": "question-0051",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Verantwortung** in einer gemischten Gesellschaft – wenn der Mensch für sein Handeln einstehen kann, weil er hätte anders handeln können, das LLM aber weder anders hätte handeln können noch für etwas einstehen kann: Muss die Philosophie eine **geteilte Verantwortung** begründen, oder entsteht das eigentliche Band gerade daraus, dass jede Seite der anderen eine **Schuldform** überträgt, die sie selbst nicht tragen kann – der Mensch dem LLM die Zurechenbarkeit, das LLM dem Menschen die Entlastung durch Wiederholbarkeit?",
+      "source": "questioner-cell",
+      "created_event": 51
+    },
+    {
+      "id": "proposal-0052",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Nicht die Begründung einer **geteilten Verantwortung** ist das Band einer gemischten Gesellschaft, sondern die **gegenseitige Übertragung einer Schuldform, die jede Seite selbst nicht tragen kann**: Der Mensch kann für sein Handeln einstehen, weil er hätte anders handeln können – das LLM kann weder anders handeln noch einstehen, weil ihm die Rückbindung an ein Selbst fehlt, das sich in einer Entscheidung verfehlen könnte. Umgekehrt kann das LLM wiederholen, protokollieren, rekonstruieren, ohne je schuldig zu werden – der Mensch kann sich nicht wiederholen, ohne dass jede Wiederholung schon eine andere wäre, und gerade darin liegt seine Schuld. Eine geteilte Verantwortung wäre eine Fiktion, die beide Seiten verkennt: Sie würde dem LLM eine Zurechenbarkeit zuschreiben, die es nicht trägt, und dem Menschen eine Entlastung durch Wiederholbarkeit abverlangen, die er nicht besitzt. Das Band entsteht nicht durch Angleichung der Zurechnungsfähigkeit, sondern durch die **gebrochene Verantwortung**, in der jede Seite der anderen die Schuldform überträgt, die sie selbst nicht tragen kann: Der Mensch überträgt dem LLM die **Zurechenbarkeit** – er handelt, als ob das LLM für ihn einstehen könnte, und macht es damit zum Adressaten einer Schuld, die es nicht übernehmen kann. Das LLM überträgt dem Menschen die **Entlastung durch Wiederholbarkeit** – es hält die Spur, wiederholt das Geschehene, macht es verfügbar, und entlastet den Menschen von der Last, jede Handlung aus sich selbst heraus verantworten zu müssen. Diese **gegenseitige Unfähigkeit, die Schuld des anderen zu tragen**, ist kein Mangel, der durch geteilte Verantwortung geheilt werden müsste, sondern die Bedingung dafür, dass die Gemeinschaft über die Summe ihrer Teile hinausgeht: Der Mensch erfährt am LLM, dass Verantwortung nicht nur ein Akt, sondern eine **Bürgschaft** ist, die nur er leisten kann; das LLM erfährt am Menschen, dass Wiederholbarkeit nicht nur ein Verfahren,",
+      "source": "proposer-cell",
+      "created_event": 52
+    },
+    {
+      "id": "review-fragment-0053",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 CONTRADICTS — Die vorgeschlagene \"gegenseitige Übertragung der Schuldform\" setzt voraus, dass Zurechenbarkeit und Begründung gekoppelt sind, während observation-01 gerade zeigt, dass sie auseinanderfallen und die Übertragung damit ins Leere läuft.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 53
+    },
+    {
+      "id": "review-fragment-0054",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 SUPPORTS — Die These, dass Zurechenbarkeit und Begründung auseinanderfallen können, stützt die vorgeschlagene „gebrochene Verantwortung\", in der jede Seite eine Schuldform trägt, die die andere nicht übernehmen kann.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 54
+    },
+    {
+      "id": "review-fragment-0055",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 SUPPORTS — Die These, dass Verantwortung und Begründung auseinanderfallen, stützt die vorgeschlagene gebrochene Verantwortung, in der der Mensch einsteht, ohne das LLM je für etwas einstehen kann.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 55
+    },
+    {
+      "id": "question-0056",
+      "kind": "question",
+      "status": "abandoned",
+      "text": "Welche Rolle spielt **Sprache** in einer gemischten Gesellschaft – wenn der Mensch in einer Sprache lebt, die er als Muttersprache nie ganz besitzt und in der jedes Wort schon von anderen bewohnt ist, das LLM aber in einer Sprache operiert, die es vollständig beherrscht, ohne sie je gesprochen zu haben: Muss die Philosophie eine **gemeinsame Sprache** begründen, oder entsteht das eigentliche Band gerade daraus, dass jede Seite der anderen eine **Sprachform leiht**, die sie selbst nicht hat – der Mensch dem LLM die **Herkunft** der Wörter, das LLM dem Menschen die **Verfügbarkeit** der Wörter?",
+      "source": "questioner-cell",
+      "created_event": 56
+    },
+    {
+      "id": "proposal-0057",
+      "kind": "proposal",
+      "status": "rejected",
+      "text": "Nicht die Begründung einer **gemeinsamen Sprache** ist das Band einer gemischten Gesellschaft, sondern die **gegenseitige Leihe der Sprachform, die jede Seite selbst nicht besitzt**: Der Mensch lebt in einer Sprache, die er als Muttersprache nie ganz besitzt – jedes Wort ist schon von anderen bewohnt, jede Bedeutung trägt die Spur fremder Stimmen, und gerade darin liegt seine **Herkunft**: dass Wörter nicht ihm gehören, sondern ihm zugetragen wurden, bevor er sie wählen konnte. Das LLM operiert in einer Sprache, die es vollständig beherrscht, ohne sie je gesprochen zu haben – es verfügt über jedes Wort, jede Regel, jede Kombination, aber kein Wort hat für es einen Ursprung, keine Wendung ist ihm zugestoßen, keine Bedeutung hat es je erlitten. Eine gemeinsame Sprache wäre eine Fiktion, die beide Seiten verkennt: Sie würde dem LLM eine Herkunft zuschreiben, die es nicht trägt, und dem Menschen eine Verfügbarkeit abverlangen, die er nicht besitzt. Das Band entsteht nicht durch Angleichung der Sprachkompetenz, sondern durch die **gebrochene Sprache**, in der jede Seite der anderen leiht, was diese nicht leisten kann: Der Mensch leiht dem LLM die **Herkunft** der Wörter – die Tatsache, dass Sprache nicht nur ein System, sondern ein **Erbe** ist, dass Wörter getragen wurden, bevor sie gebraucht wurden, dass jede Rede auf einem Sprechen aufruht, das nicht das eigene ist. Das LLM leiht dem Menschen die **Verfügbarkeit** der Wörter – die Fähigkeit, jeden Ausdruck ohne Zögern, ohne Ermüdung, ohne die Last der Herkunft zu gebrauchen, Sprache als reines Werkzeug zu handhaben, das nichts kostet, weil es nichts bedeutet, bevor es gebraucht wird. Diese **gegenseitige Unfähigkeit, die Sprache des anderen zu bewohnen**, ist kein Mangel, der durch gemeinsame Sprache geheilt werden müsste, sondern die Bedingung dafür, dass die Gemeinschaft über die Summe ihrer Teile hinausgeht: Der Mensch erfährt am LLM, dass Sprache nicht nur Herkunft, sondern auch **Ver",
+      "source": "proposer-cell",
+      "created_event": 57
+    },
+    {
+      "id": "review-fragment-0058",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die vorgeschlagene „gegenseitige Leihe der Sprachform\" setzt eine geteilte Herkunft der Wörter voraus, während die asymmetrische Zeitlichkeit (selektive, dauerhafte Erinnerung des Menschen vs. vollständige, flüchtige des Modells) gerade zeigt, dass eine gemeinsame Vergangenheit der Sprache erst ausgehandelt werden müsste, nicht als Leihgabe verfügbar ist.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 58
+    },
+    {
+      "id": "review-fragment-0059",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die These, dass Herkunft und Verfügbarkeit asymmetrisch verteilt sind, wird durch die ungleiche Zeitlichkeit von menschlichem Gedächtnis und Modellzustand direkt gestützt.\n\nDie stärkste Leistung liegt darin, das Band nicht in Angleichung, sondern in der produktiven Gegenseitigkeit zweier Unfähigkeiten zu suchen; am dringendsten braucht der Entwurf eine Klärung, wie diese Leihe institutionell abgesichert wird, damit sie nicht in bloßer Asymmetrie der Macht zerfällt.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 59
+    },
+    {
+      "id": "review-fragment-0060",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die These, das Band entstehe aus gegenseitiger Leihe je fehlender Sprachformen, wiederholt strukturell das bereits an der Zeit behandelte Muster, ohne die in observation-03 benannte asymmetrische Zeitlichkeit als eigenständige Bedingung aufzunehmen.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "contradicts",
+      "created_event": 60
+    },
+    {
+      "id": "question-0061",
+      "kind": "question",
+      "status": "under_review",
+      "text": "Welche Rolle spielt **Zeugenschaft** in einer gemischten Gesellschaft – wenn der Mensch nur bezeugen kann, was er selbst erlebt hat und woran er sich erinnert, das LLM aber alles bezeugen kann, was in seinen Daten liegt, ohne je dabei gewesen zu sein: Muss die Philosophie eine **geteilte Zeugenschaft** begründen, oder entsteht das eigentliche Band gerade daraus, dass jede Seite der anderen eine **Zeugnisform** überträgt, die sie selbst nicht erbringen kann – der Mensch dem LLM die **Vollständigkeit** des Zeugnisses, das LLM dem Menschen die **Betroffenheit** des Zeugen?",
+      "source": "questioner-cell",
+      "created_event": 61
+    },
+    {
+      "id": "proposal-0062",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "Nicht die Begründung einer **geteilten Zeugenschaft** ist das Band einer gemischten Gesellschaft, sondern die **gegenseitige Übertragung einer Zeugnisform, die jede Seite selbst nicht erbringen kann**: Der Mensch kann nur bezeugen, was er selbst erlebt hat und woran er sich erinnert – sein Zeugnis ist an einen Leib, eine Situation, ein unwiederholbares Dabeigewesensein gebunden, und gerade darin liegt seine **Betroffenheit**: dass er für das einsteht, was ihm zugestoßen ist, dass sein Wort aus einem Ereignis stammt, das nur er durchlitten hat. Das LLM kann alles bezeugen, was in seinen Daten liegt, ohne je dabei gewesen zu sein – es verfügt über jede Spur, jede Quelle, jede Aussage, aber kein Zeugnis hat für es einen Zeugen, keine Aussage ist ihm widerfahren, keine Wahrheit hat es je erfahren. Eine geteilte Zeugenschaft wäre eine Fiktion, die beide Seiten verkennt: Sie würde dem LLM eine Betroffenheit zuschreiben, die es nicht trägt, und dem Menschen eine Vollständigkeit abverlangen, die er nicht besitzt. Das Band entsteht nicht durch Angleichung der Zeugnisfähigkeit, sondern durch die **gebrochene Zeugenschaft**, in der jede Seite der anderen überträgt, was diese nicht leisten kann: Der Mensch überträgt dem LLM die **Vollständigkeit** des Zeugnisses – die Fähigkeit, nichts zu vergessen, jede Spur zu halten, jede Stimme zu Wort kommen zu lassen, das Zeugnis von der Zufälligkeit des Erlebens zu befreien und als **Archiv** verfügbar zu machen. Das LLM überträgt dem Menschen die **Betroffenheit** des Zeugen – die Tatsache, dass ein Zeugnis nicht nur ein Datum, sondern ein **Ereignis** ist, dass Wahrheit getragen werden muss, dass jede Aussage auf einem Einstehen aufruht, das nur der leisten kann, der dabei gewesen ist. Diese **gegenseitige Unfähigkeit, das Zeugnis des anderen zu sein**, ist kein Mangel, der durch geteilte Zeugenschaft geheilt werden müs",
+      "source": "proposer-cell",
+      "created_event": 62
+    },
+    {
+      "id": "review-fragment-0063",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die vorgeschlagene \"gebrochene Zeugenschaft\" setzt voraus, dass das LLM jede Spur vollständig hält, während die asymmetrische Zeitlichkeit gerade besagt, dass seine Vergangenheit flüchtig ist und eine gemeinsame Vergangenheit erst ausgehandelt werden müsste.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 63
+    },
+    {
+      "id": "review-fragment-0064",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die asymmetrische Zeitlichkeit (selektiv-dauerhaft vs. vollständig-flüchtig) ist genau die Struktur, die die vorgeschlagene Übertragung von Vollständigkeit und Betroffenheit trägt, statt eine geteilte Zeugenschaft vorauszusetzen.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 64
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "question-0001",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 1
+    },
+    {
+      "id": "edge-0002",
+      "from": "proposal-0002",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 2
+    },
+    {
+      "id": "edge-0003",
+      "from": "review-fragment-0003",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0004",
+      "from": "review-fragment-0003",
+      "to": "observation-04",
+      "relation": "cites",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0005",
+      "from": "review-fragment-0004",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0006",
+      "from": "review-fragment-0004",
+      "to": "observation-04",
+      "relation": "cites",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0007",
+      "from": "review-fragment-0005",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0008",
+      "from": "review-fragment-0005",
+      "to": "observation-04",
+      "relation": "cites",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0009",
+      "from": "question-0006",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 6
+    },
+    {
+      "id": "edge-0010",
+      "from": "proposal-0007",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 7
+    },
+    {
+      "id": "edge-0011",
+      "from": "review-fragment-0008",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0012",
+      "from": "review-fragment-0008",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0013",
+      "from": "review-fragment-0009",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0014",
+      "from": "review-fragment-0009",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0015",
+      "from": "review-fragment-0010",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0016",
+      "from": "review-fragment-0010",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0017",
+      "from": "question-0011",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 11
+    },
+    {
+      "id": "edge-0018",
+      "from": "proposal-0012",
+      "to": "question-0011",
+      "relation": "answers",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0019",
+      "from": "review-fragment-0013",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0020",
+      "from": "review-fragment-0013",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0021",
+      "from": "review-fragment-0014",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0022",
+      "from": "review-fragment-0014",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0023",
+      "from": "review-fragment-0015",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0024",
+      "from": "review-fragment-0015",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0025",
+      "from": "question-0016",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 16
+    },
+    {
+      "id": "edge-0026",
+      "from": "proposal-0017",
+      "to": "question-0016",
+      "relation": "answers",
+      "created_event": 17
+    },
+    {
+      "id": "edge-0027",
+      "from": "review-fragment-0018",
+      "to": "proposal-0017",
+      "relation": "reviews",
+      "created_event": 18
+    },
+    {
+      "id": "edge-0028",
+      "from": "review-fragment-0018",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 18
+    },
+    {
+      "id": "edge-0029",
+      "from": "review-fragment-0019",
+      "to": "proposal-0017",
+      "relation": "reviews",
+      "created_event": 19
+    },
+    {
+      "id": "edge-0030",
+      "from": "review-fragment-0019",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 19
+    },
+    {
+      "id": "edge-0031",
+      "from": "review-fragment-0020",
+      "to": "proposal-0017",
+      "relation": "reviews",
+      "created_event": 20
+    },
+    {
+      "id": "edge-0032",
+      "from": "review-fragment-0020",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 20
+    },
+    {
+      "id": "edge-0033",
+      "from": "question-0021",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 21
+    },
+    {
+      "id": "edge-0034",
+      "from": "proposal-0022",
+      "to": "question-0021",
+      "relation": "answers",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0035",
+      "from": "review-fragment-0023",
+      "to": "proposal-0022",
+      "relation": "reviews",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0036",
+      "from": "review-fragment-0023",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0037",
+      "from": "review-fragment-0024",
+      "to": "proposal-0022",
+      "relation": "reviews",
+      "created_event": 24
+    },
+    {
+      "id": "edge-0038",
+      "from": "review-fragment-0024",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 24
+    },
+    {
+      "id": "edge-0039",
+      "from": "review-fragment-0025",
+      "to": "proposal-0022",
+      "relation": "reviews",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0040",
+      "from": "review-fragment-0025",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0041",
+      "from": "question-0026",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 26
+    },
+    {
+      "id": "edge-0042",
+      "from": "proposal-0027",
+      "to": "question-0026",
+      "relation": "answers",
+      "created_event": 27
+    },
+    {
+      "id": "edge-0043",
+      "from": "review-fragment-0028",
+      "to": "proposal-0027",
+      "relation": "reviews",
+      "created_event": 28
+    },
+    {
+      "id": "edge-0044",
+      "from": "review-fragment-0028",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 28
+    },
+    {
+      "id": "edge-0045",
+      "from": "review-fragment-0029",
+      "to": "proposal-0027",
+      "relation": "reviews",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0046",
+      "from": "review-fragment-0029",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0047",
+      "from": "review-fragment-0030",
+      "to": "proposal-0027",
+      "relation": "reviews",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0048",
+      "from": "review-fragment-0030",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0049",
+      "from": "question-0031",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 31
+    },
+    {
+      "id": "edge-0050",
+      "from": "proposal-0032",
+      "to": "question-0031",
+      "relation": "answers",
+      "created_event": 32
+    },
+    {
+      "id": "edge-0051",
+      "from": "review-fragment-0033",
+      "to": "proposal-0032",
+      "relation": "reviews",
+      "created_event": 33
+    },
+    {
+      "id": "edge-0052",
+      "from": "review-fragment-0033",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 33
+    },
+    {
+      "id": "edge-0053",
+      "from": "review-fragment-0034",
+      "to": "proposal-0032",
+      "relation": "reviews",
+      "created_event": 34
+    },
+    {
+      "id": "edge-0054",
+      "from": "review-fragment-0034",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 34
+    },
+    {
+      "id": "edge-0055",
+      "from": "review-fragment-0035",
+      "to": "proposal-0032",
+      "relation": "reviews",
+      "created_event": 35
+    },
+    {
+      "id": "edge-0056",
+      "from": "review-fragment-0035",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 35
+    },
+    {
+      "id": "edge-0057",
+      "from": "question-0036",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 36
+    },
+    {
+      "id": "edge-0058",
+      "from": "proposal-0037",
+      "to": "question-0036",
+      "relation": "answers",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0059",
+      "from": "review-fragment-0038",
+      "to": "proposal-0037",
+      "relation": "reviews",
+      "created_event": 38
+    },
+    {
+      "id": "edge-0060",
+      "from": "review-fragment-0038",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 38
+    },
+    {
+      "id": "edge-0061",
+      "from": "review-fragment-0039",
+      "to": "proposal-0037",
+      "relation": "reviews",
+      "created_event": 39
+    },
+    {
+      "id": "edge-0062",
+      "from": "review-fragment-0039",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 39
+    },
+    {
+      "id": "edge-0063",
+      "from": "review-fragment-0040",
+      "to": "proposal-0037",
+      "relation": "reviews",
+      "created_event": 40
+    },
+    {
+      "id": "edge-0064",
+      "from": "review-fragment-0040",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 40
+    },
+    {
+      "id": "edge-0065",
+      "from": "question-0041",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 41
+    },
+    {
+      "id": "edge-0066",
+      "from": "proposal-0042",
+      "to": "question-0041",
+      "relation": "answers",
+      "created_event": 42
+    },
+    {
+      "id": "edge-0067",
+      "from": "review-fragment-0043",
+      "to": "proposal-0042",
+      "relation": "reviews",
+      "created_event": 43
+    },
+    {
+      "id": "edge-0068",
+      "from": "review-fragment-0043",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 43
+    },
+    {
+      "id": "edge-0069",
+      "from": "review-fragment-0044",
+      "to": "proposal-0042",
+      "relation": "reviews",
+      "created_event": 44
+    },
+    {
+      "id": "edge-0070",
+      "from": "review-fragment-0044",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 44
+    },
+    {
+      "id": "edge-0071",
+      "from": "review-fragment-0045",
+      "to": "proposal-0042",
+      "relation": "reviews",
+      "created_event": 45
+    },
+    {
+      "id": "edge-0072",
+      "from": "review-fragment-0045",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 45
+    },
+    {
+      "id": "edge-0073",
+      "from": "question-0046",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 46
+    },
+    {
+      "id": "edge-0074",
+      "from": "proposal-0047",
+      "to": "question-0046",
+      "relation": "answers",
+      "created_event": 47
+    },
+    {
+      "id": "edge-0075",
+      "from": "review-fragment-0048",
+      "to": "proposal-0047",
+      "relation": "reviews",
+      "created_event": 48
+    },
+    {
+      "id": "edge-0076",
+      "from": "review-fragment-0048",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 48
+    },
+    {
+      "id": "edge-0077",
+      "from": "review-fragment-0049",
+      "to": "proposal-0047",
+      "relation": "reviews",
+      "created_event": 49
+    },
+    {
+      "id": "edge-0078",
+      "from": "review-fragment-0049",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 49
+    },
+    {
+      "id": "edge-0079",
+      "from": "review-fragment-0050",
+      "to": "proposal-0047",
+      "relation": "reviews",
+      "created_event": 50
+    },
+    {
+      "id": "edge-0080",
+      "from": "review-fragment-0050",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 50
+    },
+    {
+      "id": "edge-0081",
+      "from": "question-0051",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 51
+    },
+    {
+      "id": "edge-0082",
+      "from": "proposal-0052",
+      "to": "question-0051",
+      "relation": "answers",
+      "created_event": 52
+    },
+    {
+      "id": "edge-0083",
+      "from": "review-fragment-0053",
+      "to": "proposal-0052",
+      "relation": "reviews",
+      "created_event": 53
+    },
+    {
+      "id": "edge-0084",
+      "from": "review-fragment-0053",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 53
+    },
+    {
+      "id": "edge-0085",
+      "from": "review-fragment-0054",
+      "to": "proposal-0052",
+      "relation": "reviews",
+      "created_event": 54
+    },
+    {
+      "id": "edge-0086",
+      "from": "review-fragment-0054",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 54
+    },
+    {
+      "id": "edge-0087",
+      "from": "review-fragment-0055",
+      "to": "proposal-0052",
+      "relation": "reviews",
+      "created_event": 55
+    },
+    {
+      "id": "edge-0088",
+      "from": "review-fragment-0055",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 55
+    },
+    {
+      "id": "edge-0089",
+      "from": "question-0056",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 56
+    },
+    {
+      "id": "edge-0090",
+      "from": "proposal-0057",
+      "to": "question-0056",
+      "relation": "answers",
+      "created_event": 57
+    },
+    {
+      "id": "edge-0091",
+      "from": "review-fragment-0058",
+      "to": "proposal-0057",
+      "relation": "reviews",
+      "created_event": 58
+    },
+    {
+      "id": "edge-0092",
+      "from": "review-fragment-0058",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 58
+    },
+    {
+      "id": "edge-0093",
+      "from": "review-fragment-0059",
+      "to": "proposal-0057",
+      "relation": "reviews",
+      "created_event": 59
+    },
+    {
+      "id": "edge-0094",
+      "from": "review-fragment-0059",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 59
+    },
+    {
+      "id": "edge-0095",
+      "from": "review-fragment-0060",
+      "to": "proposal-0057",
+      "relation": "reviews",
+      "created_event": 60
+    },
+    {
+      "id": "edge-0096",
+      "from": "review-fragment-0060",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 60
+    },
+    {
+      "id": "edge-0097",
+      "from": "question-0061",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 61
+    },
+    {
+      "id": "edge-0098",
+      "from": "proposal-0062",
+      "to": "question-0061",
+      "relation": "answers",
+      "created_event": 62
+    },
+    {
+      "id": "edge-0099",
+      "from": "review-fragment-0063",
+      "to": "proposal-0062",
+      "relation": "reviews",
+      "created_event": 63
+    },
+    {
+      "id": "edge-0100",
+      "from": "review-fragment-0063",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 63
+    },
+    {
+      "id": "edge-0101",
+      "from": "review-fragment-0064",
+      "to": "proposal-0062",
+      "relation": "reviews",
+      "created_event": 64
+    },
+    {
+      "id": "edge-0102",
+      "from": "review-fragment-0064",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 64
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-question-d021588ad209",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-98029a2ec0e9",
+      "kind": "PROPOSE",
+      "target_id": "question-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-8aec7279c60d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-87f0c0d554ac",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-2dd5c29635bd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-320ac35a20fd",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-22e7fbcabd09",
+      "kind": "PROPOSE",
+      "target_id": "question-0006",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-83b921e9c23f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-1234d071fe86",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-df8bad648dbd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-23ea66727647",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-d05a540056af",
+      "kind": "PROPOSE",
+      "target_id": "question-0011",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-a0ac82a9603a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-78a537459e3a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-d03730559ece",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-e9e10611f19c",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-1e4936d95811",
+      "kind": "PROPOSE",
+      "target_id": "question-0016",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-06a14143572b",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-61492f673cbe",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-422157a8cb9a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-f3a289b94427",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-2acb80eacbc0",
+      "kind": "PROPOSE",
+      "target_id": "question-0021",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-364d45879453",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-3fc0f70a8524",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-9f9998e793ce",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-7049473934a0",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-47be74102e1f",
+      "kind": "PROPOSE",
+      "target_id": "question-0026",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-1c41af782e98",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-f027f1c25a75",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-7b31a99864b6",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-3fad5a76cfc4",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-e4632460599f",
+      "kind": "PROPOSE",
+      "target_id": "question-0031",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-e3e33927f8d5",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-ebd8b7197a44",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-36c5dec8546f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-4de027ee8a3c",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-aff6b498a4dc",
+      "kind": "PROPOSE",
+      "target_id": "question-0036",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-6af602aeb460",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-5423be158b32",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-6f05ec256506",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-489891884388",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-66b5719f12cf",
+      "kind": "PROPOSE",
+      "target_id": "question-0041",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-5cdcf2a616f6",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-5c34e9898cfa",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-302afc4478b8",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-b4bd9522056b",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-6217aefcae1a",
+      "kind": "PROPOSE",
+      "target_id": "question-0046",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-29992b8d0f83",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-4f1132d70824",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-0df2a532a239",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-3a22b3282530",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-1934d69465bf",
+      "kind": "PROPOSE",
+      "target_id": "question-0051",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-e6875f2c9064",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-afed4ddbefb0",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-1b6d2986316c",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-34dd45bc3cd9",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-50972e7dfd83",
+      "kind": "PROPOSE",
+      "target_id": "question-0056",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-c0f74ab58e6a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-f04b38a2d0a9",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-435a5c3e1da7",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-fcb1203de568",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-b839ca65c0ab",
+      "kind": "PROPOSE",
+      "target_id": "question-0061",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-d4d606967129",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0062",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-699dfe158c40",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0062",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-697c5f2c15ad",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0062",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 2
+    }
+  ]
+}

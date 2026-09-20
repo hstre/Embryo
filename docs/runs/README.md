@@ -27,6 +27,10 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `024` | wie 023 auf 360M | 20 | 20/96 | 2, Vernetzen nie erreicht |
 | `025` | wie 023, Zellen auf `deepseek-flash`, ohne Denkmodus | 10 | 10/96 | **4 + 6 Kanten, Ziel erreicht** |
 | `026` | wie 025, Denkmodus an, Effort `high` | 10 | 10/96 | **4 + 6 Kanten, Ziel erreicht** |
+| `027` | **zurück zum ursprünglichen Ziel**, Konfiguration wie 012, `deepseek-flash` | 64 | 64/64 | 0, 16× PANEL_REVISE |
+| `028` | wie 027, `max_text_chars` 3000 | 64 | 64/64 | 0, Abschneiden widerlegt |
+| `029` | Kontrollarm, Annahme per Verdikt (wie 010) | 64 | 64/64 | 0, 12 Meta-Reviews, alle REVISE |
+| `030` | wie 028, Einwand an derselben Beweislast wie Zustimmung | 64 | 64/64 | 0, 13× PANEL_REJECT |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
@@ -96,6 +100,14 @@ DEEPSEEK_API_KEY=… node src/cli.mjs step --backend deepseek --thinking \
   --seed docs/runs/026/seed.json --state docs/runs/026/embryo.json \
   --events docs/runs/026/events.jsonl
 ```
+
+027 bis 030 kehren zum ursprünglichen Ziel zurück — Konfiguration identisch zu
+012, getauscht ist allein die Zelle. Die Rollen differenzieren dort zum ersten
+Mal (der adversariale Arm widerspricht in 11 von 13 Fragmenten, der wohlwollende
+stimmt in 13 von 13 zu), und drei aufeinanderfolgende Blockaden werden sichtbar:
+das Veto eines einzelnen Einwands, das Abschneiden der Vorschläge — widerlegt —
+und zuletzt die Forderung nach zwei *verschiedenen* stützenden Beobachtungen,
+an der ein Panel scheitert, das sich über die einschlägige Prämisse einig ist.
 
 Jeder Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
 Beide sind gegen den Code dieses Branches replay-stabil:
