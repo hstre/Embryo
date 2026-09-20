@@ -75,6 +75,15 @@ Verneinung liest sich wie eine Aussage gegen einen Satz über einen Wasserkessel
 Der Graph ist strukturell gültig und semantisch leer — was sich nur deshalb sagen
 lässt, weil das Gate über Inhalt nie etwas behauptet hat.
 
+**Und 025 beantwortet die Frage, die der Bericht bis dahin offen ließ.** Dieselbe
+Aufgabe, dasselbe Gate, getauscht ist allein die Zelle: ein großes gehostetes
+Modell erreicht das Ziel in **zehn Zellen ohne eine einzige Ablehnung**, die
+Relation übersteht die Permutation der Optionsnamen in **5 von 6** Paaren gegen
+0 von 6 auf 1.7B, und die vorab festgelegte Positivkontrolle ist mit **2 von 2**
+bestanden. **Die Wand gehört der Modellgröße, nicht der Architektur** — jeder
+Befund dieses Berichts über Auswahl, Vergleich und Urteil ist damit auf diese
+Modellgrößen eingeschränkt.
+
 ## 2. Befund
 
 | Lauf | Policy | Gen. | Energie | Abstains | Akzeptierte Arbeit |
@@ -102,6 +111,8 @@ lässt, weil das Gate über Inhalt nie etwas behauptet hat.
 | 021 | dasselbe, 1.7B | 3 | 12/64 | 0 | **3 von 4** |
 | 023 | **sammeln und vernetzen**, 1.7B | 5 | 19/96 | 0 | **4 von 4 + 6 Kanten, Ziel erreicht** |
 | 024 | dasselbe, 360M | 5 | 20/96 | 0 | 2 von 4, Vernetzen nie erreicht |
+| 025 | dasselbe, `deepseek-flash` | 3 | 10/96 | 0 | **4 von 4 + 6 Kanten, Ziel erreicht** |
+| 026 | dasselbe, mit Denkmodus | 3 | 10/96 | 0 | **4 von 4 + 6 Kanten, Ziel erreicht** |
 
 006 bis 021 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular
@@ -923,8 +934,8 @@ diesem Vergleich ist nichts zu lesen.
 
 ### Wie oft die Messung selbst das Ergebnis war
 
-Diese Session hat acht Zahlen produziert, die bei genauerem Hinsehen etwas
-anderes maßen als behauptet, und alle acht stammen von mir:
+Diese Session hat neun Zahlen produziert, die bei genauerem Hinsehen etwas
+anderes maßen als behauptet, und alle neun stammen von mir:
 
 - Die Einzelmessung des Meta-Reviewers lieferte ein Verdikt, das im vollständigen
   Lauf nie zustande kam — die Ansicht war nicht repräsentativ.
@@ -941,6 +952,9 @@ anderes maßen als behauptet, und alle acht stammen von mir:
   wurden verworfen und angeheftet neu gefahren.
 - Die Stance-Messung ließ im ersten Anlauf die Frage aus dem Kontext weg und traf
   den Lauf nur 4/9. Über den Replay-Pfad rekonstruiert trifft sie ihn 9/9.
+- Der erste Versuch von 026 meldete sechs Enthaltungen des großen Modells. Es
+  waren leere Antworten: `max_tokens` zählt bei DeepSeek den Denk-Verlauf mit,
+  und das Budget reichte nicht bis zum Inhalt.
 - Die Positivkontrolle der Relationsmessung baute zwei angeblich verschiedene
   Paare mit Stringersetzungen, die ins Leere liefen. Beide waren derselbe Text
   und lieferten auf vier Nachkommastellen dieselben Werte — eine arithmetische
@@ -1786,7 +1800,124 @@ genau die Kante, und die fehlt.
 
 [br]: https://github.com/hstre/Budget-Review
 
-## 19. Was offen bleibt
+## 19. Das große Modell
+
+Alle Befunde bis hierher stammen von 135M, 360M und 1.7B. Offen war damit die
+Frage, die der ganze Bericht nicht beantworten konnte: **gehört die Wand dieser
+Architektur oder diesen Modellgrößen?**
+
+025 und 026 fahren dieselbe Aufgabe wie 023 — sammeln und vernetzen, derselbe
+Seed, dasselbe Gate, dieselbe geschlossene Relationsmenge — mit
+`deepseek-flash` als Zelle, einmal ohne und einmal mit Denkmodus.
+
+### Was sich dabei zwangsläufig mitändert
+
+Drei Dinge, jedes mit Folgen für die Lesbarkeit, alle vorab notiert:
+
+**Keine teacher-forced Bewertung.** Die API liefert Log-Wahrscheinlichkeiten nur
+für selbst erzeugte Tokens. Jede Wahl wird deshalb generiert und gegen die
+geschlossene Menge zurückgelesen — genau der Pfad, den der gescorte Pfad
+umgehen sollte. Nennt eine Antwort keine oder mehrere Relationen, ist das eine
+Enthaltung und keine Adapterwahl.
+
+**Keine Determinismus-Garantie.** Lokal decodiert greedy, identischer Prompt
+heißt identische Bytes. Gehostet gilt das bei keiner Temperatur. Also erst die
+Streuungskontrolle: dreimal derselbe Zitier-Prompt und dreimal derselbe
+Relations-Prompt.
+
+| | |
+| --- | --- |
+| Zitat dreimal identisch | ja |
+| Relation dreimal identisch | ja |
+
+Damit ist der Armvergleich lesbar. Das ist kein Determinismus-Beweis, sondern
+eine bestandene Kontrolle an sechs Aufrufen.
+
+**Denkmodus.** Vorgabe an, Effort `high`. Das ist nicht dieselbe Zelle wie
+lokal, also läuft er als eigener Arm und steht im Policy-Namen.
+
+### Die Läufe
+
+| | 023 (1.7B) | 025 (`deepseek-flash`) | 026 (mit Denken) |
+| --- | --- | --- | --- |
+| Zellen | 19 | **10** | **10** |
+| Ablehnungen | 11 | **0** | **0** |
+| gesammelt | 4/4 | 4/4 | 4/4 |
+| Paare entschieden | 6/6 | 6/6 | 6/6 |
+| verwendete Relationsarten | 1 | 2 | **3** |
+
+Zehn Zellen, null Ablehnungen: die vier Einträge entstehen in den ersten vier
+Zellen, die sechs Kanten in den folgenden sechs. Kein Versuch geht verloren.
+Wo 1.7B sechsmal `unrelated` setzt, verwendet 025 zwei und 026 drei
+verschiedene Relationsarten.
+
+### Die Kontrollen, die es entscheiden
+
+Beide Marken standen vorab fest, und beide Arme erfüllen beide.
+
+| | 1.7B | 025 | 026 |
+| --- | ---: | ---: | ---: |
+| Relation übersteht die Permutation der Optionsnamen | **0/6** | **5/6** | **5/6** |
+| Positivkontrolle, vorab festgelegte Marken | 0/2 | **2/2** | **2/2** |
+
+Die Positivkontrolle im Einzelnen — und sie ist die einzige Korrektheitsaussage
+dieses Abschnitts, die nicht auf meinem Urteil beruht, weil „X" gegen „nicht X"
+per Konstruktion ein Widerspruch ist und ein Satz über einen Wasserkessel per
+Konstruktion unverbunden:
+
+| Paar | 1.7B | `deepseek-flash` | vorab verlangt |
+| --- | --- | --- | --- |
+| Aussage gegen sich selbst | `unrelated` | `requires` | — |
+| gegen ihre eigene Verneinung | `unrelated` | **`contradicts`** | `contradicts` |
+| gegen eine verschärfte Fassung | `unrelated` | `refines` | — |
+| gegen einen Satz über einen Wasserkessel | `unrelated` | **`unrelated`** | `unrelated` |
+
+Die beiden unverlangten Zeilen sind keine Marke und trotzdem bemerkenswert: die
+verschärfte Fassung liest `refines`, was genau das Wort für eine Verschärfung
+ist.
+
+**Der Denkmodus ändert nichts.** Beide Arme liegen auf beiden Marken gleichauf.
+Er verschiebt nur die Verteilung — 16 von 18 Durchgängen `unrelated` gegen 10
+von 18 ohne Denken — und kostet auf dem einen instabilen Paar drei verschiedene
+Antworten statt zwei. Für diese Aufgabe ist Deliberation kein Faktor.
+
+### Was das für den Rest des Berichts heißt
+
+**Die Wand gehört der Modellgröße.** Substrat, Gate, Aufgabe und geschlossene
+Relationsmenge sind unverändert; getauscht ist allein die Zelle, und damit
+fallen beide Kontrollen, an denen 1.7B vollständig scheitert. Jeder Befund
+dieses Berichts über Auswahl, Vergleich, Urteil und semantische Verankerung ist
+damit auf **diese Modellgrößen** eingeschränkt und nicht auf die Architektur.
+
+Das war auch die vorab notierte Vorhersage, und sie ist eingetroffen. Sie
+bestätigt zugleich den Aufbau: die stigmergische Maschinerie, das Gate, die
+Buchführung, die Vorregistrierung — alles daran hat unverändert getragen, als
+die Zelle gewechselt wurde. Gescheitert ist nie die Konstruktion, sondern immer
+die Zelle, und das ließ sich erst sagen, als eine Zelle zur Verfügung stand,
+die es nicht tut.
+
+Was damit **nicht** gezeigt ist: dass die sechs Kanten inhaltlich richtig sind.
+Gemessen sind Stabilität und zwei konstruierte Kontrollfälle. Über die echten
+Paare urteile ich weiterhin nicht — dafür bräuchte es eine Grundwahrheit, die
+nicht von mir kommt, und genau das ist der Punkt, an dem DESi und
+budget-review ihre Gold-Korpora einsetzen.
+
+### Zwei Reparaturen, die die Läufe erzwungen haben
+
+**Das Token-Budget.** Bei DeepSeek zählt `max_tokens` den Denk-Verlauf mit. Der
+erste Versuch von 026 gab deshalb sechs Relationen leer zurück, die als
+Enthaltungen im Ledger standen. Das sah aus wie ein Formatversagen des großen
+Modells und war mein Budget. Der Lauf ist verworfen und neu gefahren; eine vor
+dem Inhalt abgeschnittene Antwort ist jetzt ein Fehler und keine stille
+Enthaltung. Der Eintrag steht in der Liste in Abschnitt 13.
+
+**Die Zielbedingung.** 026 galt im ersten Versuch als erreicht, obwohl zwei
+Paare unentschieden waren — die Regel fragte nur, ob noch etwas offen sei.
+Mit eingeschaltetem Vernetzen verlangt sie jetzt, dass jedes Paar entschieden
+ist. Der Auftrag hat zwei Verben; die Bedingung hatte nur eins geprüft.
+
+
+## 20. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -1933,7 +2064,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 20. Nachprüfen
+## 21. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -1974,6 +2105,10 @@ node tools/probe.mjs quote-prompt
 
 # Übersteht die Relationswahl die Permutation der Optionsnamen? Mit Positivkontrolle
 node tools/probe.mjs relation-order
+
+# Dieselbe Kontrolle gegen das große Modell, ohne und mit Denkmodus
+DEEPSEEK_API_KEY=… BACKEND=deepseek node tools/probe.mjs relation-order
+DEEPSEEK_API_KEY=… BACKEND=deepseek THINKING=1 node tools/probe.mjs relation-order
 
 # Spanlänge mit Leerraum-Toleranz und Bruchstellendiagnose
 MODEL=HuggingFaceTB/SmolLM2-1.7B-Instruct \
