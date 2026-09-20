@@ -84,6 +84,19 @@ bestanden. **Die Wand gehört der Modellgröße, nicht der Architektur** — jed
 Befund dieses Berichts über Auswahl, Vergleich und Urteil ist damit auf diese
 Modellgrößen eingeschränkt.
 
+**Zurück am ursprünglichen Ziel (027–030)** trennen sich die Schichten dann
+endgültig. Die Zelle kann es: die drei Reviewer-Rollen differenzieren zum ersten
+Mal — der adversariale Arm widerspricht in 11 von 13 Fragmenten, der
+wohlwollende stimmt in 13 von 13 zu —, alle sechs Beobachtungen werden zitiert,
+und die Vorschläge entwickeln sich über Revisionen. Angenommen wird trotzdem
+nichts, und die Gründe liegen hintereinander in der **Annahmeregel**: erst gibt
+ein einzelner Einwand ein absolutes Veto (15 von 15 Panels tragen einen), dann —
+nachdem Abschneiden als Gegenerklärung widerlegt ist und der Einwand an dieselbe
+Beweislast gehalten wird — verlangt die Regel zwei *verschiedene* stützende
+Beobachtungen, während alle drei Arme dieselbe Prämisse für einschlägig halten
+und sich nur über ihre Folgen streiten. **Das Panel müsste sich über die
+Relevanz uneinig sein, um etwas annehmen zu können.**
+
 ## 2. Befund
 
 | Lauf | Policy | Gen. | Energie | Abstains | Akzeptierte Arbeit |
@@ -113,6 +126,10 @@ Modellgrößen eingeschränkt.
 | 024 | dasselbe, 360M | 5 | 20/96 | 0 | 2 von 4, Vernetzen nie erreicht |
 | 025 | dasselbe, `deepseek-flash` | 3 | 10/96 | 0 | **4 von 4 + 6 Kanten, Ziel erreicht** |
 | 026 | dasselbe, mit Denkmodus | 3 | 10/96 | 0 | **4 von 4 + 6 Kanten, Ziel erreicht** |
+| 027 | **ursprüngliches Ziel**, wie 012, `deepseek-flash` | 16 | 64/64 | 0 | keine, 16× PANEL_REVISE |
+| 028 | wie 027, Textgrenze 3000 | 16 | 64/64 | 0 | keine, Abschneiden widerlegt |
+| 029 | Kontrollarm, Annahme per Verdikt | 16 | 64/64 | 0 | keine, 12 Meta-Reviews alle REVISE |
+| 030 | wie 028, Einwand an derselben Beweislast | 16 | 64/64 | 0 | keine, 13× PANEL_REJECT |
 
 006 bis 021 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular
@@ -1917,7 +1934,160 @@ Mit eingeschaltetem Vernetzen verlangt sie jetzt, dass jedes Paar entschieden
 ist. Der Auftrag hat zwei Verben; die Bedingung hatte nur eins geprüft.
 
 
-## 20. Was offen bleibt
+## 20. Das ursprüngliche Ziel, mit einer fähigen Zelle
+
+Zurück zu dem Ziel, an dem sechzehn Läufe gescheitert sind. Konfiguration
+**identisch zu 012** — Zitat-Annahme, `required_support: 2`, blindes Panel,
+dieselben sechs deutschen Prämissen, Budget 64 — getauscht ist allein die Zelle.
+029 ist der Kontrollarm mit der Verdikt-Annahme aus 010.
+
+Vier Läufe, jeder über das volle Budget, **keiner mit einer einzigen Annahme**.
+Aber die Gründe sind jedes Mal andere, sie liegen hintereinander, und zwei davon
+sind Entwurfsfehler, die erst eine fähige Zelle sichtbar machen konnte.
+
+### Was zuerst gelingt: die Differenzierung
+
+Die Marke war, dass im ersten vollständigen Panel **≥ 2 verschiedene**
+Beobachtungen zitiert werden. Erfüllt, und deutlich: es sind drei, mit drei
+verschiedenen Texten und drei verschiedenen Stances. Über den ganzen Lauf werden
+alle sechs Beobachtungen zitiert.
+
+| | 012 (1.7B) | 027 (`deepseek-flash`) |
+| --- | --- | --- |
+| verschiedene Beobachtungen im ersten Panel | 1 | **3** |
+| über den Lauf zitierte Beobachtungen | 1 von 6 | **6 von 6** |
+| Fragmenttexte im Panel identisch | ja | nein |
+
+Und die Rollen trennen sich zum ersten Mal in diesem Projekt sauber. In 030:
+
+| Perspektive | widerspricht | stimmt zu |
+| --- | ---: | ---: |
+| adversarial | 11 | 2 |
+| charitable | 0 | 13 |
+| coherence | 3 | 9 |
+
+Der Befund aus 007 — drei Reviewer-Phänotypen, byteidentische Ausgaben — ist
+damit beantwortet: die Phänotypen sind über Prompts definierbar, sobald die
+Zelle Prompts befolgen kann.
+
+### Erste Blockade: ein Einwand ist ein Veto
+
+027 endet in sechzehnmal PANEL_REVISE, 64 Zellen, nichts angenommen. Der
+Kontrollarm 029 kommt über einen ganz anderen Weg zum selben Ergebnis: zwölf
+Meta-Reviews, **alle zwölf REVISE** — auch solche, deren Begründung mit Lob
+beginnt („The proposal advances the debate by…").
+
+Der Mechanismus unter der Zitat-Annahme: `citationVerdict` gibt einem einzigen
+`contradicts` ein absolutes Veto. **15 von 15 vollständigen Panels in 028 tragen
+eines.** Der adversariale Arm hat die stehende Anweisung, den stärksten Einwand
+zu finden, und er findet ihn.
+
+Die Regel ist dabei asymmetrisch: Zustimmung muss `required_support`
+verschiedene, unabhängig zitierte Beobachtungen aufbringen, ein Einwand genau
+eine. Das ist die Form, die DESi gemessen hat — eine Schicht mit Vetorecht
+machte in achtzig Urteilen **0 Reparaturen und 6 Schäden**. Dort war es eine
+Regel über dem Modell, hier eine Zelle im Panel.
+
+### Die Gegenerklärung, und wie sie ausgeschlossen wurde
+
+Zwölf der dreizehn Vorschläge in 029 sind 1199 bis 1200 Zeichen lang: sie stoßen
+an `max_text_chars`. Die Reviewer beurteilten also abgeschnittenen Text, und
+REVISE wäre dann schlicht richtig gewesen. Die Grenze stammt aus der
+Konfiguration von 012 und war für eine 360M-Zelle bemessen; dass sie hier bindet,
+war mein Versäumnis.
+
+028 ändert **nur diese eine Zahl** auf 3000.
+
+| Marke | Ergebnis |
+| --- | --- |
+| kein Vorschlag erreicht die neue Grenze | **erfüllt** — 0 von 16, längster 1992 |
+| ≥ 1 akzeptierter Vorschlag | **verfehlt** — weiterhin 0 |
+
+**Abschneiden ist widerlegt.** Die Vorschläge sind vollständig, und das Veto
+steht als Ursache fest statt als Vermutung.
+
+### Zweite Blockade: zwei verschiedene Belege
+
+030 hält den Einwand an dieselbe Beweislast wie die Zustimmung — gezählt wird,
+auf wie viele verschiedene Beobachtungen er sich stützt. Ein Reviewer, der eine
+Prämisse nennt, ist damit eine Anmerkung; zwei verschiedene Prämissen sind eine
+Zurückweisung.
+
+Das wirkt: die Schleife ist weg, jedes Panel löst sich auf. Aus sechzehn
+REVISE werden dreizehn **REJECT** — und angenommen wird weiterhin nichts.
+
+Die Buchführung sagt, warum:
+
+| stützende Arme | unabhängige Belege | Overlap | Panels |
+| ---: | ---: | ---: | ---: |
+| 1 | 1 | 0 | 4 |
+| 2 | 1 | 1 | 7 |
+| 3 | 1 | 2 | 2 |
+
+**In allen dreizehn Panels ist `independent_support` genau 1**, auch dort, wo
+drei Arme stützen. Die stützenden Arme zitieren dieselbe Beobachtung, und
+`required_support: 2` verlangt zwei verschiedene.
+
+Ein repräsentatives Panel:
+
+```text
+Vorschlag: LLMs sollten primär epistemische und prozedurale Schutzansprüche
+           haben: kenntliche Herkunft, Kontextintegrität, …
+
+adversarial  CONTRADICTS  observation-04
+charitable   SUPPORTS     observation-04
+coherence    SUPPORTS     observation-04
+```
+
+Alle drei Arme halten dieselbe Prämisse für einschlägig und sind sich uneins
+darüber, was aus ihr folgt. Das ist genau das, wofür ein Review-Panel da ist —
+und die Regel bewertet es als einen einzigen Beleg.
+
+### Was das über den Aufbau sagt
+
+Die Blockade ist echt und sie ist kein Fehler im engeren Sinn. Die Regel zählt
+**verschiedene Beobachtungen** und nicht Stimmen, weil die zweite Seed-Prämisse
+das verlangt: eine Mehrheit korrelierter Instanzen ist kein Beleg. Die Arme in
+030 sind blind, ihre Übereinstimmung ist also echte Konvergenz und keine
+Abschrift — die Buchführung protokolliert sie korrekt als `overlap` mit
+`independent: true`.
+
+Nur folgt daraus eine Bedingung, die niemand entworfen hat: **das Panel muss sich
+darüber uneinig sein, welche Prämisse einschlägig ist, um etwas annehmen zu
+können.** Bei sechs Beobachtungen, drei Armen und einem geforderten Beleg von
+zwei ist Einigkeit über die Relevanz gleichbedeutend mit Ablehnung.
+
+Damit stehen drei Ergebnisse nebeneinander, und sie gehören verschiedenen
+Schichten an:
+
+* **Die Zelle** kann es. Rollen differenzieren, Beobachtungen werden inhaltlich
+  gewählt, Vorschläge entwickeln sich über Revisionen hinweg.
+* **Die Maschinerie** trägt. 64 Zellen, vollständige Rekrutierungsketten, jeder
+  Lauf replay-stabil, die Anti-Delphi-Buchführung liefert in jedem Panel eine
+  lesbare Bilanz.
+* **Die Annahmeregel** trägt nicht. Erst als Veto, das jede Annahme verhindert,
+  dann als Beweislast, die Einigkeit bestraft.
+
+Was dieser Abschnitt ausdrücklich **nicht** sagt: ob die erzeugte Philosophie gut
+ist. Das Gate zählt Belege und behauptet über Qualität nichts, und ich urteile
+über den erzeugten Inhalt nicht — in dieser Frage bin ich Partei.
+
+### Die offene Entscheidung
+
+`required_support: 1` würde den Zyklus mit hoher Wahrscheinlichkeit schließen:
+Annahme, vier Vorschläge, Synthese, Ziel erreicht. Es gäbe aber genau die
+Prämisse preis, um derentwillen die Regel so gebaut wurde. Das ist eine
+Entwurfsentscheidung und keine Feinjustierung, und sie steht hier offen, statt
+im Vorbeigehen getroffen zu werden.
+
+Ein dritter Weg wäre, Zustimmung nicht an **verschiedenen** Beobachtungen zu
+messen, sondern an verschiedenen **blinden Armen** auf derselben Beobachtung —
+genau die Unterscheidung, die die Buchführung seit Abschnitt 14 mitführt, ohne
+sie bisher auszuwerten. Sie wäre der Prämisse treu und würde Konvergenz nicht
+bestrafen. Gemessen ist sie nicht.
+
+
+## 21. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -2064,7 +2234,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 21. Nachprüfen
+## 22. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
