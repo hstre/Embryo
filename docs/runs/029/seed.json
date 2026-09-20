@@ -1,5 +1,5 @@
 {
-  "embryo_id": "human-llm-society-028",
+  "embryo_id": "human-llm-society-029",
   "goal": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
   "observations": [
     {
@@ -39,10 +39,9 @@
     "max_cells_per_generation": 4,
     "max_generations": 16,
     "energy_budget": 64,
-    "max_text_chars": 3000,
+    "max_text_chars": 1200,
     "local_context_limit": 6,
-    "acceptance_mode": "citation",
-    "required_support": 2,
-    "panel_independence": "blind"
+    "acceptance_mode": "verdict",
+    "required_support": 2
   }
 }
