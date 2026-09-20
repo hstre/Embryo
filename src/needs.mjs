@@ -1,5 +1,5 @@
 import { digest } from "./canonical.mjs";
-import { acceptanceMode, panelIndependence, relateEnabled, requiredSupport } from "./schema.mjs";
+import { acceptanceMode, panelIndependence, relateEnabled, requiredSupport, symmetricContradiction } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 const PRIORITY = Object.freeze({ REVIEW_FRAGMENT: 40, META_REVIEW: 35, PROPOSE: 30, RELATE: 25, SYNTHESIZE: 20, QUESTION: 10 });
@@ -199,7 +199,18 @@ export function supportLedger(state, target) {
 // whichever cell happened to run last.
 export function citationVerdict(state, target) {
   const fragments = reviewFragments(state, target.id);
-  if (fragments.some((fragment) => fragment.stance === "contradicts")) return "REVISE";
+  if (symmetricContradiction(state)) {
+    // An objection is counted the way support is: by the distinct observations
+    // it rests on. One reviewer naming one premise is a note, not a veto.
+    const against = new Set();
+    for (const fragment of fragments) {
+      if (fragment.stance !== "contradicts") continue;
+      for (const id of citedObservations(state, fragment.id)) against.add(id);
+    }
+    if (against.size >= requiredSupport(state)) return "REVISE";
+  } else if (fragments.some((fragment) => fragment.stance === "contradicts")) {
+    return "REVISE";
+  }
   if (panelIndependence(state) === "sighted") {
     const supporting = new Set();
     for (const fragment of fragments) {

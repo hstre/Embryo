@@ -30,7 +30,7 @@ const ACCEPTANCE_MODES = new Set(["verdict", "citation", "anchor"]);
 // keep their hashes. "logged" keeps the arms sighted but makes the gate account
 // for what each could have read; "blind" additionally withholds the siblings.
 const PANEL_INDEPENDENCE = new Set(["sighted", "logged", "blind"]);
-const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping", "relate"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping", "relate", "symmetric_contradiction"]);
 const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
@@ -64,6 +64,9 @@ function validateOptionalConfig(config) {
   }
   if (Object.hasOwn(config, "tolerate_wrapping")) {
     invariant(typeof config.tolerate_wrapping === "boolean", "config.tolerate_wrapping must be a boolean");
+  }
+  if (Object.hasOwn(config, "symmetric_contradiction")) {
+    invariant(typeof config.symmetric_contradiction === "boolean", "config.symmetric_contradiction must be a boolean");
   }
   if (Object.hasOwn(config, "relate")) {
     invariant(typeof config.relate === "boolean", "config.relate must be a boolean");
@@ -119,6 +122,16 @@ export function tolerateWrapping(state) {
 
 // Whether the second stage runs at all. Off by default, so runs 016 to 021 —
 // which collected and never connected — keep deriving exactly the needs they did.
+// Whether an objection has to meet the same bar as support. The old rule gives
+// a single contradicting fragment an absolute veto while support needs
+// required_support distinct independent observations, and runs 027 to 029 show
+// what that costs once a capable adversarial reviewer does its job: fifteen of
+// fifteen complete panels carried an objection and nothing was ever accepted.
+// Default false, so those runs keep their receipts.
+export function symmetricContradiction(state) {
+  return state.config.symmetric_contradiction ?? false;
+}
+
 export function relateEnabled(state) {
   return state.config.relate ?? false;
 }

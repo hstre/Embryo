@@ -913,3 +913,29 @@ test("a full register plus every pair decided closes the goal", async () => {
   assert.equal(state.nodes.find((node) => node.kind === "goal").status, "accepted");
   assert.equal(canGrow(state), false);
 });
+
+test("a symmetric bar turns a lone objection from a veto into a note", async () => {
+  const plan = (view) => ({
+    observation_ids: [view.observations[PANEL.indexOf(view.perspective)].id],
+    stance: view.perspective === "adversarial" ? "contradicts" : "supports",
+  });
+  // The old rule: one contradicting reviewer sends the work back whatever the
+  // other two found. Runs 027 to 029 hit this in fifteen of fifteen panels.
+  const veto = await groundedState({ panel_independence: "blind" });
+  addQuestion(veto);
+  addProposal(veto);
+  assert.equal(citeReviewPanel(veto, plan).at(-1).code, "PANEL_REVISE");
+
+  const symmetric = await groundedState({ panel_independence: "blind", symmetric_contradiction: true });
+  addQuestion(symmetric);
+  addProposal(symmetric);
+  const results = citeReviewPanel(symmetric, plan);
+  assert.equal(results.at(-1).code, "PANEL_ACCEPT");
+  assert.equal(results.at(-1).support_ledger.contradictions.length, 1);
+
+  // Two objections on two observations still send it back.
+  const both = await groundedState({ panel_independence: "blind", symmetric_contradiction: true });
+  addQuestion(both);
+  addProposal(both);
+  assert.equal(citeReviewPanel(both, (view) => ({ ...plan(view), stance: view.perspective === "coherence" ? "supports" : "contradicts" })).at(-1).code, "PANEL_REVISE");
+});
