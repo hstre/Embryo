@@ -21,12 +21,28 @@
 // And thinking mode is on by default at effort "high". That is not the same
 // cell the local runs used, so the mode is part of the policy name and both
 // settings are run.
+import { citationFrom } from "./smollm.mjs";
+
 const BASE_URL = "https://api.deepseek.com/chat/completions";
 const DEFAULT_MODEL = "deepseek-flash";
 const RELATIONS = ["requires", "refines", "contradicts", "unrelated"];
+const VERDICTS = ["ACCEPT", "REVISE", "REJECT"];
+const FALLBACK_MAX_TEXT_CHARS = 1200;
 
 function bullets(items) {
   return items.map((item) => `- ${item.text}`);
+}
+
+function clean(text, max) {
+  return text.trim().replace(/^```(?:json|text)?\s*/i, "").replace(/```\s*$/, "").slice(0, max).trim();
+}
+
+// Mirrors SmolLmPolicy's directive word for word: the state of the gradient has
+// to enter the prompt, because a cell keeps no memory of the attempt before it.
+function retryDirective(attempts) {
+  if (attempts <= 0) return [];
+  if (attempts === 1) return ["This need carries one rejected attempt. Take a different approach and keep to the required format."];
+  return ["This need carries two rejected attempts. Give the shortest answer that still keeps the required format."];
 }
 
 export class DeepSeekPolicy {
@@ -86,6 +102,13 @@ export class DeepSeekPolicy {
   // Only a relation the model actually named counts. Experiment 001 recorded a
   // citation the adapter had chosen while the model said something else; reading
   // the answer rather than assuming it is what keeps that from recurring.
+  // Same discipline as the citation: the verdict has to be one the model wrote.
+  static verdictFrom(text) {
+    const upper = text.toUpperCase();
+    const found = VERDICTS.filter((verdict) => new RegExp(`\\b${verdict}`).test(upper));
+    return found.length === 1 ? found[0] : null;
+  }
+
   static relationFrom(text) {
     const lower = text.toLowerCase();
     const found = RELATIONS.filter((relation) => new RegExp(`\\b${relation}\\b`).test(lower));
@@ -122,6 +145,137 @@ export class DeepSeekPolicy {
           ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text: answer } }
           : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty quote" } },
         trace: { raw_output: answer },
+      };
+    }
+
+    // --- the original goal's roles, worded as SmolLmPolicy words them ---
+    const maxChars = view.max_text_chars ?? FALLBACK_MAX_TEXT_CHARS;
+    const retry = retryDirective(need.attempts ?? 0);
+    const budget = (plain) => (this.thinking ? 16384 : plain);
+    const ask = async (system, lines, plain) =>
+      clean(await this.chat([
+        { role: "system", content: [system, ...retry].join("\n") },
+        { role: "user", content: lines.join("\n") },
+      ], budget(plain)), maxChars);
+
+    if (need.kind === "QUESTION") {
+      const text = await ask(
+        "You are the questioning cell. Do not answer the goal.\nAsk one concise new question whose answer could advance the goal.\nOutput only that question, in the language of the goal.",
+        [
+          `Goal: ${view.goal.text}`,
+          ...(view.accepted_proposals.length ? ["Accepted work:", ...bullets(view.accepted_proposals)] : []),
+          ...(view.negative_traces.length ? ["Failed paths; ask something different:", ...bullets(view.negative_traces)] : []),
+        ],
+        256,
+      );
+      return {
+        action: text
+          ? { type: "ADD_QUESTION", need_id: need.id, payload: { text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty question" } },
+        trace: { raw_output: text },
+      };
+    }
+
+    if (need.kind === "PROPOSE") {
+      const text = await ask(
+        "You are the proposing cell. Answer the question with one concise philosophical proposal.\nOutput only the proposal, in the language of the goal.",
+        [
+          `Goal: ${view.goal.text}`,
+          `Question: ${view.question?.text ?? view.target.text}`,
+          ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
+          ...(view.accepted_proposals.length ? ["Already accepted:", ...bullets(view.accepted_proposals)] : []),
+          ...(view.negative_traces.length ? ["Failed paths; do not repeat:", ...bullets(view.negative_traces)] : []),
+        ],
+        512,
+      );
+      return {
+        action: text
+          ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty proposal" } },
+        trace: { raw_output: text },
+      };
+    }
+
+    if (need.kind === "REVIEW_FRAGMENT") {
+      const instruction = view.perspective === "adversarial"
+        ? "Find the strongest concrete objection or unanswered issue."
+        : view.perspective === "charitable"
+          ? "Identify the strongest contribution and the one improvement it most needs."
+          : "Compare it with accepted work and identify contradiction, repetition, or a missing connection.";
+      const citing = view.acceptance_mode === "citation" && Boolean(view.observations?.length);
+      const text = await ask(
+        [
+          `You are the ${view.perspective} reviewer in a three-reviewer collective.`,
+          instruction,
+          ...(citing
+            ? [
+                "Name exactly one observation id from the list and write either SUPPORTS or CONTRADICTS.",
+                "Then give one short sentence. Do not invent an id that is not in the list.",
+                "Format: <observation-id> SUPPORTS|CONTRADICTS — <one sentence>",
+              ]
+            : ["Do not give a verdict. Leave one concise review note in the language of the goal."]),
+        ].join("\n"),
+        [
+          `Goal: ${view.goal.text}`,
+          ...(view.question ? [`Question: ${view.question.text}`] : []),
+          `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+          ...(citing ? ["Observations in the environment:", ...view.observations.map((o) => `- ${o.id}: ${o.text}`)] : []),
+          ...(view.accepted_proposals.length ? ["Previously accepted work:", ...bullets(view.accepted_proposals)] : []),
+          ...(view.negative_traces.length ? ["Earlier failed paths:", ...bullets(view.negative_traces)] : []),
+        ],
+        320,
+      );
+      if (!text) return { action: { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty review fragment" } }, trace: { raw_output: text } };
+      if (!citing) {
+        return { action: { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text } }, trace: { raw_output: text } };
+      }
+      const citation = citationFrom(text, view.observations);
+      return {
+        action: citation
+          ? { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text, ...citation } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "review named no observation from the environment" } },
+        trace: { raw_output: text, citation },
+      };
+    }
+
+    if (need.kind === "META_REVIEW") {
+      const text = await ask(
+        "You are the meta-reviewer. Judge the work after reading all independent review notes.\nAnswer with exactly one of ACCEPT, REVISE or REJECT, then give one concise reason.",
+        [
+          `Goal: ${view.goal.text}`,
+          ...(view.question ? [`Question: ${view.question.text}`] : []),
+          `${view.target.kind === "synthesis" ? "Synthesis" : "Proposal"}: ${view.target.text}`,
+          "Review collective:",
+          ...view.review_fragments.map((fragment) => `- ${fragment.perspective}: ${fragment.text}`),
+        ],
+        320,
+      );
+      const verdict = DeepSeekPolicy.verdictFrom(text);
+      if (!verdict) return { action: { type: "ABSTAIN", need_id: need.id, payload: { reason: "answer named no single verdict" } }, trace: { raw_output: text } };
+      // The verdict is structured data already; repeating the label inside the
+      // recorded text made a proposing cell copy it into its revision.
+      const reason = clean(text.replace(new RegExp(`^[^A-Za-z]*${verdict}[:\\s—-]*`, "i"), ""), maxChars) || verdict;
+      return {
+        action: { type: "META_REVIEW", need_id: need.id, payload: { target_id: view.target.id, verdict, text: reason } },
+        trace: { raw_output: text, verdict },
+      };
+    }
+
+    if (need.kind === "SYNTHESIZE") {
+      const text = await ask(
+        "You are the proposing cell. Form a concise coherent philosophy that answers the goal.\nUse the accepted work below. Output only the philosophy, in the language of the goal.",
+        [
+          `Goal: ${view.goal.text}`,
+          ...bullets(view.accepted_proposals),
+          ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
+        ],
+        900,
+      );
+      return {
+        action: text
+          ? { type: "ADD_SYNTHESIS", need_id: need.id, payload: { text, proposal_ids: view.accepted_proposals.map((proposal) => proposal.id) } }
+          : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty synthesis" } },
+        trace: { raw_output: text },
       };
     }
 

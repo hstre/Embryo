@@ -32,7 +32,10 @@ function tokenLogProb(logits, position, tokenId) {
 // The cited id has to be found in what the model actually wrote. Experiment 001
 // recorded a citation the adapter had chosen while the model named a different
 // observation; parsing from the raw output is what keeps that from recurring.
-function citationFrom(text, observations) {
+// Exported so the hosted policy admits a citation by exactly the same rule: the
+// id has to occur literally in what the model wrote. Two policies with two
+// parsers would make a cell comparison a parser comparison.
+export function citationFrom(text, observations) {
   const upper = text.toUpperCase();
   const stance = /\bCONTRADICT/.test(upper) ? "contradicts" : /\bSUPPORT/.test(upper) ? "supports" : null;
   const observationIds = observations.map((observation) => observation.id).filter((id) => text.includes(id));
