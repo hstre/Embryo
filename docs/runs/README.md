@@ -34,6 +34,7 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `031` | wie 030, Zustimmung an blinden Armen gezählt | 32 | 32/64 | **4 + Synthese, Ziel erreicht** |
 | `032` | wie 031, Textgrenze 9000 | 40 | 40/64 | **4 + Synthese**, Synthese am Token-Budget abgeschnitten |
 | `033` | wie 032, Abschneiden im Receipt sichtbar, Budgets erhöht | 28 | 28/64 | **4 + Synthese, vollständig** |
+| `034` | kein Lauf: das Gewebe aus 033 gegen eine einzelne Zelle | — | — | siehe `034/ergebnis.md` |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
@@ -120,7 +121,14 @@ dieses Projekts, der das ursprüngliche Ziel erreicht.** 033 ist derselbe Lauf
 ohne jede Abschneidung: `docs/runs/033/synthese.md` enthält das vollständige
 Erzeugnis, und kein Receipt trägt `finish_reason: "length"`.
 
-Jeder Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
+034 ist kein Lauf, sondern der Vergleich, den das Projekt nie gezogen hat: die
+akzeptierte Synthese aus 033 gegen eine einzelne Zelle mit demselben Ziel, denselben
+sechs Prämissen und einem Aufruf. Auf der Schicht, die am wenigsten urteilt —
+berührte Prämissen —, ist der Unterschied null; auf der urteilenden geht er neun
+von neun tauschstabilen Vergleichen an das Gewebe, mit ausgeschriebenem
+Interessenkonflikt. Der Ordner enthält den Text der Einzelzelle und das Ergebnis.
+
+Jeder Lauf-Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
 Beide sind gegen den Code dieses Branches replay-stabil:
 
 ```bash
