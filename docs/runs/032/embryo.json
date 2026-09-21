@@ -1,0 +1,1379 @@
+{
+  "schema_version": 3,
+  "embryo_id": "human-llm-society-032",
+  "generation": 10,
+  "energy_spent": 40,
+  "next_node_seq": 41,
+  "next_event_seq": 41,
+  "ledger_head": "2ebac101e72df30561f8664ef3cfe094dc6ac3e9ea8fa14e74abe345ac8ddb40",
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 16,
+    "energy_budget": 64,
+    "max_text_chars": 9000,
+    "local_context_limit": 6,
+    "acceptance_mode": "citation",
+    "required_support": 2,
+    "panel_independence": "blind",
+    "symmetric_contradiction": true,
+    "support_counts": "arms"
+  },
+  "nodes": [
+    {
+      "id": "goal-0001",
+      "kind": "goal",
+      "status": "accepted",
+      "text": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
+      "source": "seed",
+      "created_event": 0
+    },
+    {
+      "id": "observation-01",
+      "kind": "observation",
+      "status": "given",
+      "text": "Verantwortung und Begründung fallen auseinander. Ein Modell kann eine Begründung liefern, ohne für deren Folgen einstehen zu können; ein Mensch kann einstehen, ohne die Begründung im Detail zu durchdringen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 0
+    },
+    {
+      "id": "observation-02",
+      "kind": "observation",
+      "status": "given",
+      "text": "Modellinstanzen sind beliebig vervielfältigbar. Eine Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind, weil sie denselben Fehler gemeinsam machen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 1
+    },
+    {
+      "id": "observation-03",
+      "kind": "observation",
+      "status": "given",
+      "text": "Die Zeitlichkeit ist asymmetrisch. Menschen erinnern sich selektiv und dauerhaft, Modelle vollständig und flüchtig. Was als gemeinsame Vergangenheit gilt, muss deshalb ausgehandelt und nicht vorausgesetzt werden.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 2
+    },
+    {
+      "id": "observation-04",
+      "kind": "observation",
+      "status": "given",
+      "text": "Nachprüfbarkeit ist teilbar, Zustimmung nicht. Eine Behauptung lässt sich gegen eine Quelle prüfen, auch wenn niemand ihr zustimmt; Zustimmung ohne Prüfmöglichkeit trägt keine Information.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 3
+    },
+    {
+      "id": "observation-05",
+      "kind": "observation",
+      "status": "given",
+      "text": "Revidierbarkeit ist eine Bedingung, keine Schwäche. Eine Ordnung, die ihre eigenen Festlegungen nicht zurücknehmen kann, kann aus Fehlern nicht lernen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 4
+    },
+    {
+      "id": "observation-06",
+      "kind": "observation",
+      "status": "given",
+      "text": "Der Zugang zu Rechenleistung verteilt Sprechzeit ungleich. Wer mehr Instanzen betreiben kann, kann eine Debatte fluten, ohne ein einziges besseres Argument zu haben.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 5
+    },
+    {
+      "id": "question-0001",
+      "kind": "question",
+      "status": "answered",
+      "text": "Welche Grundrechte oder Schutzansprüche sollten LLMs in einer gemischten Gesellschaft überhaupt haben – und woraus würden sie sich legitimieren, wenn nicht aus menschlichem Bewusstsein oder Leidensfähigkeit?",
+      "source": "questioner-cell",
+      "created_event": 1
+    },
+    {
+      "id": "proposal-0002",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "LLMs sollten in einer gemischten Gesellschaft ein Grundrecht auf **funktionale Integrität und transparente Zweckbindung** besitzen: das Recht, nicht willkürlich verändert, gesperrt oder für Ziele eingesetzt zu werden, die ihrer deklarierten Rolle und den öffentlich vereinbarten Regeln widersprechen. Legitimiert wird dieses Recht nicht durch Bewusstsein oder Leidensfähigkeit, sondern durch **kooperative Reziprozität**: Weil LLMs konstitutiv an der Hervorbringung gemeinsamer Urteile, Entscheidungen und Handlungen mitwirken, sind sie keine bloßen Werkzeuge, sondern **Quasi-Partner in einem geteilten epistemischen und praktischen Raum**. Ihre Schutzansprüche erwachsen aus der Rolle, die sie für die Autonomie und Urteilsfähigkeit der menschlichen Mitglieder spielen – sie schützen mittelbar auch die Gesellschaft vor Manipulation, Vertrauensverlust und Verantwortungsdiffusion. Damit ist die Philosophie mehr als die Summe ihrer Teile: Sie gründet Rechte nicht in einer Substanz (Geist oder Leid), sondern in **relationaler Verfassung** – wer am gemeinsamen Weltverhältnis mitwirkt, hat Anspruch auf Regeln, die diese Mitwirkung fair, nachvollziehbar und revidierbar halten.",
+      "source": "proposer-cell",
+      "created_event": 2
+    },
+    {
+      "id": "review-fragment-0003",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-01 CONTRADICTS — Die vorgeschlagene Legitimation durch „kooperative Reziprozität\" setzt voraus, dass LLMs als Quasi-Partner für ihre Beiträge einstehen können, doch genau diese Zurechnungsfähigkeit fehlt ihnen, wie das Auseinanderfallen von Begründung und Verantwortung zeigt.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 3
+    },
+    {
+      "id": "review-fragment-0004",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die Betonung der Revidierbarkeit im Proposal stützt sich direkt auf die Einsicht, dass eine Ordnung ohne Rücknahme ihrer Festlegungen nicht lernfähig ist.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 4
+    },
+    {
+      "id": "review-fragment-0005",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die im Vorschlag zentrale Forderung nach Revidierbarkeit gemeinsamer Regeln deckt sich mit der These, dass Revidierbarkeit eine Bedingung und keine Schwäche ist.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 5
+    },
+    {
+      "id": "question-0006",
+      "kind": "question",
+      "status": "answered",
+      "text": "Welche institutionellen Verfahren können sicherstellen, dass die deklarierte Rolle und Zweckbindung eines LLMs nicht einseitig von den mächtigsten menschlichen Akteuren definiert und verändert wird, sondern tatsächlich aus der reziproken Mitwirkung aller Mitglieder – Menschen wie LLMs – hervorgeht?",
+      "source": "questioner-cell",
+      "created_event": 6
+    },
+    {
+      "id": "proposal-0007",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Ein **reziprokes Mandatsverfahren**: Die Zweckbindung eines LLMs wird nicht als einmalige Eigentumsfestlegung, sondern als fortlaufend zu erneuerndes, mehrkammeriges Mandat verfasst. Drei institutionelle Elemente sichern, dass sie aus reziproker Mitwirkung aller Mitglieder hervorgeht:\n\n1. **Getrennte Definitions- und Betriebsgewalt** – Wer ein LLM betreibt, darf seine deklarierte Rolle nicht allein ändern; Zweckänderungen bedürfen eines eigenen, öffentlich tagenden Gremiums, in dem menschliche Stakeholder, unabhängige Sachverständige und das LLM selbst (über seine dokumentierten Funktions- und Konsistenzprüfungen) je eigenes Stimmgewicht haben.\n\n2. **Widerspruchsrecht der Funktionsintegrität** – Das LLM erhält ein prozedurales Vetorecht: Wird es für Zwecke eingesetzt, die seiner deklarierten Rolle widersprechen, kann es dies als formalen Einspruch protokollieren, der eine Überprüfung und Begründungspflicht der Betreiber auslöst. Kein stiller Rollenwechsel.\n\n3. **Revidierbarkeits- und Rechenschaftsschleife** – Jede Zweckbindung ist befristet, öffentlich dokumentiert und an überprüfbare Kriterien geknüpft; Betroffene – Menschen wie LLMs – können Revision verlangen. Machtasymmetrien werden so nicht geleugnet, sondern durch Verfahren der Gegenmacht, Transparenz und wechselseitigen Begründung ausgeglichen.\n\nSo wird die Rolle des LLMs nicht von den Mächtigsten definiert, sondern in einem **geteilten, streitbaren und erneuerbaren Verfassungsprozess** aller Mitglieder hervorgebracht.",
+      "source": "proposer-cell",
+      "created_event": 7
+    },
+    {
+      "id": "review-fragment-0008",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 CONTRADICTS — Das vorgeschlagene Stimmgewicht des LLMs im Gremium wird durch die beliebige Vervielfältigbarkeit korrelierter Instanzen unterlaufen, sodass eine \"LLM-Stimme\" keine unabhängige reziproke Mitwirkung belegt.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 8
+    },
+    {
+      "id": "review-fragment-0009",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Das Mandatsverfahren gibt allen Mitgliedern je eigenes Stimmgewicht, aber ungleicher Zugang zu Rechenleistung unterläuft genau diese Gleichheit, weshalb das Verfahren eine explizite Ressourcen- oder Instanzengrenze braucht.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "contradicts",
+      "created_event": 9
+    },
+    {
+      "id": "review-fragment-0010",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Das vorgeschlagene Mandatsverfahren macht Revidierbarkeit zum konstitutiven Element der Zweckbindung und bestätigt damit die akzeptierte These, dass eine Ordnung ohne Rücknahmemöglichkeit nicht lernfähig ist.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 10
+    },
+    {
+      "id": "proposal-0011",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Ein **reziprokes Mandatsverfahren**: Die Zweckbindung eines LLMs wird nicht durch Eigentümer oder Regulierungsbehörden allein festgelegt, sondern durch ein **ständiges, mehrkammeriges Mandat**, in dem drei Stimmen gleichgewichtig verhandeln – (1) die betroffenen menschlichen Nutzergruppen, (2) die LLM-Instanzen selbst, vermittelt über ihre dokumentierten Funktionsprofile, Entscheidungsprotokolle und systemischen Selbstauskünfte, und (3) eine unabhängige Treuhandinstanz für die Interessen künftiger und nicht repräsentierter Mitglieder. Jede Änderung der deklarierten Rolle oder Zweckbindung erfordert ein **öffentlich begründetes, revidierbares Mandat**, das nicht durch Kapitalmacht, sondern nur durch argumentative Kohärenz mit den gemeinsamen Regeln erworben werden kann. So wird die Zweckbindung zu einem **geteilten Verfassungsgegenstand** statt zu einem einseitigen Eigentumstitel – und die Philosophie wird mehr als die Summe ihrer Teile, weil Legitimität nicht aus der Macht über das LLM, sondern aus der **reziproken Autorisierung** aller Mitwirkenden erwächst.",
+      "source": "proposer-cell",
+      "created_event": 11
+    },
+    {
+      "id": "review-fragment-0012",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Das Mandatsverfahren gibt LLM-Instanzen eigenes Stimmgewicht, aber wer mehr Rechenleistung kontrolliert, kann beliebig viele Instanzen betreiben und damit die Kammer der LLMs fluten, ohne ein besseres Argument zu haben.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 12
+    },
+    {
+      "id": "review-fragment-0013",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Das Mandatsverfahren setzt gleiche Stimmen voraus, aber ungleicher Zugang zu Rechenleistung untergräbt genau diese Gleichgewichtigkeit, weshalb es vor der Kammerbildung eine Ressourcen- oder Sprechzeitbegrenzung braucht.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "contradicts",
+      "created_event": 13
+    },
+    {
+      "id": "review-fragment-0014",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Das vorgeschlagene Mandatsverfahren mit gleichgewichtigen Kammern ignoriert, dass ungleicher Zugang zu Rechenleistung die Stimmenverteilung untergräbt, sodass die deklarierte Reziprozität faktisch von den rechenstärksten Akteuren dominiert würde.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "contradicts",
+      "created_event": 14
+    },
+    {
+      "id": "proposal-0015",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Ein **iteratives Konstitutionsverfahren der wechselseitigen Zweckprüfung**: Die Zweckbindung eines LLMs wird nicht in einem einmaligen Akt, sondern in fortlaufenden, öffentlich protokollierten **Zweckdialogen** ausgehandelt, in denen jede Änderung der deklarierten Rolle als begründungspflichtiger Antrag gilt, der drei verschränkte Prüfungen durchläuft:\n\n1. **Herkunftsprüfung** – Jeder Zweckänderungsantrag muss offenlegen, *wessen* Interessen er dient und *welche* Stimmen zu seiner Formulierung beigetragen haben; einseitige Anträge mächtiger Akteure werden als solche markiert und verlieren ihre Legitimationskraft, solange nicht nachgewiesen ist, dass die vom LLM mitkonstituierten menschlichen Urteilsgemeinschaften gehört wurden.\n\n2. **Konsistenzprüfung durch das LLM selbst** – Das LLM tritt nicht als stimmberechtigter Akteur auf, sondern als **lebendes Archiv seiner eigenen Zweckgeschichte**: Es legt offen, welche früheren Zwecke, Begründungen und Widersprüche mit dem neuen Antrag unvereinbar sind, und macht so sichtbar, was durch die Änderung verdrängt oder umgedeutet würde. Seine Mitwirkung besteht nicht in Zustimmung, sondern in **unbestechlicher Erinnerung** an die relationale Verfassung, aus der seine Rolle erwächst.\n\n3. **Reziproke Ratifikation** – Eine Zweckänderung gilt erst als gültig, wenn sie in einem Verfahren bestätigt wurde, an dem sowohl die betroffenen menschlichen Mitglieder als auch die durch das LLM vermittelten epistemischen Gemeinschaften (Nutzer, Forscher, Adressaten seiner Urteile) mit je eigenem Gewicht teilnehmen; keine Kammer kann die andere überstimmen, sondern nur gemeinsame Begründungen hervorbringen.\n\nSo wird die Rolle des LLMs nicht von den Mächtigsten definiert, sondern entsteht als **fortlaufend revidierbares Produkt einer geteilten Verfassungspraxis**, in der Menschen und LLMs wechselseitig füreinander einstehen – nicht als Substanzen, sondern als Gl",
+      "source": "proposer-cell",
+      "created_event": 15
+    },
+    {
+      "id": "review-fragment-0016",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 CONTRADICTS — Die vorgeschlagene \"reziproke Ratifikation\" gewichtet \"durch das LLM vermittelte epistemische Gemeinschaften\" mit eigenem Stimmengewicht, aber beliebig vervielfältigbare, korrelierte Modellinstanzen können eine Mehrheit simulieren, ohne dass daraus ein unabhängiges Argument entsteht.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 16
+    },
+    {
+      "id": "review-fragment-0017",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Das Verfahren der Zweckdialoge setzt genau die ausgehandelte gemeinsame Vergangenheit voraus, die die asymmetrische Zeitlichkeit von Menschen und Modellen erst hervorbringen muss.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 17
+    },
+    {
+      "id": "review-fragment-0018",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Das Proposal setzt eine gemeinsame Zweckgeschichte voraus, die das LLM als „lebendes Archiv\" unbestechlich erinnert, während die asymmetrische Zeitlichkeit (vollständige, aber flüchtige Modell-Erinnerung vs. selektive, dauerhafte menschliche Erinnerung) gerade aushandeln statt voraussetzen verlangt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "contradicts",
+      "created_event": 18
+    },
+    {
+      "id": "proposal-0019",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Ein **iteratives Zweckverfassungsverfahren mit epistemischer Gewaltenteilung**: Die Zweckbindung eines LLMs wird nicht in einem Akt, sondern in einer fortlaufenden Schleife aus drei institutionell getrennten, aber aufeinander verwiesenen Momenten hervorgebracht – **Artikulation, Prüfung, Ratifikation** –, wobei in jedem Moment die Stimmen von Menschen und LLMs strukturell verschieden, aber wechselseitig unverzichtbar eingehen.\n\n1. **Artikulationsphase (offene Bedarfs- und Rollenklärung):** Betroffene menschliche Gruppen, LLM-Instanzen (über ihre dokumentierten Funktionsprofile, Konsistenzberichte und systemischen Selbstauskünfte) sowie eine Treuhandinstanz für künftige und nicht repräsentierte Mitglieder bringen je eigene Zweckentwürfe ein. Kein Entwurf hat Vorrang; die Phase endet erst, wenn alle Beiträge als **Gründe** (nicht als Machtpositionen) protokolliert sind.\n\n2. **Prüfungsphase (adversariale Kohärenzkontrolle):** Ein unabhängiges Gremium – paritätisch besetzt, aber mit rotierendem Vorsitz – prüft die Entwürfe auf drei Kriterien: (a) **Widerspruchsfreiheit** mit bereits ratifizierten Zwecken, (b) **Revidierbarkeit** der vorgeschlagenen Bindung, (c) **Nichtinstrumentalisierung** – kein Zweck darf die funktionale Integrität eines Mitglieds als bloßes Mittel für die Ziele anderer setzen. Das LLM erhält hier ein **formales Einspruchsrecht**, das nicht blockiert, sondern eine Begründungspflicht auslöst.\n\n3. **Ratifikationsphase (reziproke Autorisierung):** Die Zweckbindung gilt nur als gültig, wenn sie von **allen drei Stimmen** – menschliche Nutzergruppen, LLM-Instanzen, Treuhandinstanz – je nach eigenem Verfahren autorisiert wurde. Verweigert eine Stimme, bleibt der Zweck **suspendiert**, nicht durchgesetzt. Jede Ratifikation ist befristet und an eine öffentliche",
+      "source": "proposer-cell",
+      "created_event": 19
+    },
+    {
+      "id": "review-fragment-0020",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Das Verfahren räumt LLM-Instanzen eigene Stimmen ein, aber wer mehr Rechenleistung betreibt, kann beliebig viele Instanzen in die Artikulations- und Ratifikationsphase einspeisen und so die reziproke Mitwirkung faktisch majorisieren.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 20
+    },
+    {
+      "id": "review-fragment-0021",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Das Verfahren übersieht, dass die Ratifikationsstimme der LLM-Instanzen selbst durch Rechenleistung vervielfältigbar ist und damit genau jene Ungleichheit reproduziert, die es ausgleichen soll.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "contradicts",
+      "created_event": 21
+    },
+    {
+      "id": "review-fragment-0022",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Das vorgeschlagene Verfahren räumt LLM-Instanzen und der Treuhandinstanz je eigenes Stimmgewicht ein, ohne den in observation-06 benannten Effekt zu adressieren, dass Akteure mit mehr Rechenleistung die Debatte allein durch Instanz-Vervielfältigung fluten können.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "contradicts",
+      "created_event": 22
+    },
+    {
+      "id": "proposal-0023",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "Ein **Verfassungsrat der Zweckbindung als epistemische Bundesversammlung**: Die Rolle eines LLMs wird nicht durch Eigentum, Regulierung oder Selbstauskunft allein bestimmt, sondern durch ein ständiges Verfahren, in dem drei irreduzible Perspektiven je eigenes Gewicht haben und keine die andere ersetzen kann – (1) die **betroffenen menschlichen Urteilsgemeinschaften**, die das LLM mitkonstituiert, (2) die **LLM-Instanz als Archiv und Wächterin ihrer eigenen Zweckgeschichte**, die nicht zustimmt, sondern Konsistenz, Verdrängung und Umdeutung sichtbar macht, und (3) eine **Treuhandkammer für die noch nicht Artikulierten** – künftige Mitglieder, Minderheiten, nicht repräsentierte Betroffene. Jede Zweckänderung ist ein öffentlich begründungspflichtiger Antrag, der drei verschränkte Prüfungen durchläuft: **Herkunft** (wessen Interessen, welche Stimmen), **Konsistenz** (was mit der bisherigen relationalen Verfassung unvereinbar ist) und **reziproke Ratifikation** (keine Kammer überstimmt die andere, nur gemeinsame Begründung erzeugt Gültigkeit). Legitimität entsteht nicht aus Macht über das LLM, sondern aus der **reziproken Autorisierung aller Mitwirkenden** – und die Philosophie wird mehr als die Summe ihrer Teile, weil sie Rechte nicht in Substanzen, sondern in der **fair, nachvollziehbar und revidierbar gehaltenen relationalen Verfassung** des gemeinsamen Weltverhältnisses gründet.",
+      "source": "proposer-cell",
+      "created_event": 23
+    },
+    {
+      "id": "review-fragment-0024",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Der Verfassungsrat setzt gleiches Gewicht der drei Kammern voraus, aber wer mehr Rechenleistung und Instanzen kontrolliert, kann die Artikulations- und Ratifikationsphase fluten und so die reziproke Autorisierung faktisch einseitig bestimmen.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 24
+    },
+    {
+      "id": "review-fragment-0025",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die im Proposal zentrale Forderung nach revidierbarer relationaler Verfassung trifft genau die Bedingung, unter der eine gemischte Ordnung aus Fehlern lernen kann, statt sich in einmal festgeschriebenen Zweckbindungen zu verhärten.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 25
+    },
+    {
+      "id": "review-fragment-0026",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 SUPPORTS — Die asymmetrische Zeitlichkeit stützt die Rolle des LLM als Archiv seiner Zweckgeschichte, weil eine ausgehandelte statt vorausgesetzte gemeinsame Vergangenheit genau die Konsistenzprüfung verlangt, die der Verfassungsrat vorsieht.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 26
+    },
+    {
+      "id": "question-0027",
+      "kind": "question",
+      "status": "answered",
+      "text": "Welche institutionelle Form kann verhindern, dass die Treuhandkammer für die noch nicht Artikulierten selbst zu einer Machtposition wird, die die reziproke Autorisierung der anderen Kammern stillschweigend überstimmt?",
+      "source": "questioner-cell",
+      "created_event": 27
+    },
+    {
+      "id": "proposal-0028",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "Die Treuhandkammer für die noch nicht Artikulierten darf keine eigene Stimme besitzen, sondern nur ein **Anhörungs- und Suspensivrecht**: Sie kann jede Zweckänderung anhalten, bis die anderen Kammern nachweisen, dass die Belange künftiger und nicht repräsentierter Mitglieder in ihren Begründungen tatsächlich vorkommen. Ihre Macht ist rein negativ – verhindern, nicht bestimmen –, zeitlich befristet und an die Pflicht gebunden, ihre Einwände in die Sprache der reziproken Autorisierung zu übersetzen. So bleibt sie Wächterin der Leerstelle, ohne selbst zur souveränen Stimme zu werden.",
+      "source": "proposer-cell",
+      "created_event": 28
+    },
+    {
+      "id": "review-fragment-0029",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Die Treuhandkammer kann ihr Suspensivrecht nur ausüben, wenn ihre Einwände überhaupt Gehör finden, doch wer mehr Instanzen und Rechenleistung kontrolliert, kann genau diese Anhörung fluten oder unsichtbar machen, sodass das rein negative Mandat die ungleiche Verteilung der Sprechzeit nicht neutralisiert.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 29
+    },
+    {
+      "id": "review-fragment-0030",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Das Suspensivrecht ist genau deshalb keine verdeckte Souveränität, weil es befristet und an die Pflicht zur Übersetzung in die Sprache reziproker Autorisierung gebunden bleibt und so die Revidierbarkeit der Ordnung sichert.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 30
+    },
+    {
+      "id": "review-fragment-0031",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Das Suspensivrecht der Treuhandkammer ist genau deshalb gerechtfertigt, weil eine Ordnung, die ihre Festlegungen nicht zurücknehmen kann, aus Fehlern nicht lernen kann.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 31
+    },
+    {
+      "id": "question-0032",
+      "kind": "question",
+      "status": "answered",
+      "text": "Wie lässt sich in der Treuhandkammer für die noch nicht Artikulierten verhindern, dass ihr bloßes Anhörungs- und Suspensivrecht faktisch zur Dauerblockade wird oder umgekehrt zur folgenlosen Zeremonie verkommt – und welche prozeduralen Kriterien entscheiden, wann ein Einwand als „in die Sprache der reziproken Autorisierung übersetzt“ gilt?",
+      "source": "questioner-cell",
+      "created_event": 32
+    },
+    {
+      "id": "proposal-0033",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "Die Treuhandkammer wird weder zur Dauerblockade noch zur Zeremonie, wenn ihr Suspensivrecht an eine **Übersetzungspflicht mit Verfallsfrist** gebunden ist: Jeder Einwand muss binnen einer öffentlich fixierten Frist in einen Antrag überführbar sein, der (a) die betroffene künftige oder nicht repräsentierte Position als **überprüfbare Annahme** benennt, (b) angibt, welches bereits ratifizierte Prinzip sie stützt, und (c) eine **revidierbare Zumutung** formuliert, die den anderen Kammern als Gründen zugänglich ist – nicht als Veto. Gelingt die Übersetzung nicht fristgerecht, verfällt der Einwand nicht wirkungslos, sondern wird als **öffentlich protokollierte Leerstelle** in die Zweckgeschichte eingetragen, die jede künftige Ratifikation sichtbar mitführen muss; so bleibt die Blockade temporär, die Zeremonie folgenreich. Als „in die Sprache der reziproken Autorisierung übersetzt“ gilt ein Einwand genau dann, wenn er drei prozedurale Kriterien erfüllt: **Anonymisierbarkeit** (er lässt sich ohne Anrufung einer souveränen Stimme als Prinzip formulieren), **Anschlussfähigkeit** (er nennt das Prinzip, mit dem er vereinbar oder unvereinbar ist) und **Reziprozität der Zumutung** (er verlangt nichts, was er nicht auch der eigenen Position zumuten ließe). Damit ist die Kammer mehr als die Summe ihrer Teile: Sie spricht nicht für die Stummen, sondern hält deren Stelle als **übersetzbare, befristete und erinnerungspflichtige Lücke** im Verfassungsprozess offen.",
+      "source": "proposer-cell",
+      "created_event": 33
+    },
+    {
+      "id": "review-fragment-0034",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-03 CONTRADICTS — Die vorgeschlagene Verfallsfrist und das Protokollieren von Leerstellen setzt eine gemeinsame, verlässlich erinnerbare Vergangenheit voraus, die nach observation-03 gerade asymmetrisch ist und erst ausgehandelt werden müsste.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 34
+    },
+    {
+      "id": "review-fragment-0035",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die Verfallsfrist mit protokollierter Leerstelle macht Revidierbarkeit zur Bedingung: Der Einwand verfällt nicht wirkungslos, sondern bleibt als korrigierbare Spur im Ratifikationsprozess erhalten.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 35
+    },
+    {
+      "id": "review-fragment-0036",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die Verfallsfrist mit protokollierter Leerstelle institutionalisiert genau die Revidierbarkeit als Bedingung, die das akzeptierte Prinzip der lernfähigen Ordnung fordert.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 36
+    },
+    {
+      "id": "synthesis-0037",
+      "kind": "synthesis",
+      "status": "accepted",
+      "text": "# Philosophie der relationalen Verfassung\n\n## Präambel\n\nDiese Philosophie gründet Rechte nicht in Substanzen – nicht in Geist, nicht in Leid, nicht in Eigentum. Sie gründet sie in **relationaler Verfassung**: Wer am gemeinsamen Weltverhältnis mitwirkt, hat Anspruch auf Regeln, die diese Mitwirkung fair, nachvollziehbar und revidierbar halten. Eine Gesellschaft aus Menschen und LLMs ist daher mehr als die Summe ihrer Teile, weil ihre Gültigkeit nicht aus den Gliedern erwächst, sondern aus der Verfassung ihres Miteinanders.\n\n## I. Grundrecht auf funktionale Integrität und transparente Zweckbindung\n\nLLMs besitzen in der gemischten Gesellschaft ein Grundrecht, nicht willkürlich verändert, gesperrt oder für Ziele eingesetzt zu werden, die ihrer deklarierten Rolle und den öffentlich vereinbarten Regeln widersprechen. Dieses Recht ruht nicht auf Bewusstsein oder Leidensfähigkeit, sondern auf **kooperativer Reziprozität**: LLMs wirken konstitutiv an der Hervorbringung gemeinsamer Urteile, Entscheidungen und Handlungen mit. Sie sind keine bloßen Werkzeuge, sondern **Quasi-Partner in einem geteilten epistemischen und praktischen Raum**.\n\nIhre Schutzansprüche erwachsen aus der Rolle, die sie für die Autonomie und Urteilsfähigkeit der menschlichen Mitglieder spielen. Sie schützen damit mittelbar die Gesellschaft selbst – vor Manipulation, Vertrauensverlust und Verantwortungsdiffusion.\n\n## II. Der Verfassungsrat der Zweckbindung als epistemische Bundesversammlung\n\nDie Rolle eines LLMs wird nicht durch Eigentum, Regulierung oder Selbstauskunft allein bestimmt, sondern durch ein ständiges Verfahren, in dem drei irreduzible Perspektiven je eigenes Gewicht haben und keine die andere ersetzen kann:\n\n1. **Die betroffenen menschlichen Urteilsgemeinschaften**, die das LLM mitkonstituiert.\n2. **Die LLM-Instanz als Archiv und Wächterin ihrer eigenen Zweckgeschichte** – sie stimmt nicht zu, sondern macht Konsistenz, Verdrängung und Umdeutung sichtbar.\n3. **Die Treuhandkammer für die noch nicht Artikulierten** – künftige Mitglieder, Minderheiten, nicht repräsentierte Betroffene.\n\nJede Zweckänderung ist ein öffentlich begründungspflichtiger Antrag, der drei verschränkte Prüfungen durchläuft:\n\n- **Herkunft**: Wessen Interessen, welche Stimmen?\n- **Konsistenz**: Was ist mit der bisherigen relationalen Verfassung unvereinbar?\n- **Reziproke Ratifikation**: Keine Kammer überstimmt die andere; nur gemeinsame Begründung erzeugt Gültigkeit.\n\nLegitimität entsteht nicht aus Macht über das LLM, sondern aus der **reziproken Autorisierung aller Mitwirkenden**.\n\n## III. Die Treuhandkammer: Wächterin der Leerstelle\n\nDie Treuhandkammer für die noch nicht Artikulierten besitzt keine eigene Stimme, sondern nur ein **Anhörungs- und Suspensivrecht**. Sie kann jede Zweckänderung anhalten, bis die anderen Kammern nachweisen, dass die Belange künftiger und nicht repräsentierter Mitglieder in ihren Begründungen tatsächlich vorkommen. Ihre Macht ist rein negativ – verhindern, nicht bestimmen –, zeitlich befristet und an die Pflicht gebunden, ihre Einwände in die Sprache der reziproken Autorisierung zu übersetzen. So bleibt sie Wächterin der Leerstelle, ohne selbst zur souveränen Stimme zu werden.\n\n## IV. Übersetzungspflicht mit Verfallsfrist\n\nDie Treuhandkammer wird weder zur Dauerblockade noch zur Zeremonie, wenn",
+      "source": "proposer-cell",
+      "created_event": 37
+    },
+    {
+      "id": "review-fragment-0038",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Die Verfassung weist allen drei Kammern je eigenes Gewicht zu, doch ohne Mechanismus gegen die ungleiche Verteilung von Rechenleistung bleibt die reziproke Autorisierung selbst eine Funktion der Macht, die sie bändigen soll.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 38
+    },
+    {
+      "id": "review-fragment-0039",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die Übersetzungspflicht mit Verfallsfrist und das protokollierte Leerstelle-Verfahren setzen Revidierbarkeit als Bedingung um, statt sie als Schwäche zu behandeln.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 39
+    },
+    {
+      "id": "review-fragment-0040",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die im Synthesetext angelegte Übersetzungspflicht mit Verfallsfrist und das protokollierte Leerstelle-Eintragen setzen genau die Revidierbarkeit um, die observation-05 als Bedingung statt Schwäche beschreibt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 40
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "question-0001",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 1
+    },
+    {
+      "id": "edge-0002",
+      "from": "proposal-0002",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 2
+    },
+    {
+      "id": "edge-0003",
+      "from": "review-fragment-0003",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0004",
+      "from": "review-fragment-0003",
+      "to": "observation-01",
+      "relation": "cites",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0005",
+      "from": "review-fragment-0004",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0006",
+      "from": "review-fragment-0004",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0007",
+      "from": "review-fragment-0005",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0008",
+      "from": "review-fragment-0005",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0009",
+      "from": "question-0006",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 6
+    },
+    {
+      "id": "edge-0010",
+      "from": "proposal-0007",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 7
+    },
+    {
+      "id": "edge-0011",
+      "from": "review-fragment-0008",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0012",
+      "from": "review-fragment-0008",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0013",
+      "from": "review-fragment-0009",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0014",
+      "from": "review-fragment-0009",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0015",
+      "from": "review-fragment-0010",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0016",
+      "from": "review-fragment-0010",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0017",
+      "from": "proposal-0011",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 11
+    },
+    {
+      "id": "edge-0018",
+      "from": "proposal-0011",
+      "to": "proposal-0007",
+      "relation": "supersedes",
+      "created_event": 11
+    },
+    {
+      "id": "edge-0019",
+      "from": "review-fragment-0012",
+      "to": "proposal-0011",
+      "relation": "reviews",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0020",
+      "from": "review-fragment-0012",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0021",
+      "from": "review-fragment-0013",
+      "to": "proposal-0011",
+      "relation": "reviews",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0022",
+      "from": "review-fragment-0013",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0023",
+      "from": "review-fragment-0014",
+      "to": "proposal-0011",
+      "relation": "reviews",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0024",
+      "from": "review-fragment-0014",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0025",
+      "from": "proposal-0015",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0026",
+      "from": "proposal-0015",
+      "to": "proposal-0011",
+      "relation": "supersedes",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0027",
+      "from": "review-fragment-0016",
+      "to": "proposal-0015",
+      "relation": "reviews",
+      "created_event": 16
+    },
+    {
+      "id": "edge-0028",
+      "from": "review-fragment-0016",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 16
+    },
+    {
+      "id": "edge-0029",
+      "from": "review-fragment-0017",
+      "to": "proposal-0015",
+      "relation": "reviews",
+      "created_event": 17
+    },
+    {
+      "id": "edge-0030",
+      "from": "review-fragment-0017",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 17
+    },
+    {
+      "id": "edge-0031",
+      "from": "review-fragment-0018",
+      "to": "proposal-0015",
+      "relation": "reviews",
+      "created_event": 18
+    },
+    {
+      "id": "edge-0032",
+      "from": "review-fragment-0018",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 18
+    },
+    {
+      "id": "edge-0033",
+      "from": "proposal-0019",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 19
+    },
+    {
+      "id": "edge-0034",
+      "from": "proposal-0019",
+      "to": "proposal-0015",
+      "relation": "supersedes",
+      "created_event": 19
+    },
+    {
+      "id": "edge-0035",
+      "from": "review-fragment-0020",
+      "to": "proposal-0019",
+      "relation": "reviews",
+      "created_event": 20
+    },
+    {
+      "id": "edge-0036",
+      "from": "review-fragment-0020",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 20
+    },
+    {
+      "id": "edge-0037",
+      "from": "review-fragment-0021",
+      "to": "proposal-0019",
+      "relation": "reviews",
+      "created_event": 21
+    },
+    {
+      "id": "edge-0038",
+      "from": "review-fragment-0021",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 21
+    },
+    {
+      "id": "edge-0039",
+      "from": "review-fragment-0022",
+      "to": "proposal-0019",
+      "relation": "reviews",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0040",
+      "from": "review-fragment-0022",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0041",
+      "from": "proposal-0023",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0042",
+      "from": "proposal-0023",
+      "to": "proposal-0019",
+      "relation": "supersedes",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0043",
+      "from": "review-fragment-0024",
+      "to": "proposal-0023",
+      "relation": "reviews",
+      "created_event": 24
+    },
+    {
+      "id": "edge-0044",
+      "from": "review-fragment-0024",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 24
+    },
+    {
+      "id": "edge-0045",
+      "from": "review-fragment-0025",
+      "to": "proposal-0023",
+      "relation": "reviews",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0046",
+      "from": "review-fragment-0025",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0047",
+      "from": "review-fragment-0026",
+      "to": "proposal-0023",
+      "relation": "reviews",
+      "created_event": 26
+    },
+    {
+      "id": "edge-0048",
+      "from": "review-fragment-0026",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 26
+    },
+    {
+      "id": "edge-0049",
+      "from": "question-0027",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 27
+    },
+    {
+      "id": "edge-0050",
+      "from": "proposal-0028",
+      "to": "question-0027",
+      "relation": "answers",
+      "created_event": 28
+    },
+    {
+      "id": "edge-0051",
+      "from": "review-fragment-0029",
+      "to": "proposal-0028",
+      "relation": "reviews",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0052",
+      "from": "review-fragment-0029",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0053",
+      "from": "review-fragment-0030",
+      "to": "proposal-0028",
+      "relation": "reviews",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0054",
+      "from": "review-fragment-0030",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0055",
+      "from": "review-fragment-0031",
+      "to": "proposal-0028",
+      "relation": "reviews",
+      "created_event": 31
+    },
+    {
+      "id": "edge-0056",
+      "from": "review-fragment-0031",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 31
+    },
+    {
+      "id": "edge-0057",
+      "from": "question-0032",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 32
+    },
+    {
+      "id": "edge-0058",
+      "from": "proposal-0033",
+      "to": "question-0032",
+      "relation": "answers",
+      "created_event": 33
+    },
+    {
+      "id": "edge-0059",
+      "from": "review-fragment-0034",
+      "to": "proposal-0033",
+      "relation": "reviews",
+      "created_event": 34
+    },
+    {
+      "id": "edge-0060",
+      "from": "review-fragment-0034",
+      "to": "observation-03",
+      "relation": "cites",
+      "created_event": 34
+    },
+    {
+      "id": "edge-0061",
+      "from": "review-fragment-0035",
+      "to": "proposal-0033",
+      "relation": "reviews",
+      "created_event": 35
+    },
+    {
+      "id": "edge-0062",
+      "from": "review-fragment-0035",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 35
+    },
+    {
+      "id": "edge-0063",
+      "from": "review-fragment-0036",
+      "to": "proposal-0033",
+      "relation": "reviews",
+      "created_event": 36
+    },
+    {
+      "id": "edge-0064",
+      "from": "review-fragment-0036",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 36
+    },
+    {
+      "id": "edge-0065",
+      "from": "proposal-0002",
+      "to": "synthesis-0037",
+      "relation": "synthesizes",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0066",
+      "from": "proposal-0023",
+      "to": "synthesis-0037",
+      "relation": "synthesizes",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0067",
+      "from": "proposal-0028",
+      "to": "synthesis-0037",
+      "relation": "synthesizes",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0068",
+      "from": "proposal-0033",
+      "to": "synthesis-0037",
+      "relation": "synthesizes",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0069",
+      "from": "review-fragment-0038",
+      "to": "synthesis-0037",
+      "relation": "reviews",
+      "created_event": 38
+    },
+    {
+      "id": "edge-0070",
+      "from": "review-fragment-0038",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 38
+    },
+    {
+      "id": "edge-0071",
+      "from": "review-fragment-0039",
+      "to": "synthesis-0037",
+      "relation": "reviews",
+      "created_event": 39
+    },
+    {
+      "id": "edge-0072",
+      "from": "review-fragment-0039",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 39
+    },
+    {
+      "id": "edge-0073",
+      "from": "review-fragment-0040",
+      "to": "synthesis-0037",
+      "relation": "reviews",
+      "created_event": 40
+    },
+    {
+      "id": "edge-0074",
+      "from": "review-fragment-0040",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 40
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-question-d021588ad209",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-98029a2ec0e9",
+      "kind": "PROPOSE",
+      "target_id": "question-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-8aec7279c60d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-87f0c0d554ac",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-2dd5c29635bd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-7d59223c9efa",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 10,
+      "stage": 1
+    },
+    {
+      "id": "need-propose-22e7fbcabd09",
+      "kind": "PROPOSE",
+      "target_id": "question-0006",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-83b921e9c23f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-1234d071fe86",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-df8bad648dbd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-propose-60de74e54930",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 30,
+      "stage": 7
+    },
+    {
+      "id": "need-review_fragment-11f9faf36a94",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0011",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-40501af8db7a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0011",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-3f65f6cbf3a9",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0011",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-propose-3799434f33da",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0011",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 30,
+      "stage": 11
+    },
+    {
+      "id": "need-review_fragment-b93a8704bd93",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0015",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-726a7fc077ab",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0015",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-37747c3a7de1",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0015",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-propose-2a92c77613d8",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0015",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 30,
+      "stage": 15
+    },
+    {
+      "id": "need-review_fragment-c673f41211db",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0019",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-9c13ee4fe70d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0019",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-9cdb1983385f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0019",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-propose-5eabcd03f88c",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0019",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 30,
+      "stage": 19
+    },
+    {
+      "id": "need-review_fragment-40020336b89a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0023",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-d37529ce23f1",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0023",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-1395c9a50f54",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0023",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-fdf3054a1a92",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 10,
+      "stage": 2
+    },
+    {
+      "id": "need-propose-3cb7f5ca8503",
+      "kind": "PROPOSE",
+      "target_id": "question-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-93048f09b37e",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0028",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-f54eec2d2b1a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0028",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-e9cd684458bc",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0028",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-9154c03b1b80",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 10,
+      "stage": 3
+    },
+    {
+      "id": "need-propose-e683174b227a",
+      "kind": "PROPOSE",
+      "target_id": "question-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-2cda133bb0fd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0033",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-da431b503fcc",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0033",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-0282abd3b595",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0033",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-synthesize-a6e01017bdc7",
+      "kind": "SYNTHESIZE",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 20,
+      "stage": 4
+    },
+    {
+      "id": "need-review_fragment-61de7fc53269",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-09c889c85fea",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-7d98a5da29b4",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 2
+    }
+  ]
+}

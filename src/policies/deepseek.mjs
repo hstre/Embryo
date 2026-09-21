@@ -57,6 +57,8 @@ export class DeepSeekPolicy {
     this.name = `${this.model}:thinking-${this.thinking ? this.effort : "off"}:v1`;
     this.calls = 0;
     this.tokens = { prompt: 0, completion: 0, reasoning: 0 };
+    this.truncated = 0;
+    this.lastFinishReason = null;
   }
 
   async chat(messages, maxTokens) {
@@ -83,9 +85,17 @@ export class DeepSeekPolicy {
         // budget that fits the answer can still return an empty one. Run 026's
         // first attempt lost six relations that way and was discarded; a
         // truncated reply is an error here, not a silent abstention.
-        if (payload.choices?.[0]?.finish_reason === "length" && !payload.choices?.[0]?.message?.content) {
+        const finish = payload.choices?.[0]?.finish_reason;
+        if (finish === "length" && !payload.choices?.[0]?.message?.content) {
           throw new Error(`deepseek truncated before any content (reasoning ${usage.completion_tokens_details?.reasoning_tokens ?? "?"} of ${maxTokens})`);
         }
+        // An answer cut off at the budget is not an answer. Run 032 accepted a
+        // synthesis that ended mid-sentence at 3324 characters, well under the
+        // gate's limit, because only the empty case was caught. The policy now
+        // records it, so a truncated cell is visible in the receipt rather than
+        // being read later as the model stopping where it meant to.
+        this.lastFinishReason = finish ?? null;
+        if (finish === "length") this.truncated += 1;
         this.calls += 1;
         this.tokens.prompt += usage.prompt_tokens ?? 0;
         this.tokens.completion += usage.completion_tokens ?? 0;
@@ -128,7 +138,7 @@ export class DeepSeekPolicy {
         action: relation
           ? { type: "ADD_RELATION", need_id: need.id, payload: { from_id: view.target.id, to_id: view.pair.id, relation } }
           : { type: "ABSTAIN", need_id: need.id, payload: { reason: "answer named no single relation from the closed set" } },
-        trace: { raw_output: answer, relation },
+        trace: { raw_output: answer, relation, finish_reason: this.lastFinishReason },
       };
     }
 
@@ -144,7 +154,7 @@ export class DeepSeekPolicy {
         action: answer
           ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text: answer } }
           : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty quote" } },
-        trace: { raw_output: answer },
+        trace: { raw_output: answer, finish_reason: this.lastFinishReason },
       };
     }
 
@@ -172,7 +182,7 @@ export class DeepSeekPolicy {
         action: text
           ? { type: "ADD_QUESTION", need_id: need.id, payload: { text } }
           : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty question" } },
-        trace: { raw_output: text },
+        trace: { raw_output: text, finish_reason: this.lastFinishReason },
       };
     }
 
@@ -186,13 +196,13 @@ export class DeepSeekPolicy {
           ...(view.accepted_proposals.length ? ["Already accepted:", ...bullets(view.accepted_proposals)] : []),
           ...(view.negative_traces.length ? ["Failed paths; do not repeat:", ...bullets(view.negative_traces)] : []),
         ],
-        512,
+        2048,
       );
       return {
         action: text
           ? { type: "ADD_PROPOSAL", need_id: need.id, payload: { text } }
           : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty proposal" } },
-        trace: { raw_output: text },
+        trace: { raw_output: text, finish_reason: this.lastFinishReason },
       };
     }
 
@@ -234,7 +244,7 @@ export class DeepSeekPolicy {
         action: citation
           ? { type: "ADD_REVIEW_FRAGMENT", need_id: need.id, payload: { target_id: view.target.id, text, ...citation } }
           : { type: "ABSTAIN", need_id: need.id, payload: { reason: "review named no observation from the environment" } },
-        trace: { raw_output: text, citation },
+        trace: { raw_output: text, citation, finish_reason: this.lastFinishReason },
       };
     }
 
@@ -257,7 +267,7 @@ export class DeepSeekPolicy {
       const reason = clean(text.replace(new RegExp(`^[^A-Za-z]*${verdict}[:\\s—-]*`, "i"), ""), maxChars) || verdict;
       return {
         action: { type: "META_REVIEW", need_id: need.id, payload: { target_id: view.target.id, verdict, text: reason } },
-        trace: { raw_output: text, verdict },
+        trace: { raw_output: text, verdict, finish_reason: this.lastFinishReason },
       };
     }
 
@@ -269,13 +279,13 @@ export class DeepSeekPolicy {
           ...bullets(view.accepted_proposals),
           ...(view.reviews.length ? ["Review to address:", ...bullets(view.reviews)] : []),
         ],
-        900,
+        6144,
       );
       return {
         action: text
           ? { type: "ADD_SYNTHESIS", need_id: need.id, payload: { text, proposal_ids: view.accepted_proposals.map((proposal) => proposal.id) } }
           : { type: "ABSTAIN", need_id: need.id, payload: { reason: "empty synthesis" } },
-        trace: { raw_output: text },
+        trace: { raw_output: text, finish_reason: this.lastFinishReason },
       };
     }
 
