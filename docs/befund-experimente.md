@@ -965,8 +965,8 @@ diesem Vergleich ist nichts zu lesen.
 
 ### Wie oft die Messung selbst das Ergebnis war
 
-Diese Session hat zehn Zahlen produziert, die bei genauerem Hinsehen etwas
-anderes maßen als behauptet, und alle zehn stammen von mir:
+Diese Session hat elf Zahlen produziert, die bei genauerem Hinsehen etwas
+anderes maßen als behauptet, und alle elf stammen von mir:
 
 - Die Einzelmessung des Meta-Reviewers lieferte ein Verdikt, das im vollständigen
   Lauf nie zustande kam — die Ansicht war nicht repräsentativ.
@@ -983,6 +983,10 @@ anderes maßen als behauptet, und alle zehn stammen von mir:
   wurden verworfen und angeheftet neu gefahren.
 - Die Stance-Messung ließ im ersten Anlauf die Frage aus dem Kontext weg und traf
   den Lauf nur 4/9. Über den Replay-Pfad rekonstruiert trifft sie ihn 9/9.
+- Der Paarvergleich aus Abschnitt 24 las sich zunächst als nicht tauschstabil.
+  Er erzeugte bei jedem Lauf einen frischen Text der Einzelzelle und verglich
+  damit zwei bewegliche Ziele; mit fixiertem Text ist die Präferenz stabil. Der
+  einzige Eintrag dieser Liste, der einen Befund verworfen hätte, der hält.
 - Die Synthese von 032 endete mitten im Satz und galt als angenommen. Die
   Policy meldete Abschneiden nur bei *leerer* Antwort; eine abgeschnittene, aber
   nicht leere ging still durch, und die Marke prüfte die Zeichenzahl statt das,
@@ -2347,11 +2351,11 @@ was wann offen war.
   deiner Teile" ist eine Hoffnung, an der kein Lauf scheitern oder gelingen kann;
   falsifizierbar ist nur der erste Halbsatz. Das gilt unverändert — auch 033 hat
   den zweiten Halbsatz nicht geprüft, sondern nur zitiert.
-- **Der Kollektivvorteil ist nicht gemessen.** Ob das Gewebe besser ist als eine
-  einzelne große Zelle mit demselben Ziel, weiß niemand. Das ist jetzt zum ersten
-  Mal durchführbar — eine Zelle, ein Aufruf, dasselbe Ziel, und der Vergleich
-  gegen die Synthese von 033 —, und es ist die nächstliegende Messung überhaupt.
-  Solange sie fehlt, ist über den Nutzen der ganzen Konstruktion nichts gesagt.
+- **Der Kollektivvorteil ist halb gemessen** (Abschnitt 24). Auf der Schicht, die
+  am wenigsten urteilt — berührte Prämissen — ist er **null**; auf der
+  urteilenden geht er neun von neun tauschstabilen Vergleichen an das Gewebe,
+  mit ausgeschriebenem Interessenkonflikt. Was fehlt, ist ein Urteil von
+  außerhalb dieser Modellfamilie.
 - **Die Perspektivmaskierung der Local View** (adversarial ohne akzeptierte
   Vorschläge, charitable ohne negative Spuren) ist in einem gewachsenen Gewebe
   weiterhin ungemessen.
@@ -2415,7 +2419,7 @@ Modellzelle im Zitatmechanismus genau so viel leistete.
 
 **Die eingebaute Kontrolle gegen die naheliegendste Scheinerklärung.** Zehn
 Zahlen dieser Untersuchung maßen bei genauerem Hinsehen etwas anderes als
-behauptet, und alle zehn stammen von mir. Gefunden wurden sie nicht durch
+behauptet, und alle elf stammen von mir. Gefunden wurden sie nicht durch
 Sorgfalt, sondern dadurch, dass jede Messung eine Kontrolle mitführte, die
 scheitern konnte.
 
@@ -2424,12 +2428,123 @@ scheitern konnte.
 Dass das Erzeugnis gut ist. Das Gate zählt Belege und prüft Herkunft; über
 Qualität sagt es nichts, und dieser Bericht sagt es auch nicht.
 
-Und der eigentliche Anspruch des Projekts ist unberührt: ob ein Gewebe aus
-kurzlebigen Zellen mehr leistet als eine einzelne Zelle mit demselben Ziel. Das
-ist nie gemessen worden, es ist seit 033 zum ersten Mal messbar, und ohne diese
-Messung steht über den Nutzen der ganzen Konstruktion nichts fest.
+Und der eigentliche Anspruch des Projekts ist zur Hälfte beantwortet: ob ein
+Gewebe aus kurzlebigen Zellen mehr leistet als eine einzelne Zelle mit demselben
+Ziel. Abschnitt 24 misst es. Auf der Schicht, die am wenigsten urteilt, gibt es
+**keinen** Unterschied — ein Aufruf berührt dieselben sechs Prämissen wie
+achtundzwanzig Zellen. Auf der urteilenden Schicht geht die Präferenz neun von
+neun tauschstabilen Vergleichen an das Gewebe, aber der Richter ist dieselbe
+Modellfamilie, die beide Texte geschrieben hat.
 
-## 24. Nachprüfen
+Zweifelsfrei bleibt damit kein Qualitätsunterschied, sondern ein Unterschied in
+der **Herkunft**: für jeden Bestandteil des Gewebe-Textes sagt das Ledger,
+worauf er sich stützt und welche Arme ihn getragen haben; für den Text der
+Einzelzelle gibt es nichts dergleichen. Ob das den Aufwand wert ist, ist eine
+Frage, die dieser Bericht stellen, aber nicht beantworten kann.
+
+## 24. Das Gewebe gegen eine Zelle
+
+Abschnitt 22 nennt die Messung, ohne die über den Nutzen der ganzen Konstruktion
+nichts feststeht: **Leistet ein Gewebe aus kurzlebigen Zellen mehr als eine
+einzelne Zelle mit demselben Ziel?** Lauf 033 hat das Ziel mit 28 Zellen
+erreicht. Hier bekommt eine einzelne Zelle dasselbe Ziel, dieselben sechs
+Prämissen und **einen** Aufruf.
+
+### Der Aufbau, und warum er so aussieht
+
+Hier bin ich keine unbeteiligte Instanz. Ein Modell beurteilt, ob ein Kollektiv
+aus Modellen einer einzelnen überlegen ist, und der naheliegende Richter —
+`deepseek-flash` — hat beide Texte geschrieben. Der Aufbau legt deshalb so wenig
+Gewicht auf Urteil wie möglich und benennt den Rest. Drei Schichten, nach
+wachsender Urteilsabhängigkeit, und zwei Kontrollen, die scheitern können:
+
+| Schicht | Kontrolle | Ergebnis |
+| --- | --- | --- |
+| wörtliche Verankerung | muss beidseitig 0 sein, sonst bevorzugt die Metrik eine Seite | **0/6 und 0/6** |
+| berührte Prämissen | ein Text über Teekochen muss 0 erreichen | **0/6** |
+| Paarvergleich | muss den Tausch überstehen | siehe unten |
+
+Beide Kontrollen bestanden. Die Frage nach den Prämissen trennt also, und die
+Verankerungsmetrik begünstigt keine Seite.
+
+### Auf der Schicht, die am wenigsten urteilt: kein Unterschied
+
+| | berührte Prämissen |
+| --- | --- |
+| Gewebe (033, 28 Zellen) | **6 von 6** |
+| Einzelzelle, gespeicherter Text | **6 von 6** |
+| Einzelzelle, Ziehung 2 | **6 von 6** |
+| Einzelzelle, Ziehung 3 | **6 von 6** |
+| Einzelzelle, Ziehung 4 | **6 von 6** |
+
+Die vorab festgelegte Marke zählte einen Unterschied ab 2 von 6. Der Unterschied
+ist **null**. Ein Aufruf berührt dieselben sechs Prämissen wie achtundzwanzig
+Zellen, und das gilt für jede der vier Ziehungen.
+
+### Auf der Schicht, die urteilt: durchgehend das Gewebe
+
+| | tauschstabil | davon für das Gewebe |
+| --- | --- | --- |
+| fünf Runden gegen den gespeicherten Text | 5/5 | 5 |
+| vier unabhängige Ziehungen | 4/4 | 4 |
+
+Neun tauschstabile Vergleiche, neunmal das Gewebe. Das ist konsistenter, als ich
+erwartet hatte, und es lässt sich nicht einfach wegreden.
+
+Es bleibt trotzdem eine **Präferenz mit Interessenkonflikt** und keine
+Qualitätsaussage. Der Richter gehört derselben Modellfamilie an, die beide Texte
+verfasst hat, und die Frage „welcher antwortet besser auf das Ziel" ist genau
+die Art Urteil, die dieser Bericht an neun anderen Stellen als unzuverlässig
+gemessen hat. Dass sie hier den Tausch übersteht, macht sie belastbarer als
+etwa die Verdikt-Skala aus Abschnitt 8 — unabhängig macht sie das nicht.
+
+### Eine eigene Fehlmessung unterwegs
+
+Ein früherer Durchgang las den Paarvergleich als **nicht** tauschstabil und
+hätte die urteilende Schicht als unlesbar abgetan. Er erzeugte bei jedem Lauf
+einen **frischen** Text der Einzelzelle und verglich damit zwei bewegliche
+Ziele; die Länge schwankte zwischen 2936 und 5077 Zeichen. Mit fixiertem Text
+ist die Präferenz stabil. Das Werkzeug speichert den Text seither, und er liegt
+als `docs/runs/034/einzelzelle.md` im Repo.
+
+Das ist der elfte Eintrag in der Liste aus Abschnitt 13, und er wäre in die
+andere Richtung gegangen als die übrigen zehn: er hätte einen Befund
+**verworfen**, der hält.
+
+### Was bleibt
+
+**Der Kollektivvorteil ist nicht nachgewiesen.** Auf der einzigen Schicht, die
+weitgehend ohne Urteil auskommt, ist er null. Achtundzwanzig Zellen, rund
+fünfundzwanzigmal so viele Aufrufe, und die Abdeckung der Umgebung ist
+identisch.
+
+**Widerlegt ist er aber auch nicht.** Neun von neun tauschstabilen Vergleichen
+gehen an das Gewebe. Wer diese Schicht gelten lässt, hat einen Vorteil; wer den
+Interessenkonflikt ernst nimmt, hat ihn nicht. Beides steht hier
+nebeneinander, weil die Daten beides hergeben.
+
+**Und eine Asymmetrie steht unabhängig vom Ausgang.** Die vier Bestandteile des
+Gewebe-Textes sind einzeln gegen zitierte Prämissen angenommen worden, und das
+Ledger sagt für jeden, welche Arme ihn getragen haben und worauf sie sich
+stützten. Für den Text der Einzelzelle gibt es nichts dergleichen — er ist
+genauso gut oder schlecht, aber niemand kann nachrechnen, woher ein Satz darin
+kommt.
+
+Das ist keine Qualitätsaussage. Es ist der Unterschied zwischen einem Erzeugnis
+mit Herkunft und einem ohne, und es ist das Einzige, was diese Messung
+zweifelsfrei zeigt.
+
+### Was eine ehrliche Antwort bräuchte
+
+Ein Urteil von außerhalb dieser Modellfamilie. Genau dafür setzen
+budget-review und DESi ihre Gold-Korpora und unabhängigen Instanzen ein, und
+DESis Projektabschluss nennt das Verfahren: versiegeln, einmal öffnen, danach
+nicht nachjustieren. Solange das fehlt, ist die Frage nach dem Kollektivvorteil
+**halb beantwortet** — und diese Hälfte ist mehr, als dieses Projekt vorher
+hatte.
+
+
+## 25. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -2487,6 +2602,9 @@ DEEPSEEK_API_KEY=… node src/cli.mjs step --backend deepseek \
 
 # Die Annahmebilanz jedes Panels eines erreichten Laufs
 node src/cli.mjs panel --state docs/runs/031/embryo.json
+
+# Das Gewebe gegen eine einzelne Zelle, mit beiden Kontrollen
+DEEPSEEK_API_KEY=… DRAWS=3 node tools/single-cell.mjs
 
 # Prüfen, dass kein Receipt eine abgeschnittene Antwort trägt
 grep -c 'finish_reason":"length"' docs/runs/033/events.jsonl
