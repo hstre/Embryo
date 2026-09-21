@@ -31,6 +31,9 @@ entstanden sind, sondern lokal auf dem reparierten Substrat. Die Läufe 001 bis
 | `028` | wie 027, `max_text_chars` 3000 | 64 | 64/64 | 0, Abschneiden widerlegt |
 | `029` | Kontrollarm, Annahme per Verdikt (wie 010) | 64 | 64/64 | 0, 12 Meta-Reviews, alle REVISE |
 | `030` | wie 028, Einwand an derselben Beweislast wie Zustimmung | 64 | 64/64 | 0, 13× PANEL_REJECT |
+| `031` | wie 030, Zustimmung an blinden Armen gezählt | 32 | 32/64 | **4 + Synthese, Ziel erreicht** |
+| `032` | wie 031, Textgrenze 9000 | 40 | 40/64 | **4 + Synthese**, Synthese am Token-Budget abgeschnitten |
+| `033` | wie 032, Abschneiden im Receipt sichtbar, Budgets erhöht | 28 | 28/64 | **4 + Synthese, vollständig** |
 
 006 bis 008 verwenden dasselbe Ziel und dieselbe Konfiguration wie Experiment
 005. 009 und 010 laufen gegen `examples/seed-grounded.json`, das dem Ziel sechs
@@ -108,6 +111,14 @@ stimmt in 13 von 13 zu), und drei aufeinanderfolgende Blockaden werden sichtbar:
 das Veto eines einzelnen Einwands, das Abschneiden der Vorschläge — widerlegt —
 und zuletzt die Forderung nach zwei *verschiedenen* stützenden Beobachtungen,
 an der ein Panel scheitert, das sich über die einschlägige Prämisse einig ist.
+
+031 bis 033 lösen die letzte Blockade auf. Zustimmung wird an verschiedenen
+**blinden Armen** gemessen statt an verschiedenen Beobachtungen — der Prämisse
+treu, weil Unabhängigkeit hier heißt, einander nicht lesen zu können, und das
+Schema lässt die Regel nur bei blindem Panel zu. **031 ist der erste Lauf
+dieses Projekts, der das ursprüngliche Ziel erreicht.** 033 ist derselbe Lauf
+ohne jede Abschneidung: `docs/runs/033/synthese.md` enthält das vollständige
+Erzeugnis, und kein Receipt trägt `finish_reason: "length"`.
 
 Jeder Ordner enthält den Seed, das Endgewebe und das hash-verkettete Ledger.
 Beide sind gegen den Code dieses Branches replay-stabil:
