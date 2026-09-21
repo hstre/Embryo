@@ -44,7 +44,12 @@ const TEA = "Wasser siedet auf Meereshöhe bei hundert Grad Celsius. Schwarzer T
 
 let calls = 0;
 let tokens = 0;
-async function ask(model, system, user, maxTokens = 16) {
+// 512, not 16. A reasoning model spends the budget on its own trace before it
+// writes anything, so a budget that fits the word "YES" returns nothing at all —
+// run 026 lost six relations to exactly this and the lesson did not travel into
+// this tool. gpt-5-mini answered 0 of 18 premise questions on the first pass for
+// that reason, which read as the model failing a control it never saw.
+async function ask(model, system, user, maxTokens = 4096) {
   for (let attempt = 0; attempt < 4; attempt += 1) {
     try {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -59,6 +64,10 @@ async function ask(model, system, user, maxTokens = 16) {
       });
       if (!response.ok) throw new Error(`${model} ${response.status}`);
       const payload = await response.json();
+      const choice = payload.choices?.[0];
+      if (choice?.finish_reason === "length" && !choice?.message?.content) {
+        throw new Error(`${model} truncated before any content at ${maxTokens} tokens`);
+      }
       calls += 1;
       tokens += payload.usage?.prompt_tokens ?? 0;
       return (payload.choices?.[0]?.message?.content ?? "").trim();
