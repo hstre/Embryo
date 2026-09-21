@@ -24,9 +24,18 @@ Der Teetext berührt bei allen vier Richtern 0 von 6 Prämissen: die Frage trenn
 ## Der lokale Richter
 
 `SmolLM2-1.7B` als fünfte, familienfremde Instanz, wie in `035-vorab.md`
-vorhergesagt: der Teetext berührt bei ihm **5 von 6** Prämissen und 5 von 18
-Antworten hängen an der Optionsreihenfolge. Die Kontrolle scheitert, das Modell
-kann hier nicht urteilen.
+vorhergesagt:
+
+```
+  Summe: Gewebe 0/6 · Einzelzelle 6/6 · Teetext 5/6  ·  5 von 18 reihenfolgeabhängig
+  Paarvergleich: tauschstabil — Gewebe
+```
+
+Der Teetext berührt bei ihm **5 von 6** Prämissen. Die vier fehlenden Punkte
+beim Gewebe sind dabei nicht vier Neins, sondern vier reihenfolgeabhängige
+Antworten und zwei Neins — die Zahl 0/6 ist also kein Urteil über den Text,
+sondern das Fehlen eines Urteils. Die Kontrolle scheitert; der tauschstabile
+Paarvergleich desselben Modells trägt deshalb keine Information.
 
 ## Nachzurechnen
 
