@@ -1,0 +1,157 @@
+{
+  "schema_version": 3,
+  "embryo_id": "anchored-register-016",
+  "generation": 4,
+  "energy_spent": 16,
+  "next_node_seq": 2,
+  "next_event_seq": 17,
+  "ledger_head": "f007a3eb213c77712e8fa484e4f75e35dc97408c1694ac246e6da2e6fe8b4076",
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 16,
+    "energy_budget": 64,
+    "max_text_chars": 1200,
+    "local_context_limit": 6,
+    "acceptance_mode": "anchor",
+    "min_span_chars": 40
+  },
+  "nodes": [
+    {
+      "id": "goal-0001",
+      "kind": "goal",
+      "status": "open",
+      "text": "Build a register of four different passages that occur word for word in the supplied observations.",
+      "source": "seed",
+      "created_event": 0
+    },
+    {
+      "id": "observation-01",
+      "kind": "observation",
+      "status": "given",
+      "text": "Verantwortung und Begründung fallen auseinander. Ein Modell kann eine Begründung liefern, ohne für deren Folgen einstehen zu können; ein Mensch kann einstehen, ohne die Begründung im Detail zu durchdringen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 0
+    },
+    {
+      "id": "observation-02",
+      "kind": "observation",
+      "status": "given",
+      "text": "Modellinstanzen sind beliebig vervielfältigbar. Eine Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind, weil sie denselben Fehler gemeinsam machen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 1
+    },
+    {
+      "id": "observation-03",
+      "kind": "observation",
+      "status": "given",
+      "text": "Die Zeitlichkeit ist asymmetrisch. Menschen erinnern sich selektiv und dauerhaft, Modelle vollständig und flüchtig. Was als gemeinsame Vergangenheit gilt, muss deshalb ausgehandelt und nicht vorausgesetzt werden.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 2
+    },
+    {
+      "id": "observation-04",
+      "kind": "observation",
+      "status": "given",
+      "text": "Nachprüfbarkeit ist teilbar, Zustimmung nicht. Eine Behauptung lässt sich gegen eine Quelle prüfen, auch wenn niemand ihr zustimmt; Zustimmung ohne Prüfmöglichkeit trägt keine Information.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 3
+    },
+    {
+      "id": "observation-05",
+      "kind": "observation",
+      "status": "given",
+      "text": "Revidierbarkeit ist eine Bedingung, keine Schwäche. Eine Ordnung, die ihre eigenen Festlegungen nicht zurücknehmen kann, kann aus Fehlern nicht lernen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 4
+    },
+    {
+      "id": "observation-06",
+      "kind": "observation",
+      "status": "given",
+      "text": "Der Zugang zu Rechenleistung verteilt Sprechzeit ungleich. Wer mehr Instanzen betreiben kann, kann eine Debatte fluten, ohne ein einziges besseres Argument zu haben.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 5
+    },
+    {
+      "id": "proposal-0001",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "Modellinstanzen sind beliebig vervielfältigbar.",
+      "source": "quoting-cell",
+      "created_event": 4
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "proposal-0001",
+      "to": "observation-02",
+      "relation": "quotes",
+      "created_event": 4
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-propose-d5569f5057c6",
+      "kind": "PROPOSE",
+      "target_id": "observation-01",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-propose-dbbe2efc4c0a",
+      "kind": "PROPOSE",
+      "target_id": "observation-02",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-propose-01bb26d0cf30",
+      "kind": "PROPOSE",
+      "target_id": "observation-03",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-propose-00e22c9bb8f1",
+      "kind": "PROPOSE",
+      "target_id": "observation-04",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-propose-4ae3b7329c00",
+      "kind": "PROPOSE",
+      "target_id": "observation-05",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-propose-6b1c13ee0b36",
+      "kind": "PROPOSE",
+      "target_id": "observation-06",
+      "status": "exhausted",
+      "attempts": 3,
+      "created_generation": 0,
+      "priority": 30
+    }
+  ]
+}

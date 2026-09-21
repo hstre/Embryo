@@ -1,5 +1,6 @@
 import { digest } from "./canonical.mjs";
 import { reviewPerspective } from "./needs.mjs";
+import { acceptanceMode, panelIndependence, showRegister } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 function linkedQuestion(state, proposal) {
@@ -28,6 +29,9 @@ function reviewFragmentsFor(state, targetId) {
 
 export function buildLocalView(state, need) {
   const goal = state.nodes.find((node) => node.kind === "goal");
+  const observations = state.nodes
+    .filter((node) => node.kind === "observation")
+    .map(({ id, text, source }) => ({ id, text, source }));
   const target = nodeById(state, need.target_id);
   const limit = state.config.local_context_limit;
   const question = linkedQuestion(state, target);
@@ -43,14 +47,31 @@ export function buildLocalView(state, need) {
     .slice(-limit)
     .map(({ id, kind, status, text }) => ({ id, kind, status, text }));
 
+  // Withheld only where a seed asks for it, so every run written before this
+  // switch existed keeps the view — and the hash — it was recorded with.
+  if (!showRegister(state)) acceptedProposals = [];
+
   const perspective = need.kind === "REVIEW_FRAGMENT" ? reviewPerspective(need.stage) : null;
   if (need.kind === "REVIEW_FRAGMENT" && perspective === "adversarial") acceptedProposals = [];
   if (need.kind === "REVIEW_FRAGMENT" && perspective === "charitable") negativeTraces = [];
 
+  // Stigmergy everywhere else: a proposer reads accepted and rejected traces, a
+  // reviser reads the reviews. The panel is the one place where a trace is later
+  // counted, and a count of instances that read each other counts one instance.
+  // So a blind panel withholds the sibling fragments — from the reviewers only,
+  // and only for the target they are reviewing.
+  const independence = panelIndependence(state);
+  const blindPanel = independence === "blind" && need.kind === "REVIEW_FRAGMENT";
+
   const view = {
     embryo_id: state.embryo_id,
     generation: state.generation,
-    role: need.kind === "QUESTION"
+    max_text_chars: state.config.max_text_chars,
+    role: need.kind === "RELATE"
+      ? "relator"
+      : acceptanceMode(state) === "anchor"
+        ? "quoter"
+      : need.kind === "QUESTION"
       ? "questioner"
       : need.kind === "REVIEW_FRAGMENT"
         ? "reviewer"
@@ -60,10 +81,21 @@ export function buildLocalView(state, need) {
     perspective,
     need: { id: need.id, kind: need.kind, target_id: need.target_id, attempts: need.attempts },
     goal: { id: goal.id, text: goal.text },
+    // Both are present only where they apply, so a run without an environment keeps
+    // the view — and therefore the local-view hash — it had before citations existed.
+    // A cell has to know which kind of contribution the gate will accept: asking for
+    // a citation the gate would refuse is a different experiment, not a control.
+    ...(acceptanceMode(state) === "citation" ? { acceptance_mode: "citation" } : {}),
+    ...(independence === "sighted" ? {} : { panel_independence: independence }),
+    ...(observations.length ? { observations } : {}),
     target: { id: target.id, kind: target.kind, status: target.status, text: target.text },
+    // The second endpoint of a pair the tissue chose. The cell selects neither
+    // entry; it is handed both and asked only which of the closed relation kinds
+    // holds between them, or none.
+    ...(need.kind === "RELATE" ? { pair: (() => { const other = nodeById(state, need.pair_id); return { id: other.id, text: other.text }; })() } : {}),
     question: question ? { id: question.id, status: question.status, text: question.text } : null,
     reviews: reviewsFor(state, target.id).slice(-limit).map(({ id, text }) => ({ id, text })),
-    review_fragments: reviewFragmentsFor(state, target.id),
+    review_fragments: blindPanel ? [] : reviewFragmentsFor(state, target.id),
     accepted_proposals: acceptedProposals,
     negative_traces: negativeTraces,
   };

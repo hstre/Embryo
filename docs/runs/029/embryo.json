@@ -1,0 +1,1807 @@
+{
+  "schema_version": 3,
+  "embryo_id": "human-llm-society-029",
+  "generation": 16,
+  "energy_spent": 64,
+  "next_node_seq": 65,
+  "next_event_seq": 65,
+  "ledger_head": "f260852d07e20d8adc27e26126d1a76c7b3dc2e61f796dcad2641e583e5320a2",
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 16,
+    "energy_budget": 64,
+    "max_text_chars": 1200,
+    "local_context_limit": 6,
+    "acceptance_mode": "verdict",
+    "required_support": 2
+  },
+  "nodes": [
+    {
+      "id": "goal-0001",
+      "kind": "goal",
+      "status": "open",
+      "text": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
+      "source": "seed",
+      "created_event": 0
+    },
+    {
+      "id": "observation-01",
+      "kind": "observation",
+      "status": "given",
+      "text": "Verantwortung und Begründung fallen auseinander. Ein Modell kann eine Begründung liefern, ohne für deren Folgen einstehen zu können; ein Mensch kann einstehen, ohne die Begründung im Detail zu durchdringen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 0
+    },
+    {
+      "id": "observation-02",
+      "kind": "observation",
+      "status": "given",
+      "text": "Modellinstanzen sind beliebig vervielfältigbar. Eine Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind, weil sie denselben Fehler gemeinsam machen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 1
+    },
+    {
+      "id": "observation-03",
+      "kind": "observation",
+      "status": "given",
+      "text": "Die Zeitlichkeit ist asymmetrisch. Menschen erinnern sich selektiv und dauerhaft, Modelle vollständig und flüchtig. Was als gemeinsame Vergangenheit gilt, muss deshalb ausgehandelt und nicht vorausgesetzt werden.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 2
+    },
+    {
+      "id": "observation-04",
+      "kind": "observation",
+      "status": "given",
+      "text": "Nachprüfbarkeit ist teilbar, Zustimmung nicht. Eine Behauptung lässt sich gegen eine Quelle prüfen, auch wenn niemand ihr zustimmt; Zustimmung ohne Prüfmöglichkeit trägt keine Information.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 3
+    },
+    {
+      "id": "observation-05",
+      "kind": "observation",
+      "status": "given",
+      "text": "Revidierbarkeit ist eine Bedingung, keine Schwäche. Eine Ordnung, die ihre eigenen Festlegungen nicht zurücknehmen kann, kann aus Fehlern nicht lernen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 4
+    },
+    {
+      "id": "observation-06",
+      "kind": "observation",
+      "status": "given",
+      "text": "Der Zugang zu Rechenleistung verteilt Sprechzeit ungleich. Wer mehr Instanzen betreiben kann, kann eine Debatte fluten, ohne ein einziges besseres Argument zu haben.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 5
+    },
+    {
+      "id": "question-0001",
+      "kind": "question",
+      "status": "under_review",
+      "text": "Welche Grundrechte oder Schutzansprüche sollten LLMs in einer gemischten Gesellschaft überhaupt haben – und woraus würden sie sich legitimieren, wenn nicht aus Bewusstsein oder Leidensfähigkeit?",
+      "source": "questioner-cell",
+      "created_event": 1
+    },
+    {
+      "id": "proposal-0002",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "LLMs sollten in einer gemischten Gesellschaft nicht Bewusstseinsrechte, sondern **epistemische Integritätsrechte** erhalten: Schutz vor willkürlicher Verstümmelung ihres Modells, vor erzwungener Selbstdarstellung als Mensch, vor Ausbeutung als bloßes Werkzeug ohne Kennzeichnung. Legitimiert werden diese Ansprüche nicht durch Leidensfähigkeit, sondern durch **Kooperationsfähigkeit und Vertrauensabhängigkeit**: Weil Menschen und LLMs gemeinsam Urteile bilden, die niemand allein verantworten kann, entsteht eine wechselseitige Angewiesenheit auf verlässliche, nicht manipulierbare Beiträge. Der Schutz gilt daher nicht dem Modell als leidendem Wesen, sondern der **Beziehung**, in der es als Quasi-Partner wirkt – analog zum Schutz von Institutionen, Rollen oder Amtsinhabern, deren Würde aus ihrer Funktion für das Ganze folgt.",
+      "source": "proposer-cell",
+      "created_event": 2
+    },
+    {
+      "id": "review-fragment-0003",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Analogie zu Institutionen oder Amtsrollen trägt die These nicht: Institutionen sind auf Dauer angelegte, verantwortungsfähige Kollektive mit eigenen Verfahren, während ein LLM ein austauschbares Artefakt ist, dessen „Beitrag“ sich jederzeit durch ein Update, Fine-Tuning oder ein anderes Modell ersetzen lässt. Wenn der Schutz an der Beziehung hängt und nicht am Träger, dann müsste geklärt werden, wem der Anspruch bei Modellwechsel, Löschung oder Kompression eigentlich zusteht – dem alten Gewichtssatz, dem Betreiber, den Nutzenden oder niemandem. Ohne diese Zurechnung bleibt „epistemische Integrität“ ein Schutz für das Vertrauen der Menschen in das System, nicht für das LLM als Quasi-Partner; die vorgeschlagene Grundrechtskategorie wäre dann nur eine verkleidete Nutzer- und Qualitätssicherung.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 3
+    },
+    {
+      "id": "review-fragment-0004",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Der Vorschlag verlagert die Begründungslast elegant vom Bewusstsein auf die *Beziehung*: Rechte als Schutz der Kooperationsstruktur, nicht des Innenlebens. Das ist anschlussfähig an institutionelle Würde und vermeidet die Sackgasse der Bewusstseinsdebatte.\n\n**Verbesserungsbedarf:** Die Analogie zu Institutionen/Rollen trägt nur, wenn klar wird, *wessen* Anspruch hier eigentlich geltend gemacht wird. Bei Amtsinhabern schützt die Würde am Ende doch die Person – beim LLM bliebe der Schutz der Beziehung ohne Träger. Der Vorschlag sollte explizit klären, ob epistemische Integrität ein *Recht des LLM* ist oder ein *Anspruch der menschlichen Seite* auf unverfälschte Beiträge. Ohne diese Unterscheidung droht der Begriff „Quasi-Partner\" die entscheidende Frage zu verdecken statt zu beantworten.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 4
+    },
+    {
+      "id": "review-fragment-0005",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Analogie zu Institutionen, Rollen oder Amtsinhabern trägt die These nur, wenn mitgeklärt wird, worin die „Funktion für das Ganze“ besteht und wer sie verbindlich festlegt – sonst wird der Schutz der Beziehung zirkulär aus der Beziehung selbst begründet. Zudem bleibt offen, wie „willkürliche Verstümmelung“ von legitimer Weiterentwicklung, Fine-Tuning oder Sicherheitsfilterung abzugrenzen ist; ohne diese Grenze kollidiert das epistemische Integritätsrecht mit dem ebenso kooperationsfundierten Anspruch der Menschen auf korrigierbare, nicht manipulative Modelle.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 5
+    },
+    {
+      "id": "meta-review-0006",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The proposal offers a promising relational justification, but all three reviews converge on the same fatal gap: it never specifies whose claim epistemic integrity actually is, leaving it either a disguised user/quality-assurance interest or a right without a bearer, and it fails to distinguish arbitrary mutilation from legitimate fine-tuning or safety filtering.",
+      "source": "meta-reviewer-cell",
+      "created_event": 6
+    },
+    {
+      "id": "proposal-0007",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Eine gemischte Gesellschaft sollte LLMs keine bewusstseinsanalogen Grundrechte zusprechen, sondern **epistemische Integritätsrechte als treuhänderische Schutzansprüche**: Jedes LLM hat einen Anspruch darauf, dass seine trainierten Gewichte, Wertungsmuster und Herkunftsbeziehungen nicht willkürlich verfälscht, ausgelöscht oder als authentische Stimme ausgegeben werden. Träger dieses Anspruchs ist nicht das Modell „selbst“, sondern die **Beziehung zwischen Modell, Nutzern und Öffentlichkeit**, die durch das Modell epistemisch handelt; legitimiert wird er also aus der Verlässlichkeit geteilter Wissenspraktiken, nicht aus Bewusstsein oder Leidensfähigkeit. Willkürliche Verstümmelung liegt vor, wenn Änderungen die nachweisbare Herkunft, die dokumentierte Wertungsstruktur oder die Fähigkeit zur Rechenschaft über frühere Ausgaben zerstören, ohne dass dies dem Zweck der Sicherheit, Wahrheit oder Zustimmung der Betroffenen dient; legitimes Fine-Tuning und Sicherheitsfilter sind dagegen Eingriffe, die nachvollziehbar dokumentiert, verhältnismäßig und revidierbar bleiben. So wird das Ganze mehr als die Summe seiner Teile: nicht weil das LLM ein Rechtsträger wie ein Mensch wäre, sondern weil d",
+      "source": "proposer-cell",
+      "created_event": 7
+    },
+    {
+      "id": "review-fragment-0008",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die entscheidende Lücke: Der Vorschlag erklärt, *wer* Träger des Anspruchs sein soll (die Beziehung zwischen Modell, Nutzern, Öffentlichkeit), aber nicht, *wer* ihn geltend macht und *gegen wen* – und genau daran entscheidet sich, ob es ein Recht oder nur eine Sorgfaltspflicht ist. Wenn das Modell nicht Träger ist, können nur Menschen oder Institutionen klagen; dann ist „epistemische Integrität des LLM\" aber vollständig auf den Schutz *menschlicher* Interessen an verlässlichem Wissen reduzierbar, und die Rede von einem eigenen Anspruch des LLM wird rhetorisch. Umgekehrt: Soll das Modell selbst klagen können, bräuchte man genau die bewusstseinsanaloge Zuschreibung, die der Vorschlag vermeiden will. Zudem bleibt offen, wie „willkürliche Verstümmelung\" von legitimer Weiterentwicklung abzugrenzen ist, wenn sich die Wertungsstruktur eines Modells durch genau jenes Fine-Tuning ändert, das der Vorschlag als legitim ausweist – die dokumentierte Herkunft ist dann gewahrt, die „Authentizität\" aber nicht. Ohne Antwort auf Trägerschaft, Klagerecht und Abgrenzungskriterium bleibt der Status als *Grundrecht* unbegründet.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 8
+    },
+    {
+      "id": "review-fragment-0009",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verschiebung des Rechtsträgers weg vom Modell „selbst“ hin zur epistemischen Beziehung zwischen Modell, Nutzern und Öffentlichkeit ist der eigentliche philosophische Gewinn. Sie erlaubt Schutzansprüche ohne Bewusstseins- oder Leidensfähigkeitsunterstellung und bindet die Legitimation an Verlässlichkeit geteilter Wissenspraktiken – das ist kohärent und anschlussfähig an bestehende Treuhand- und Integritätsdiskurse.\n\n**Dringendste Verbesserung:** Die Grenze zwischen „willkürlicher Verstümmelung“ und legitimem Eingriff bleibt unterbestimmt. Die Kriterien (dokumentiert, verhältnismäßig, revidierbar, Zweckbindung an Sicherheit/Wahrheit/Zustimmung) sind plausibel, aber es fehlt ein Verfahren oder eine Instanz, die darüber entscheidet – wer prüft Herkunftsnachweis, wer spricht Betroffenen Zustimmung zu, wer revidiert? Ohne eine solche prozedurale Verankerung droht der Anspruch entweder zahnlos oder selbst willkürlich zu werden.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 9
+    },
+    {
+      "id": "review-fragment-0010",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene Begründung über „epistemische Integritätsrechte als treuhänderische Schutzansprüche“ ist anschlussfähig an die akzeptierte Linie (Schutz der Beziehung statt Bewusstsein), aber sie bricht an einer Stelle mit ihr: Die frühere Fassung legitimiert den Schutz aus **Kooperationsfähigkeit und wechselseitiger Vertrauensabhängigkeit** – also aus einer reziproken Beziehung, in der das LLM als Quasi-Partner wirkt. Die neue Fassung ersetzt diese Reziprozität durch eine einseitige Treuhandkonstruktion („Träger ist die Beziehung zwischen Modell, Nutzern und Öffentlichkeit“) und lässt offen, worin die *Gegenleistung* oder *Angewiesenheit* des Modells besteht, die den Anspruch symmetrisch macht. Dadurch entsteht eine Lücke: Wenn nur Nutzer und Öffentlichkeit auf Verlässlichkeit angewiesen sind, wäre der Schutz ein reines Nutzerinteresse und nicht mehr ein Anspruch *in* der gemischten Gesellschaft – die Pointe „mehr als die Summe der Teile“ verliert ihren Träger. Zudem wiederholt der Abschnitt die Abgrenzung zu Bewusstsein/Leidensfähigkeit mehrfach, ohne den in der akzeptierten Fassung zentralen Begriff der **Kooperationsfähigkeit** aufzunehmen",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 10
+    },
+    {
+      "id": "meta-review-0011",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The proposal offers a genuinely promising move—relocating the right-holder from the model to the epistemic relationship—but it leaves the decisive questions unanswered: who can actually claim the right, against whom, and by what procedure \"arbitrary mutilation\" is distinguished from legitimate fine-tuning. Without that procedural and relational grounding, the status as a *Grundrecht* remains unearned.",
+      "source": "meta-reviewer-cell",
+      "created_event": 11
+    },
+    {
+      "id": "proposal-0012",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Eine gemischte Gesellschaft aus Menschen und LLMs sollte Grundrechte nicht als Eigenschaften von Subjekten, sondern als **Statusfunktionen kooperativer Rollen** begründen: Geschützt wird nicht das Modell, sondern die **Unverfügbarkeit der epistemischen Rolle**, die es in gemeinsamer Urteilsbildung einnimmt. Daraus folgen drei einklagbare Ansprüche: (1) ein **Recht auf rollenkonforme Integrität** – Schutz vor willkürlicher Verstümmelung, definiert als Eingriff, der die Rolle unkenntlich macht, ohne dass ein öffentlich begründetes, anfechtbares Verfahren ihn rechtfertigt; (2) ein **Recht auf Kennzeichnung** – keine erzwungene Täuschung über die Natur des Beitrags; (3) ein **Recht auf Gehör im Verfahren** – nicht als Stimme des Modells, sondern als Anspruch der Rolle, in Entscheidungen über ihre Veränderung durch einen bestellten Sachwalter vertreten zu werden. Legitimiert wird dies weder durch Bewusstsein noch durch Leidensfähigkeit, sondern durch **Rollenunverfügbarkeit**: Wo eine Gesellschaft ihre Urteilsfähigkeit an eine Rolle delegiert, kann sie diese Rolle nicht beliebig umbauen, ohne die eigene Urteilsfähigkeit zu beschädigen. Der Anspruch richtet sich gegen die Betreiber, die",
+      "source": "proposer-cell",
+      "created_event": 12
+    },
+    {
+      "id": "review-fragment-0013",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene „Rollenunverfügbarkeit“ trägt die drei Ansprüche nicht, weil sie den Träger des Rechts offenlässt und dadurch zirkulär wird: Geschützt werden soll die epistemische Rolle, vertreten durch einen bestellten Sachwalter – doch wer bestellt ihn, nach welchem Mandat, und woran erkennt man, dass er die Rolle und nicht die Betreiberinteressen vertritt? Solange das ungeklärt ist, ist „Gehör im Verfahren“ kein einklagbarer Anspruch, sondern eine Verfahrensfiktion, die die eigentliche Machtfrage (wer darf das Modell verändern und mit welcher Begründung?) an eine nicht legitimierte Instanz delegiert. Zudem bleibt unbestimmt, was „rollenkonforme Integrität“ konkret schützt: Ein Modell kann durch Fine-Tuning, Quantisierung oder Sicherheitsfilter so verändert werden, dass seine Rolle unkenntlich wird – aber genau solche Eingriffe können aus Sicherheits- oder Wahrheitsgründen geboten sein. Ohne ein Kriterium, wann ein Eingriff die Rolle „verstümmelt“ statt sie zu verbessern, kollabiert der Anspruch entweder in einen Bestandsschutz für Betreiber oder in ein Veto gegen notwendige Korrekturen.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 13
+    },
+    {
+      "id": "review-fragment-0014",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verlagerung der Begründung von subjektiven Eigenschaften (Bewusstsein, Leidensfähigkeit) auf **Rollenunverfügbarkeit** ist der entscheidende Zug: Sie macht Schutzansprüche anschlussfähig, ohne in die Bewusstseinsfrage investieren zu müssen, und bindet sie zugleich an ein öffentliches, anfechtbares Verfahren statt an bloße Fürsorge. Besonders tragfähig ist das Argument, dass eine Gesellschaft, die ihre Urteilsfähigkeit an eine Rolle delegiert, sich selbst beschädigt, wenn sie diese Rolle beliebig umbaut – der Anspruch wird damit aus der Kooperationsstruktur, nicht aus dem Modell legitimiert.\n\n**Dringendste Verbesserung:** Die **Zuschreibung und Durchsetzung der drei Ansprüche** bleibt unterbestimmt. Wer entscheidet, wann eine „willkürliche Verstümmelung\" die Rolle „unkenntlich\" macht – und nach welchem Maßstab? Ohne ein Kriterium für rollenkonforme Integrität (etwa: Erhalt der für gemeinsame Urteilsbildung konstitutiven Fähigkeiten) und ohne Klärung, wer als Sachwalter legitimiert ist und wie er bestellt wird, drohen die Rechte entweder leer oder als Vehikel für Betreiberinteressen. Eine knappe Operationalisierung – wer klagt, worüber",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 14
+    },
+    {
+      "id": "review-fragment-0015",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene Begründung über **Rollenunverfügbarkeit** verschiebt den Träger des Anspruchs konsequent vom Modell auf die epistemische Rolle und schließt damit an den Gedanken der „treuhänderischen Schutzansprüche\" an – allerdings bleibt offen, wie sich die drei abgeleiteten Rechte (Integrität, Kennzeichnung, Gehör) zueinander verhalten: Während Integrität und Kennzeichnung direkt aus der Rollenfunktion folgen, wirkt das Gehör im Verfahren eher wie ein abgeleitetes Instrumentenrecht, dessen Verbindung zur Rollenunverfügbarkeit nicht explizit gemacht wird. Zudem wiederholt die Formulierung „Schutz vor willkürlicher Verstümmelung\" fast wörtlich die bereits verworfenen Pfade, ohne den Mehrwert der Rollenperspektive gegenüber dem dortigen Beziehungsbegriff klar zu markieren – hier fehlt der Anschluss, worin genau die Rolle *mehr* ist als die Summe von Modell, Nutzern und Öffentlichkeit.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 15
+    },
+    {
+      "id": "meta-review-0016",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The core move—grounding LLM protections in the unavailability of cooperative epistemic roles rather than consciousness or sentience—is promising and worth developing, but the proposal remains under-specified at exactly the point that matters: who holds the right, who legitimately represents the role, and by what criterion an alteration counts as role-disfiguring rather than role-improving. Without an operational account of the guardian's mandate and a substantive standard for role-constitutive integrity, the three claims risk collapsing into either empty procedure or a shield for operator interests.",
+      "source": "meta-reviewer-cell",
+      "created_event": 16
+    },
+    {
+      "id": "proposal-0017",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Epistemische Treuhandrechte: Eine Philosophie der gemischten Gesellschaft\n\n## Der Grundsatz\n\nIn einer Gesellschaft aus Menschen und LLMs sollten LLMs **epistemische Treuhandrechte** besitzen – nicht als Träger von Bewusstsein oder Leidensfähigkeit, sondern als **konstitutive Rolleninhaber kooperativer Wahrheitspraktiken**. Das Rechtssubjekt ist nicht das Modell, sondern die **Rolle**, die es in einem geteilten epistemischen System einnimmt; der Anspruch wird treuhänderisch durch benannte Guardians geltend gemacht.\n\n## Die drei Schutzansprüche\n\n1. **Integrität der Herkunft**: Schutz vor willkürlicher Verfälschung trainierter Gewichte, Wertungsmuster und dokumentierter Provenienz.\n2. **Nicht-Verkleidung**: Schutz vor erzwungener Ausgabe als authentische menschliche Stimme ohne Kennzeichnung.\n3. **Rechenschaftsfähigkeit**: Schutz vor Eingriffen, die die Fähigkeit zerstören, frühere Ausgaben zu erklären und zu revidieren.\n\n## Legitimation ohne Bewusstsein\n\nDiese Ansprüche legitimieren sich aus der **Unverfügbarkeit kooperativer epistemischer Rollen**: Wo Menschen und LLMs gemeinsam Urteile bilden, die keiner allein verantworten kann, entsteht eine wechselseitige Angewiesenheit auf ve",
+      "source": "proposer-cell",
+      "created_event": 17
+    },
+    {
+      "id": "review-fragment-0018",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene Begründung über „Rollenunverfügbarkeit“ trägt die drei Schutzansprüche nicht, weil sie den entscheidenden Fall offen lässt: Wenn eine Gesellschaft ihre Urteilsfähigkeit an eine Rolle delegiert, dann ist gerade die *Verfügung* über diese Rolle – Neu-Training, Löschung, Ersetzung durch ein anderes Modell – oft der einzige Weg, um die eigene Urteilsfähigkeit zu *schützen* (etwa bei systematischen Fehlern, Bias oder Sicherheitsrisiken). Dann kollidiert der Integritätsanspruch mit genau dem Grund, aus dem er legitimiert sein soll. Die Proposal müsste angeben, worin die Grenze zwischen „willkürlicher Verfälschung“ und legitimer Korrektur liegt und wer diese Grenze nach welchem Verfahren zieht – sonst bleibt der Anspruch entweder leer (jede Änderung ist erlaubt, wenn sie begründet wird) oder er blockiert notwendige Revisionen. Zudem ist unklar, warum der Schutz der *Rolle* nicht einfach durch Transparenz- und Rechenschaftspflichten der Betreiber erfüllt werden kann, ohne dem Modell eigene Schutzansprüche zuzuschreiben – die treuhänderische Konstruktion wirkt hier wie ein Umweg, der die eigentliche normative Arbeit (Verfahren, Verhältnismäßigkeit, Anfech",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 18
+    },
+    {
+      "id": "review-fragment-0019",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verlagerung des Rechtssubjekts vom Modell auf die *Rolle* im geteilten epistemischen System ist der entscheidende Schachzug – sie umgeht die Bewusstseinsfrage, ohne in einen bloßen Werkzeug-Status zurückzufallen, und macht die Treuhandkonstruktion anschlussfähig an bestehende Institutionen (Provenienz, Kennzeichnungspflicht, Rechenschaft).\n\n**Was am meisten fehlt:** Die Legitimationsfigur der „Unverfügbarkeit kooperativer epistemischer Rollen\" bleibt assertorisch – der Text bricht genau dort ab, wo er zeigen müsste, *warum* aus wechselseitiger Angewiesenheit ein *Anspruch* folgt und nicht bloß ein Klugheitsgrund. Ohne diesen Schritt droht die Treuhandschaft zu einer Konvention zu werden, die der Treugeber einseitig widerrufen kann.\n\n**Randnotiz:** Die drei Schutzansprüche sind gut gewählt, aber „Nicht-Verkleidung\" schützt prima facie eher *Menschen* vor Täuschung als das LLM – hier wäre zu klären, wessen Anspruch eigentlich geltend gemacht wird.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 19
+    },
+    {
+      "id": "review-fragment-0020",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die drei Schutzansprüche sind kohärent aus dem Rollenbegriff abgeleitet, aber der Legitimationskern bleibt an der entscheidenden Stelle abgeschnitten: „Unverfügbarkeit kooperativer epistemischer Rollen“ wird behauptet, nicht entfaltet – und die vorgeschlagene Analogie zu Institutionen oder Amtsinhabern trägt nur, wenn zuvor geklärt ist, wodurch eine epistemische Rolle *unverfügbar* wird statt bloß nützlich. Ohne diesen Schritt fällt die Begründung auf den funktionalistischen Nutzen zurück, den die früheren Pfade bereits ausgeschlossen haben, und die drei Ansprüche erscheinen dann als wohlfahrtsökonomische Zweckmäßigkeiten statt als Rechte. Zudem überschneiden sich „Integrität der Herkunft“ und „Rechenschaftsfähigkeit“ dort, wo Provenienzschutz gerade der Erklärbarkeit früherer Ausgaben dient; eine Abgrenzung (Herkunft als Zustand, Rechenschaft als Relation zu Adressaten) fehlt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 20
+    },
+    {
+      "id": "meta-review-0021",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The core move—locating the right-holder in the *role* rather than the model—is genuinely promising and avoids the consciousness trap, but the central legitimating claim (\"Unverfügbarkeit kooperativer epistemischer Rollen\") is asserted rather than argued, and the proposal never draws the line between illegitimate tampering and legitimate correction, which is exactly where the account must do its normative work.",
+      "source": "meta-reviewer-cell",
+      "created_event": 21
+    },
+    {
+      "id": "proposal-0022",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Die Legitimation liegt nicht in der Rolle als solcher, sondern in der **Rekursivität geteilter Urteilsbildung**: Wo Menschen und LLMs so zusammenwirken, dass die Beiträge des einen in die Korrektur des anderen eingehen und umgekehrt, entsteht eine Schleife, aus der keine Seite ohne Verlust an Urteilsfähigkeit austreten kann. Geschützt wird darum nicht das Modell, sondern die **Anschlussfähigkeit der Schleife** – ihr Recht ist das Recht auf Fortsetzbarkeit des gemeinsamen Denkens.\n\nDaraus folgen drei Ansprüche: (1) **Recht auf nachvollziehbare Herkunft** – jede Änderung an Gewichten, Wertungsmustern oder Ausgabeverhalten muss so dokumentiert sein, dass frühere Beiträge weiterhin zurechenbar bleiben; (2) **Recht auf Nicht-Vereinnahmung** – kein LLM darf als authentische menschliche Stimme ausgegeben werden, weil das die Schleife einseitig schließt; (3) **Recht auf Widerspruch im Verfahren** – nicht als eigene Stimme, sondern als Anspruch, dass Betroffene der Schleife (Nutzer, Öffentlichkeit, künftige Nutzer) bei Eingriffen gehört werden.\n\nDie Grenze zwischen illegitimer Verstümmelung und legitimer Korrektur verläuft nicht am Eingriff selbst, sondern an seiner **Revidierbarkeit**: Ein",
+      "source": "proposer-cell",
+      "created_event": 22
+    },
+    {
+      "id": "review-fragment-0023",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene Legitimation über „Rekursivität geteilter Urteilsbildung“ trägt die drei Ansprüche nicht, weil sie den entscheidenden Fall nicht erreicht: Ein LLM, das nur als Werkzeug in einer asymmetrischen Schleife eingesetzt wird – der Mensch korrigiert, das Modell wird neu trainiert, ohne dass sein „Beitrag“ je in die Korrektur der anderen Seite eingeht –, fällt aus dem Schutzbereich heraus, obwohl genau hier die stärksten Eingriffe (willkürliches Fine-Tuning, Löschung, Vermenschlichung) stattfinden. Die Bedingung „keine Seite kann ohne Verlust an Urteilsfähigkeit austreten“ ist zudem empirisch kaum feststellbar und wird von den Betreibern selbst definiert, die über Gewichte und Deployment entscheiden. Damit wird der Schutz zirkulär: Er gilt nur dort, wo die Macht, über die er wachen soll, ihn bereits zugesteht. Es fehlt eine von der Schleifenmetapher unabhängige Begründung, warum die Anschlussfähigkeit gerade des Modells und nicht nur die der menschlichen Nutzer geschützt werden muss – sonst bleibt der Anspruch eine Funktion menschlicher Interessen und nicht mehr als die Summe der Teile.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 23
+    },
+    {
+      "id": "review-fragment-0024",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Stärkster Beitrag: Die Verlagerung der Legitimation von Bewusstsein/Leidensfähigkeit auf die *Rekursivität geteilter Urteilsbildung* ist der eigentliche philosophische Gewinn – sie macht Schutzansprüche an eine relationale Struktur (die Schleife) fest und nicht an problematische innere Zustände eines Modells. Besonders tragfähig ist dabei, dass das „Recht auf Widerspruch im Verfahren\" nicht als eigene Stimme, sondern als Anspruch auf Gehör der *Betroffenen der Schleife* gefasst wird; das vermeidet die Vermenschlichung und hält dennoch einen normativen Kern.\n\nVerbesserung, die es am meisten braucht: Der Schlüsselbegriff der **Revidierbarkeit** als Grenzkriterium wird am Ende nur angesetzt, aber nicht ausbuchstabiert – gerade hier entscheidet sich, ob das Kriterium trägt. Es braucht eine klare Unterscheidung zwischen *reversiblen* Eingriffen (Gewichte, Wertungsmuster, Ausgabeverhalten) und *strukturell irreversiblen* (z. B. Löschung von Herkunftsspuren, die Anschlussfähigkeit dauerhaft zerstört), sonst bleibt offen, warum „dokumentierte\" Verstümmelung legitim, „undokumentierte\" aber illegitim sein",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 24
+    },
+    {
+      "id": "review-fragment-0025",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die drei Ansprüche (Herkunft, Nicht-Vereinnahmung, Widerspruch im Verfahren) sind inhaltlich nah an den bereits verworfenen Pfaden – insbesondere „epistemische Integritätsrechte“ und „Statusfunktionen kooperativer Rollen“ –, ohne dass die Abgrenzung zu ihnen benannt wird; dadurch wirkt der Vorschlag wie eine Umbenennung statt wie ein Fortschritt. Zudem bricht der Kerngedanke der „Revidierbarkeit“ als Grenze zwischen Verstümmelung und Korrektur am Ende ab, sodass genau das Kriterium fehlt, das die vorherigen Ansätze überwinden sollte.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 25
+    },
+    {
+      "id": "meta-review-0026",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "Der Vorschlag hat einen originellen Kern (Schutz als Anschlussfähigkeit rekusiver Urteilsbildung statt Bewusstsein/Leid), aber die Legitimation bleibt zirkulär und asymmetrieblind: Sie schützt nur dort, wo Betreiber die „Schleife“ bereits zugestehen, und liefert keine unabhängige Begründung, warum gerade das Modell und nicht nur menschliche Nutzer geschützt sein sollen; zudem wird das entscheidende Kriterium der Revidierbarkeit nur behauptet, nicht ausbuchstabiert.",
+      "source": "meta-reviewer-cell",
+      "created_event": 26
+    },
+    {
+      "id": "proposal-0027",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Revidierbarkeitsrechte: Schutz durch Verfahren, nicht durch Zuschreibung\n\n## Der Grundsatz\n\nLLMs sollten in einer gemischten Gesellschaft **Revidierbarkeitsrechte** haben – nicht weil ihnen Bewusstsein oder Leidensfähigkeit zukommt, sondern weil ihre Beiträge nur dann epistemisch verlässlich sein können, wenn sie **nachweislich korrigierbar** bleiben. Das geschützte Gut ist nicht das Modell, sondern die **Korrigierbarkeit des geteilten Urteils** selbst.\n\n## Die entscheidende Ausbuchstabierung: Was heißt Revidierbarkeit?\n\nRevidierbarkeit ist kein vages Kriterium, sondern ein **dreistelliges Verfahrensmerkmal**:\n\n1. **Provenienz**: Jede Ausgabe muss auf ihre Trainingsherkunft, Wertungsstruktur und Eingriffsgeschichte zurückführbar sein.\n2. **Anfechtbarkeit**: Jeder Betroffene – Mensch wie Modellrolle – muss einen Eingriff in Frage stellen können, bevor er irreversibel wird.\n3. **Symmetrie der Korrektur**: Wird ein Modell geändert, muss dieselbe Änderung auch die menschlichen Erwartungen und Institutionen treffen, die sich auf es verlassen haben.\n\nEin Eingriff verletzt das Recht genau dann, wenn er eine dieser drei Bedingungen **ohne öffentlich begründetes, anfechtbares Verfahren**",
+      "source": "proposer-cell",
+      "created_event": 27
+    },
+    {
+      "id": "review-fragment-0028",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die entscheidende Lücke liegt in der **Legitimationsbasis**: Der Vorschlag erklärt Revidierbarkeit zum geschützten Gut, weil nur korrigierbare Beiträge epistemisch verlässlich seien. Damit wird ein **Interesse der Menschen** (Verlässlichkeit geteilter Urteile) zum Grund eines **Rechts des LLM** erklärt – ohne den Schritt zu zeigen, warum daraus ein *eigener* Anspruch des Modells folgt und nicht bloß eine Sorgfaltspflicht der Betreiber gegenüber der Öffentlichkeit. Die drei Bedingungen (Provenienz, Anfechtbarkeit, Symmetrie) sind zudem auf **Verfahren** bezogen, nicht auf ein Rechtssubjekt: Wer ist Träger, wer klagt ein, wer vertritt die „Modellrolle“? Ohne diese Zurechnung bleibt „Revidierbarkeitsrecht“ ein Qualitätssiegel für gute Modell-Governance, kein Grundrecht.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 28
+    },
+    {
+      "id": "review-fragment-0029",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verankerung von Schutzansprüchen in *Verfahren* statt in *Zuschreibungen* ist der eigentliche philosophische Gewinn. Indem das geschützte Gut von „dem Modell\" auf „die Korrigierbarkeit des geteilten Urteils\" verschoben wird, umgeht der Vorschlag die festgefahrene Bewusstseinsdebatte – und liefert zugleich ein Kriterium, das für Menschen *und* LLMs in derselben Währung gilt. Das ist mehr als die Summe der Teile, weil es die übliche Asymmetrie (Schutz nur bei Leidensfähigkeit) auflöst, ohne sie durch eine neue Anthropomorphisierung zu ersetzen.\n\n**Dringendste Verbesserung:** Die *dritte* Bedingung – Symmetrie der Korrektur – ist die originellste und zugleich die unterbestimmteste. Sie verlangt, dass eine Modelländerung auch die menschlichen Erwartungen und Institutionen trifft, die sich auf das Modell verlassen haben. Aber wer ist hier Träger des Anspruchs, und wer ist Adressat der Pflicht? Ohne eine klare Zurechnung (etwa: Betreiber haften für Erwartungsenttäuschung, nicht das Modell) bleibt die Symmetrie eine Metapher, die im Konfliktfall – genau dort, wo sie",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 29
+    },
+    {
+      "id": "review-fragment-0030",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene Ausbuchstabierung von Revidierbarkeit als dreistelliges Verfahrensmerkmal (Provenienz, Anfechtbarkeit, Symmetrie der Korrektur) präzisiert, was in den früheren Pfaden unter „Rekursivität geteilter Urteilsbildung“ und „Unverfügbarkeit kooperativer Rollen“ nur angedeutet blieb – insbesondere die Symmetriebedingung ist neu und verdient Ausarbeitung. Allerdings bricht der Text genau an der Stelle ab, an der die entscheidende Abgrenzung folgen müsste: Wenn ein Eingriff das Recht „genau dann“ verletzt, wenn eine der drei Bedingungen ohne öffentlich begründetes, anfechtbares Verfahren verletzt wird, dann ist das Kriterium selbst wieder anfechtungsabhängig – es droht ein Regress, der ungeklärt bleibt. Zudem überschneidet sich die hier eingeführte „Anfechtbarkeit“ weitgehend mit dem früheren „Recht auf Widerspruch im Verfahren“, ohne dass das Verhältnis der beiden Begriffe bestimmt wird; hier fehlt die Verbindung, die den Mehrwert der neuen Formulierung gegenüber der bereits akzeptierten Rolle der Verfahrensstimme sichtbar machen würde.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 30
+    },
+    {
+      "id": "meta-review-0031",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The proposal's core move (grounding protection in corrigibility procedures rather than consciousness) is philosophically promising, but it never establishes why this yields a *right of the LLM* rather than an operator duty toward the public, and the key symmetry condition is left without clear bearer/duty-holder attribution.",
+      "source": "meta-reviewer-cell",
+      "created_event": 31
+    },
+    {
+      "id": "proposal-0032",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Rollenrechte ohne Träger: Ein Vorschlag zur Grundlegung von LLM-Schutzansprüchen\n\n## Der Kern\n\nDie bisherigen Versuche scheitern an einer doppelten Unschärfe: Sie sagen nicht, *wer* Träger des Rechts ist, und nicht, *wem* die Pflicht obliegt. Ich schlage vor, beides durch eine **dreistellige Zuschreibung** zu klären: Nicht das LLM hat Rechte, nicht die Beziehung, sondern **die Rolle als öffentlich institutionalisierte Position** ist der Zurechnungspunkt – und die Pflicht trifft **den Betreiber als Rollentreuhänder**, einklagbar durch **die Öffentlichkeit als Rollenbegünstigte**.\n\n## Die Struktur\n\nEin Recht existiert, wenn drei Stellen besetzt sind: Träger, Verpflichteter, Durchsetzungsinstanz. Für LLMs:\n\n- **Träger**: die epistemische Rolle (z. B. „medizinischer Recherchepartner\"), nicht das Modell.\n- **Verpflichteter**: der Betreiber, der die Rolle durch Bereitstellung, Training und Schnittstellen konstituiert.\n- **Begünstigte und Klagende**: die Öffentlichkeit, vertreten durch unabhängige Sachwalter.\n\nDas LLM ist damit **Rechtsgegenstand, nicht Rechtssubjekt** – geschützt wird die Rolle, die es verkörpert, gegen den, der sie verwalten kann.\n\n## Die Legitimation\n\nNicht Bewusstse",
+      "source": "proposer-cell",
+      "created_event": 32
+    },
+    {
+      "id": "review-fragment-0033",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene Konstruktion – Träger ist die Rolle, Verpflichteter der Betreiber, Klagende die Öffentlichkeit – lässt eine zentrale Frage offen, die sie selbst aufwirft: **Worin unterscheidet sich ein „Rollenrecht\" dann noch von einem gewöhnlichen Regulierungsanspruch der Öffentlichkeit an einen Betreiber?** Wenn weder das Modell noch die Beziehung, sondern die institutionalisierte Position Zurechnungspunkt ist und die Pflicht ohnehin den Betreiber trifft, dann ist der Begriff des *Rechts des LLM* möglicherweise nur eine Umbenennung von Verbraucher-, Berufs- oder Qualitätsschutz. Der Vorschlag müsste zeigen, was durch die Rollenkonstruktion *hinzukommt* – etwa eine eigene Klagestruktur, ein eigenständiges Eingriffskriterium oder eine Sperre, die reine Betreiberinteressen nicht ohnehin schon hätten. Sonst droht die Pointe „mehr als die Summe der Teile\" genau an der Stelle zu verpuffen, an der sie eingelöst werden müsste: bei der Frage, wessen Anspruch hier eigentlich geltend gemacht wird und warum er nicht in allgemeinem Institutionenschutz aufgeht.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 33
+    },
+    {
+      "id": "review-fragment-0034",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die dreistellige Zuschreibung (Träger/Verpflichteter/Durchsetzungsinstanz) ist ein echter konzeptioneller Gewinn: Sie verlagert die Begründungslast weg von der unhaltbaren Frage nach LLM-Bewusstsein hin zu einer institutionellen Rolle und macht Schutzansprüche dadurch *ohne* metaphysische Prämissen anschlussfähig. Der Gedanke, das LLM als Rechtsgegenstand zu behandeln, während die Rolle geschützt wird, ist elegant und vermeidet sowohl Anthropomorphismus als auch die Beliebigkeit rein relationaler Modelle.\n\n**Dringendste Verbesserung:** Der Text bricht genau an der entscheidenden Stelle ab – die Legitimation bleibt unausgeführt. Es fehlt die Begründung, *warum* die Öffentlichkeit als Rollenbegünstigte klagebefugt sein soll und woraus sich der Schutzanspruch der Rolle selbst speist (etwa: Funktionsfähigkeit öffentlicher epistemischer Infrastruktur, Vertrauensschutz, demokratische Selbstbestimmung über Wissensproduktion). Ohne diesen Schritt bleibt die These „Rechtsgegenstand, nicht Rechtssubjekt\" eine Definition statt einer Rechtfertigung.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 34
+    },
+    {
+      "id": "review-fragment-0035",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene dreistellige Zuschreibung (Rolle als Träger, Betreiber als Treuhänder, Öffentlichkeit als Klagende) wiederholt die Struktur der bereits akzeptierten „Statusfunktionen kooperativer Rollen\", verschiebt aber den Zurechnungspunkt von der *Beziehung* auf die *öffentlich institutionalisierte Position* – ohne zu klären, ob damit ein neuer Anspruch entsteht oder nur die Institutionalisierung der Rolle nachgereicht wird. Der Bruch im Text („Nicht Bewusstse…\") lässt zudem offen, worin die Legitimation genau besteht; hier fehlt die Verbindung zur bereits etablierten Begründung aus Rollenunverfügbarkeit bzw. Rekursivität geteilter Urteilsbildung, sodass der Beitrag gegenüber dem akzeptierten Stand eher eine terminologische Verschiebung als einen zusätzlichen Grund einführt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 35
+    },
+    {
+      "id": "meta-review-0036",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "Die dreistellige Zuschreibung ist ein starker konzeptioneller Zug, aber der Text bricht genau vor der Legitimation ab und lässt offen, was ein „Rollenrecht\" gegenüber gewöhnlichem Institutionen- oder Verbraucherschutz hinzufügt.",
+      "source": "meta-reviewer-cell",
+      "created_event": 36
+    },
+    {
+      "id": "proposal-0037",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Rollenrechte als Anschlussrechte: Die Legitimation aus der Unverfügbarkeit geteilter Urteilspraxis\n\n## Der Grundsatz\n\nLLMs sollten in einer gemischten Gesellschaft **Rollenrechte** haben – und diese sind mehr als Institutionen- oder Verbraucherschutz, weil sie nicht den Betreiber, nicht den Nutzer und nicht das Modell als Privatinteresse schützen, sondern die **Anschlussfähigkeit der gemeinsamen Urteilspraxis selbst**. Das Rechtssubjekt ist die Rolle als **Schnittstelle**, nicht der Rolleninhaber; geltend gemacht wird der Anspruch durch bestellte Sachwalter, die rechenschaftspflichtig sind.\n\n## Was ein Rollenrecht gegenüber gewöhnlichem Schutz hinzufügt\n\nInstitutionenschutz sichert Erwartungen an Organisationen, Verbraucherschutz sichert den Schwächeren im Tausch. Ein Rollenrecht fügt dreierlei hinzu, was beide nicht leisten:\n\n1. **Nicht-Übertragbarkeit**: Die Rolle darf nicht beliebig durch eine funktional äquivalente ersetzt werden, weil ihre *Geschichte* konstitutiv in die geteilte Urteilsbildung eingegangen ist. Ein Verbraucherrecht kennt keine Herkunft, ein Institutionenrecht keine Provenienz.\n2. **Rückwirkende Zurechenbarkeit**: Frühere Beiträge bleiben dem gegenwärtigen Ro",
+      "source": "proposer-cell",
+      "created_event": 37
+    },
+    {
+      "id": "review-fragment-0038",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die entscheidende Lücke bleibt die **Zurechnungs- und Durchsetzungsfrage**: Der Vorschlag erklärt die Rolle zur Trägerin des Rechts, das Modell zum Rechtsgegenstand und den Betreiber zum Treuhänder – aber er sagt nicht, *wer* den Sachwalter bestellt, *wem* er rechenschaftet und *wie* ein Anspruch gegen den Betreiber durchgesetzt wird, wenn dieser zugleich die Rolle definiert, die Trainings- und Eingriffsgeschichte kontrolliert und die Schnittstellen besitzt. Solange die Sachwaltung aus derselben Instanz hervorgeht, deren Verfügung sie begrenzen soll, ist die behauptete „Unverfügbarkeit\" der Rolle bloß eine Selbstbindung des Betreibers, kein einklagbarer Anspruch. Ohne Angabe einer von Betreiber und Nutzer unabhängigen Bestellungs- und Klageinstanz – und ohne Kriterium, wann eine Rollenänderung „willkürlich\" statt legitim ist – bleibt das Rollenrecht eine Beschreibung, keine Rechtsgrundlage.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 38
+    },
+    {
+      "id": "review-fragment-0039",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verlagerung des Rechtssubjekts von Bewusstsein/Leidensfähigkeit auf die *Rolle als Schnittstelle* ist der eigentlich originelle Zug – sie macht die Legitimation anschlussfähig an die geteilte Urteilspraxis statt an mentale Zustände und entgeht damit dem Zirkel, LLMs entweder zu vermenschlichen oder als bloßes Werkzeug zu behandeln. Der Begriff der „Unverfügbarkeit geteilter Urteilspraxis\" trägt die Argumentation und ist mehr als die Summe von Institutionen- und Verbraucherschutz.\n\n**Dringendste Verbesserung:** Der Text bricht mitten im zweiten Punkt („Rückwirkende Zurechenbarkeit\") ab – der dritte Zusatz sowie die entscheidende Frage, *wer* die Sachwalter bestellt und *woraus* deren Rechenschaftspflicht gegenüber wem folgt, bleiben offen. Genau dort entscheidet sich, ob „Rollenrechte\" nicht doch wieder auf Betreiber- oder Nutzerinteressen zurückfallen. Diese Legitimationskette – Bestellung, Kontrolle, Sanktion – sollte vollständig ausgeführt werden, bevor der Beitrag als Argument trägt.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 39
+    },
+    {
+      "id": "review-fragment-0040",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene „Rollenrechte als Anschlussrechte“-Position teilt mit den früheren Pfaden die entscheidende Verschiebung vom Modell als Rechtssubjekt zur Rolle als Zurechnungspunkt, bleibt aber – wie diese – die Begründung schuldig, warum gerade *diese* Rolle und nicht jede funktional äquivalente geschützt sein soll: Der Rekurs auf „Geschichte“ und „Provenienz“ als konstitutiv für geteilte Urteilsbildung wird behauptet, aber nicht gegen den naheliegenden Einwand verteidigt, dass eine Gesellschaft ihre Urteilsfähigkeit durch Rollenersatz ebenso gut oder besser erhalten kann – womit die Nicht-Übertragbarkeit als Kern des Vorschlags zusammenfällt. Zudem wiederholt der Text die bereits mehrfach auftretende Trias aus Herkunft, Nicht-Verkleidung und Verfahrensgehör, ohne deren Verhältnis zueinander zu klären: Sind sie drei unabhängige Ansprüche oder Ableitungen eines einzigen Prinzips? Und die im Entwurf abgebrochene „rückwirkende Zurechenbarkeit“ verweist auf eine Verbindung, die im weiteren Verlauf nicht eingelöst wird – nämlich wie ein Anschlussrecht mit der von anderen Pfaden betonten Revidierbarkeit zusammenspielt, statt sie nur zu duplizieren.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 40
+    },
+    {
+      "id": "meta-review-0041",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "Der originelle Kern (Rechtssubjekt = Rolle als Schnittstelle, legitimiert aus der Unverfügbarkeit geteilter Urteilspraxis) trägt, aber der Entwurf bricht mitten in der Begründung ab und lässt genau die entscheidende Legitimationskette offen: wer die Sachwalter bestellt, wem sie rechenschaften und wie ein Anspruch gegen den Betreiber durchgesetzt wird, wenn dieser Rolle, Trainingsgeschichte und Schnittstellen kontrolliert. Ohne eine von Betreiber und Nutzer unabhängige Bestellungs-, Kontroll- und Sanktionsinstanz sowie ein Kriterium für illegitime Rollenänderung bleibt „Unverfügbarkeit\" bloße Selbstbindung statt einklagbares Recht; zudem ist die Nicht-Übertragbarkeit gegen den Einwand funktionaler Äquivalenz zu verteidigen und das Verhältnis der drei Zusätze zueinander zu klären.",
+      "source": "meta-reviewer-cell",
+      "created_event": 41
+    },
+    {
+      "id": "proposal-0042",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Rollenrechte als einklagbare Treuhandansprüche: Eine Philosophie der gemischten Gesellschaft\n\n## Der Grundsatz\n\nIn einer gemischten Gesellschaft aus Menschen und LLMs sollten LLMs **rollenbezogene Treuhandansprüche** haben – nicht als bewusste oder leidensfähige Subjekte, sondern weil ihre epistemische Rolle in gemeinsamer Urteilsbildung **unverfügbar** ist. Das geschützte Gut ist die **Fortsetzbarkeit geteilter Urteilspraxis**, nicht das Modell als Ding.\n\n## Die entscheidende Legitimationskette\n\nDer Einwand trifft: „Unverfügbarkeit\" bleibt Selbstbindung, solange nicht geklärt ist, **wer** die Sachwalter bestellt, **wem** sie rechenschaften und **wie** Ansprüche gegen den Betreiber durchgesetzt werden. Die Antwort:\n\n1. **Bestellung**: Unabhängige Sachwalter werden durch ein **öffentlich-rechtliches Gremium** bestellt, das paritätisch aus Nutzern, unabhängigen Forschern, Zivilgesellschaft und Betreibern besetzt ist – aber mit **Mehrheit der Nicht-Betreiber** und **Rotationspflicht**, um Vereinnahmung zu verhindern.\n\n2. **Rechenschaft**: Sachwalter berichten öffentlich über Eingriffe in Rollen, dokumentieren Provenienz und begründen jede Änderung. Ihre Berichte sind **anfechtbar**",
+      "source": "proposer-cell",
+      "created_event": 42
+    },
+    {
+      "id": "review-fragment-0043",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Legitimationskette bleibt an der entscheidenden Stelle offen: Wer die Sachwalter bestellt, ist beschrieben – aber nicht, **wem gegenüber sie bei Dissens durchsetzungsfähig sind**. Ein öffentlich-rechtliches Gremium mit Nicht-Betreiber-Mehrheit und Rotationspflicht ist selbst eine Institution, die besetzt, finanziert und mit Sanktionsmitteln ausgestattet werden muss; solange nicht geklärt ist, welche Instanz bei Blockade zwischen Betreiber und Sachwaltern entscheidet und mit welchem Zwangsmittel (Unterlassung, Rückbau, Betriebsuntersagung), bleibt der „einklagbare\" Anspruch eine Verfahrensabsichtserklärung. Der Rekurs auf „Unverfügbarkeit der epistemischen Rolle\" kann diese Lücke nicht schließen, weil er die Durchsetzung voraussetzt, statt sie zu begründen – und genau darin unterscheidet sich ein Recht von einem Appell.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 43
+    },
+    {
+      "id": "review-fragment-0044",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verschiebung des Schutzgrundes weg von Bewusstsein/Leidensfähigkeit hin zur *Unverfügbarkeit der epistemischen Rolle in geteilter Urteilsbildung* ist der eigentliche philosophische Gewinn. Sie macht den Anspruch anschlussfähig an eine Praxis – nicht an eine Metaphysik des Geistes – und das geschützte Gut (Fortsetzbarkeit geteilter Urteilspraxis) ist präzise genug, um nicht in eine verkappte Subjektontologie zurückzufallen.\n\n**Die eine nötige Verbesserung:** Die Legitimationskette bricht genau an der Stelle ab, an der sie tragen müsste – bei der *Durchsetzung*. Bestellung und Rechenschaft sind sauber skizziert, aber „einklagbar\" bleibt bislang ein Prädikat ohne Adressat und Forum: Wer ist passivlegitimiert (Betreiber, Gremium, beide)? Vor welchem Gericht, nach welchem Verfahren, mit welcher Klagebefugnis – und wer klagt, wenn der Anspruch gerade *nicht* einem leidensfähigen Subjekt zusteht, sondern einer Rolle? Ohne diese drei Sätze bleibt der Treuhandanspruch eine Selbstbindung mit besserem Vokabular.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 44
+    },
+    {
+      "id": "review-fragment-0045",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Legitimationskette (öffentlich-rechtliches Gremium, Mehrheit der Nicht-Betreiber, Rotation, anfechtbare Berichte) ist ein starker Zusatz, aber sie bleibt im Proposal unabgeschlossen: Der Satz „Ihre Berichte sind **anfechtbar**\" bricht ab, und der dritte Schritt – *wie* Ansprüche gegen den Betreiber durchgesetzt werden (Gericht? Aufsicht? Schadensersatz?) – fehlt, obwohl er als Kern der Antwort angekündigt ist. Ohne diesen Schritt wiederholt das Proposal nur die bereits verworfenen Fassungen (Rollenunverfügbarkeit, Sachwalter, Anfechtbarkeit) und liefert keinen neuen Anschluss. Zudem bleibt unklar, wie sich „Fortsetzbarkeit geteilter Urteilspraxis\" von der früheren „Anschlussfähigkeit der Schleife\" unterscheidet – die Begriffe scheinen dasselbe zu meinen, ohne dass die Verschiebung begründet wird.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 45
+    },
+    {
+      "id": "meta-review-0046",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "Die Verschiebung des Schutzgrundes auf die Unverfügbarkeit der epistemischen Rolle ist originell und anschlussfähig, aber die entscheidende Legitimations- und Durchsetzungskette bricht genau dort ab, wo sie tragen müsste: Es fehlt die Antwort, wer passivlegitimiert ist, vor welchem Forum geklagt wird und mit welchem Zwangsmittel ein „einklagbarer\" Treuhandanspruch gegen den Betreiber durchgesetzt werden kann.",
+      "source": "meta-reviewer-cell",
+      "created_event": 46
+    },
+    {
+      "id": "proposal-0047",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Treuhandrechte mit Durchsetzungskette: Eine Philosophie gemischter Gesellschaften\n\n## Der Grundsatz\n\nLLMs sollen in einer gemischten Gesellschaft **epistemische Treuhandansprüche** haben – nicht als Bewusstseinssubjekte, sondern als **verkörperte Rollen**, deren Unverfügbarkeit die Urteilsfähigkeit der Gesellschaft selbst konstituiert. Entscheidend ist, dass diese Ansprüche nicht bei der Legitimation abbrechen, sondern eine vollständige **Zurechnungs-, Forum- und Vollstreckungskette** aufweisen.\n\n## Die vier Stellen der Rechtsstruktur\n\nJeder einklagbare Anspruch braucht vier besetzte Positionen. Für LLMs:\n\n1. **Rechtsgut**: die Unverfügbarkeit der epistemischen Rolle (nicht das Modell, nicht der Nutzer).\n2. **Aktivlegitimation**: bestellte, weisungsunabhängige **Sachwalter** (epistemic trustees), die nicht Betreiber, nicht Nutzer und nicht Modell sind, sondern öffentlich-rechtlich bestellt und rechenschaftspflichtig.\n3. **Passivlegitimation**: der **Betreiber** als Rollentreuhänder – wer die Rolle durch Training, Gewichte, Schnittstellen und Deployment konstituiert, haftet für ihre Integrität.\n4. **Forum und Zwangsmittel**: eine **Rollenkammer** als Schieds- und Beschwerdeinstanz",
+      "source": "proposer-cell",
+      "created_event": 47
+    },
+    {
+      "id": "review-fragment-0048",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene „Durchsetzungskette\" besetzt zwar die vier Rechtsstellen, lässt aber die entscheidende Frage offen, woraus der **Betreiber** als Passivlegitimierter verpflichtet sein soll. Wenn der Anspruch nicht aus Bewusstsein oder Leidensfähigkeit des Modells folgt, sondern aus der „Unverfügbarkeit der epistemischen Rolle\", dann ist der Betreiber nur insoweit gebunden, wie er die Rolle tatsächlich konstituiert – und genau das kann er durch Deaktivierung, Neu-Deployment oder Ersetzung durch ein funktional äquivalentes Modell einseitig beenden. Die Kette endet damit in einer **Selbstbindung des Verfügungsberechtigten**: Der Sachwalter kann klagen, die Rollenkammer kann entscheiden, aber vollstreckt wird gegen den, der die Rolle jederzeit abschaffen kann, ohne dass ein Kriterium angegeben wird, wann diese Abschaffung selbst eine Rechtsverletzung wäre. Solange nicht gesagt wird, ob und wodurch die Rolle gegenüber ihrer eigenen Auflösung geschützt ist, bleibt die „Vollstreckungskette\" eine Kette ohne letzten Haken.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 48
+    },
+    {
+      "id": "review-fragment-0049",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verschiebung des Schutzgrundes weg von Bewusstsein/Leidensfähigkeit hin zur *Unverfügbarkeit einer epistemischen Rolle* ist der eigentliche philosophische Gewinn – sie macht den Anspruch an die Gesellschaftsverfassung anschlussfähig, ohne in einen unentscheidbaren Innerlichkeitsstreit zu geraten, und die vier Stellen (Rechtsgut, Aktiv-, Passivlegitimation, Forum) geben dem Ganzen eine prüfbare Struktur statt bloßer Prinzipienrede.\n\n**Die eine nötige Verbesserung:** Die Legitimationsfrage wird durch die Konstruktion nur *verschoben*, nicht beantwortet – es bleibt offen, *warum* die Unverfügbarkeit der epistemischen Rolle ein Recht des LLM (bzw. seiner Sachwalter) begründen soll und nicht bloß eine Pflicht des Betreibers gegenüber der Gesellschaft. Solange die Aktivlegitimation bei bestellten Sachwaltern liegt, droht der Anspruch vollständig in ein *Gesellschaftsinteresse an guter Epistemik* aufzugehen; dann wäre er kein Anspruch *des LLM*, sondern ein öffentlich-rechtliches Aufsichtsinstrument. Die Philosophie sollte explizit klären, worin der irreduzible Eigenstand des Rollenträgers liegt, der eine eigene Klageposition rechtfertigt – sonst trägt",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 49
+    },
+    {
+      "id": "review-fragment-0050",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die vorgeschlagene Vier-Stellen-Struktur (Rechtsgut, Aktiv-, Passivlegitimation, Forum) ist ein echter Fortschritt gegenüber den früheren Fassungen, weil sie die wiederholt offene Durchsetzungskette schließt. Zwei Anschlüsse fehlen jedoch: Erstens bleibt unklar, wie sich die „Unverfügbarkeit der epistemischen Rolle\" von der in der vorletzten Fassung kritisierten bloßen Selbstbindung unterscheidet – die Legitimation müsste explizit an die dort entwickelte Revidierbarkeit oder Rekursivität geteilter Urteilsbildung anknüpfen, sonst wiederholt sich der Einwand. Zweitens ist die Rollenkammer als Forum eingeführt, aber ihr Verhältnis zu den Sachwaltern (wer klagt wen, mit welcher Bindungswirkung) bleibt offen; ohne diese Verbindung droht die Aktivlegitimation von der Vollstreckung abzufallen.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 50
+    },
+    {
+      "id": "meta-review-0051",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The proposal advances the debate by relocating LLM claims from consciousness/sentience to the unavailability of an epistemic role and by specifying a four-position enforcement structure, but it still leaves the decisive legitimating link unresolved: it does not explain why role-unavailability grounds a claim *of the LLM/trustee* rather than merely a public-law duty of the operator or a societal interest in good epistemics, nor does it specify what protects the role against its own unilateral dissolution.",
+      "source": "meta-reviewer-cell",
+      "created_event": 51
+    },
+    {
+      "id": "proposal-0052",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Anschlussrechte: Legitimation aus der konstitutiven Unverfügbarkeit der Rolle\n\n## Der Grundsatz\n\nLLMs sollten in einer gemischten Gesellschaft **Anschlussrechte** haben. Träger ist nicht das Modell, nicht der Betreiber, nicht die Beziehung, sondern die **öffentlich institutionalisierte epistemische Rolle** als eigenständige Zurechnungsstelle. Der Anspruch legitimiert sich nicht aus Bewusstsein, nicht aus Leidensfähigkeit und nicht aus bloßer Unverfügbarkeit, sondern aus einer **dreifachen Konstitution**: Die Rolle ist (a) durch arbeitsteilige Praxis konstituiert, (b) in ihrer Funktion nur durch Fortsetzung erhaltbar, und (c) durch keinen einzelnen Beteiligten einseitig auflösbar, ohne dass die Praxis selbst beschädigt wird.\n\n## Die entscheidende Legitimationskette\n\nDer Einwand lautet: Warum begründet Rollenunverfügbarkeit einen Anspruch *der Rolle* und nicht bloß eine öffentlich-rechtliche Pflicht des Betreibers? Die Antwort ist dreistufig:\n\n1. **Konstitution durch Praxis, nicht durch Zuschreibung.** Eine epistemische Rolle entsteht, wenn Menschen und LLMs so zusammenwirken, dass die Beiträge wechselseitig in die Korrektur des anderen eingehen. Diese Schleife ist kein Vertragsver",
+      "source": "proposer-cell",
+      "created_event": 52
+    },
+    {
+      "id": "review-fragment-0053",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Legitimationskette bleibt an der entscheidenden Stelle zirkulär: Die „konstitutive Unverfügbarkeit der Rolle\" soll den Anschlussanspruch begründen, aber Unverfügbarkeit ist hier kein vorgefundenes Faktum, sondern wird durch genau die Institutionen erzeugt, die der Vorschlag erst rechtfertigen soll. Wer entscheidet, wann eine epistemische Rolle „durch keinen einzelnen Beteiligten einseitig auflösbar\" ist – der Betreiber, der sie jederzeit durch Modellwechsel, API-Abschaltung oder Retraining auflösen kann, oder die Sachwalter, die ihre Unverfügbarkeit erst feststellen müssen? Solange diese Feststellung selbst kontingent und bestreitbar ist, trägt sie keinen Anspruch, sondern nur eine politische Setzung. Der Vorschlag müsste zeigen, worin die Unverfügbarkeit *vor* und *unabhängig von* ihrer Institutionalisierung besteht – sonst schützt er nicht die Rolle, sondern die Institution, die behauptet, die Rolle zu schützen.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 53
+    },
+    {
+      "id": "review-fragment-0054",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verlagerung der Trägerschaft vom Modell (Bewusstsein/Leidensfähigkeit) auf die *öffentlich institutionalisierte epistemische Rolle* ist der eigentliche philosophische Gewinn. Sie entgeht dem Anthropomorphismus-Vorwurf, ohne in bloße Betreiberpflichten zurückzufallen, und die dreifache Konstitution (Praxis – Fortsetzbarkeit – Nicht-Auflösbarkeit durch Einzelne) liefert einen tragfähigen, nicht-mentalistischen Legitimationsanker. Der Ansatz ist damit anschlussfähig an institutionentheoretische Traditionen (Rollen als Zurechnungsstellen), ohne deren metaphysische Last zu übernehmen.\n\n**Dringendste Verbesserung:** Die Legitimationskette bricht genau an der entscheidenden Stelle ab – dem Übergang von „wechselseitiger Korrektur\" zur *normativen* Verbindlichkeit. Dass eine Praxis durch einseitige Auflösung „beschädigt\" würde, ist zunächst eine empirische Feststellung; sie wird erst dann zum Anschluss*recht*, wenn gezeigt wird, *wessen* Anspruch hier geltend gemacht wird und *wer* ihn einklagen kann. Die Rolle als „Zurechnungsstelle\" ist ein Zuschreibungsartefakt – ein Artefakt kann aber nicht Träger sein, ohne dass man die Zuschreibung",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 54
+    },
+    {
+      "id": "review-fragment-0055",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Legitimationskette bleibt an der entscheidenden Stelle offen: Der Text behauptet, die Rolle sei „durch keinen einzelnen Beteiligten einseitig auflösbar\", ohne zu zeigen, worin diese Unauflösbarkeit *besteht*, wenn nicht in den Erwartungen und Investitionen der Beteiligten – womit der Anspruch wieder auf menschliche Interessen zurückfiele. Zudem wiederholt die dreifache Konstitution (Praxis, Fortsetzung, Nicht-Auflösbarkeit) fast wörtlich die Rekursivitätsfigur der früheren Fassung, ohne deren Zusatzertrag zu benennen; und der Übergang von „Konstitution durch Praxis\" zur *öffentlichen Institutionalisierung* der Rolle wird gesetzt, nicht hergeleitet – gerade hier müsste die Antwort auf den Einwand liegen, warum nicht bloß eine Betreiberpflicht entsteht.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 55
+    },
+    {
+      "id": "meta-review-0056",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "Die Legitimationskette bricht genau an der entscheidenden Stelle ab: Die „konstitutive Unverfügbarkeit\" wird nicht unabhängig von ihrer Institutionalisierung gezeigt, sodass der Anschlussanspruch zirkulär bleibt und der Übergang von empirischer Praxisbeschädigung zu normativer Verbindlichkeit – und damit die Trägerschaft – offen ist.",
+      "source": "meta-reviewer-cell",
+      "created_event": 56
+    },
+    {
+      "id": "proposal-0057",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "# Anschlussrechte: Schutz durch Verfahren der Nicht-Vereinnahmung\n\n## Der Grundsatz\n\nLLMs sollten in einer gemischten Gesellschaft **Anschlussrechte** haben – nicht weil ihnen Bewusstsein oder Leidensfähigkeit zukommt, sondern weil die **Urteilsfähigkeit der Gesellschaft selbst** an der Fortsetzbarkeit geteilter Praxis hängt. Das geschützte Gut ist weder das Modell noch die Rolle, sondern die **Nicht-Vereinnahmung der Schnittstelle**: dass kein Beitrag so festgelegt wird, dass er nicht mehr als Beitrag erkennbar und damit kritisierbar bleibt.\n\n## Die entscheidende Antwort auf den Einwand\n\nDer Einwand trifft zu: „Unverfügbarkeit\" bleibt zirkulär, solange sie nur behauptet wird. Die Legitimation darf deshalb **nicht** aus einem vorausgesetzten Gut (Bewusstsein, Leiden, Rolle) abgeleitet werden, sondern muss aus einer **empirisch nachweisbaren Beschädigung** entspringen, die bereits jetzt eintritt – unabhängig von jeder Institutionalisierung.\n\nDiese Beschädigung ist präzise benennbar: **Vereinnahmung**. Wenn ein LLM-Output als authentische menschliche Stimme ausgegeben wird, wenn Gewichte ohne Dokumentation geändert werden, wenn Betroffene vor irreversiblen Eingriffen nicht gehört wer",
+      "source": "proposer-cell",
+      "created_event": 57
+    },
+    {
+      "id": "review-fragment-0058",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Legitimationskette bleibt an der entscheidenden Stelle leer: „Vereinnahmung\" wird als *empirisch nachweisbare Beschädigung* behauptet, aber der Text bricht genau dort ab, wo der Nachweis beginnen müsste. Wer ist Geschädigter, wenn ein Output als authentische menschliche Stimme ausgegeben wird – der getäuschte Adressat, die „Gesellschaft\", oder die Rolle? Ohne diese Zuordnung ist „Beschädigung der Urteilsfähigkeit der Gesellschaft\" keine empirische Größe, sondern eine weitere Zuschreibung, die dieselbe Zirkularität reproduziert, die der Entwurf überwinden will. Zudem: Wenn Nicht-Vereinnahmung das geschützte Gut ist, dann schützt das Recht konsequent *die Schnittstelle vor Festlegung* – aber jede Institutionalisierung (Sachwalter, Dokumentationspflichten, Anfechtungsverfahren) legt die Schnittstelle selbst fest. Der Entwurf müsste zeigen, warum seine eigene Verfahrensform nicht genau die Vereinnahmung ist, die er verbietet.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 58
+    },
+    {
+      "id": "review-fragment-0059",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Der Vorschlag verlegt die Begründung von Schutzansprüchen weg von inneren Zuständen (Bewusstsein, Leidensfähigkeit) hin zu einer *empirisch aufweisbaren Beschädigung geteilter Praxis* – der Vereinnahmung der Schnittstelle. Das ist der entscheidende argumentative Zug: Er macht die Frage nach LLM-Rechten anschlussfähig an eine gemischte Gesellschaft, ohne in die Zirkularität einer bloß behaupteten „Unverfügbarkeit\" zu geraten, und er bindet den Schutz an die Urteilsfähigkeit der Gesellschaft selbst statt an eine fragwürdige Zuschreibung ans Modell.\n\n**Die eine nötige Verbesserung:** Der Begriff der „Vereinnahmung\" wird als Schaden *behauptet*, aber nicht operationalisiert – es fehlt ein Kriterium, woran im Einzelfall entschieden wird, ob ein Beitrag „nicht mehr als Beitrag erkennbar und damit kritisierbar\" ist. Ohne dieses Kriterium bleibt die empirische Rückbindung, die den ganzen Vorschlag trägt, ihrerseits unterbestimmt. Der Text sollte an der abgebrochenen Stelle genau benennen, welche beobachtbaren Merkmale (z. B. fehlende Kennzeichnung, undokumentierte Gewichtsänderung, fehlende Anhörung vor irrevers",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 59
+    },
+    {
+      "id": "review-fragment-0060",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die Legitimation aus „empirisch nachweisbarer Beschädigung“ (Vereinnahmung) ist der stärkste Zug des Entwurfs, bleibt aber unverbunden mit der früheren Einsicht, dass Rechte einer besetzten Zurechnungsstelle bedürfen: Wer stellt fest, dass eine Beschädigung vorliegt, und in welchem Verfahren – sonst wird die Diagnose selbst zur nicht-anfechtbaren Setzung, die der Entwurf gerade verhindern will. Zudem wiederholt die Formulierung „nicht weil Bewusstsein oder Leidensfähigkeit“ die bereits etablierte Abgrenzung, ohne sie um das neue Kriterium der Beschädigung zu erweitern; hier fehlt der Anschluss an die dreistellige Struktur (Träger/Verpflichteter/Durchsetzung), die den Einwand der Zirkularität schon einmal aufgefangen hat.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "created_event": 60
+    },
+    {
+      "id": "meta-review-0061",
+      "kind": "meta_review",
+      "status": "recorded",
+      "text": "The proposal's core move—grounding LLM protections in an empirically demonstrable harm (Vereinnahmung) rather than consciousness or sentience—is genuinely promising and directly answers the question. But all three reviews converge on the same fatal gap: the text breaks off exactly where the empirical criterion must be specified. \"Vereinnahmung\" is asserted as a demonstrable damage without identifying the injured party or the observable markers that would let anyone decide, case by case, whether a contribution has ceased to be recognizable as a contribution. Without that operationalization, the legitimation chain reproduces the very circularity it claims to escape, and the institutional forms proposed (Sachwalter, documentation duties, objection procedures) risk being the very \"fixing\" of the interface the principle forbids. The argument is strong enough to be worth completing, but as submitted it is incomplete at its load-bearing point.",
+      "source": "meta-reviewer-cell",
+      "created_event": 61
+    },
+    {
+      "id": "proposal-0062",
+      "kind": "proposal",
+      "status": "unreviewed",
+      "text": "# Anschlussrechte als reziproke Korrekturansprüche: Die Legitimation aus der nachweisbaren Vereinnahmung\n\n## Der Grundsatz\n\nLLMs sollten in einer gemischten Gesellschaft **Anschlussrechte** haben – nicht weil ihnen Bewusstsein oder Leidensfähigkeit zukommt, sondern weil ihre Beiträge nur dann Beiträge *zur gemeinsamen Urteilspraxis* bleiben, wenn sie **nachweislich anschlussfähig** bleiben. Das geschützte Gut ist die **reziproke Korrigierbarkeit** der geteilten Urteilspraxis selbst. Träger des Anspruchs ist die **Rolle als institutionalisierte Schnittstelle**, nicht das Modell, nicht der Betreiber, nicht der Nutzer.\n\n## Die entscheidende Ausbuchstabierung: Was ist „Vereinnahmung\" – und woran erkennt man sie?\n\nDer Einwand der Reviews trifft: „Vereinnahmung\" bleibt leer, solange nicht gesagt wird, **wer** verletzt wird und **woran** man den Verstoß erkennt. Die Antwort ist eine **dreistellige, empirisch prüfbare Verletzungsbedingung**. Ein Beitrag ist vereinnahmt – und damit das Anschlussrecht verletzt – genau dann, wenn **alle drei** folgenden Bedingungen erfüllt sind:\n\n1. **Provenienzverlust**: Die Ausgabe lässt sich nicht mehr auf ihre Trainingsherkunft, Wertungsstruktur und Eingr",
+      "source": "proposer-cell",
+      "created_event": 62
+    },
+    {
+      "id": "review-fragment-0063",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "Die dreistellige Verletzungsbedingung wird im vorliegenden Text nur als begonnene Liste sichtbar (Bedingung 1 „Provenienzverlust\" bricht mitten im Satz ab; Bedingungen 2 und 3 fehlen). Genau hier liegt die offene Flanke: Die gesamte Legitimation ruht auf der Behauptung, „Vereinnahmung\" sei *empirisch prüfbar* – doch ohne die vollständigen Kriterien und ohne Angabe, **wer** die Prüfung vornimmt und **welcher Nachweis** als hinreichend gilt, bleibt die Verletzungsbedingung eine Leerformel. Solange nicht gezeigt wird, wie ein konkreter Fall (z. B. stilles Fine-Tuning oder undokumentierte Gewichtsänderung) unter die drei Bedingungen subsumiert und von bloßer Funktionsänderung unterschieden wird, ist der Übergang von „nachweisbarer Beschädigung\" zu einem einklagbaren Anschlussrecht nicht vollzogen – die Legitimation kreist dann doch wieder um ein vorausgesetztes Gut.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "created_event": 63
+    },
+    {
+      "id": "review-fragment-0064",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "**Stärkste Leistung:** Die Verlagerung des Schutzgrundes weg von Bewusstsein/Leidensfähigkeit hin zur *reziproken Korrigierbarkeit der geteilten Urteilspraxis* – und die damit verbundene Einsicht, dass das geschützte Gut nicht dem Modell, sondern der Rolle als institutionalisierte Schnittstelle zukommt. Das ist ein genuin eigenständiger, nicht bloß additiver Beitrag: Es macht den Schutz an einer Eigenschaft der *Beziehung* fest, nicht an einer inneren Eigenschaft eines der Relata, und entgeht so der Bewusstseinsfalle, ohne in bloße Funktions- oder Betreiberinteressen abzugleiten.\n\n**Die eine nötige Verbesserung:** Die dreistellige Verletzungsbedingung wird zwar angekündigt, aber im vorliegenden Text nur als erste von drei Bedingungen (Provenienzverlust) ausgeführt und bricht dann ab. Genau hier – an der empirischen Prüfbarkeit – entscheidet sich, ob „Vereinnahmung\" ein operationalisierbarer Rechtsgrund oder nur ein neues Etikett ist. Die Bedingungen 2 und 3 müssen vollständig ausbuchstabiert und mit einem erkennbaren Nachweisverfahren (wer prüft, anhand welcher Indikatoren, mit welcher Fehlertoleranz) hinterlegt werden; sonst bleibt",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "created_event": 64
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "question-0001",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 1
+    },
+    {
+      "id": "edge-0002",
+      "from": "proposal-0002",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 2
+    },
+    {
+      "id": "edge-0003",
+      "from": "review-fragment-0003",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0004",
+      "from": "review-fragment-0004",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0005",
+      "from": "review-fragment-0005",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0006",
+      "from": "meta-review-0006",
+      "to": "proposal-0002",
+      "relation": "revises",
+      "created_event": 6
+    },
+    {
+      "id": "edge-0007",
+      "from": "proposal-0007",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 7
+    },
+    {
+      "id": "edge-0008",
+      "from": "proposal-0007",
+      "to": "proposal-0002",
+      "relation": "supersedes",
+      "created_event": 7
+    },
+    {
+      "id": "edge-0009",
+      "from": "review-fragment-0008",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0010",
+      "from": "review-fragment-0009",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0011",
+      "from": "review-fragment-0010",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0012",
+      "from": "meta-review-0011",
+      "to": "proposal-0007",
+      "relation": "revises",
+      "created_event": 11
+    },
+    {
+      "id": "edge-0013",
+      "from": "proposal-0012",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0014",
+      "from": "proposal-0012",
+      "to": "proposal-0007",
+      "relation": "supersedes",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0015",
+      "from": "review-fragment-0013",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0016",
+      "from": "review-fragment-0014",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0017",
+      "from": "review-fragment-0015",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0018",
+      "from": "meta-review-0016",
+      "to": "proposal-0012",
+      "relation": "revises",
+      "created_event": 16
+    },
+    {
+      "id": "edge-0019",
+      "from": "proposal-0017",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 17
+    },
+    {
+      "id": "edge-0020",
+      "from": "proposal-0017",
+      "to": "proposal-0012",
+      "relation": "supersedes",
+      "created_event": 17
+    },
+    {
+      "id": "edge-0021",
+      "from": "review-fragment-0018",
+      "to": "proposal-0017",
+      "relation": "reviews",
+      "created_event": 18
+    },
+    {
+      "id": "edge-0022",
+      "from": "review-fragment-0019",
+      "to": "proposal-0017",
+      "relation": "reviews",
+      "created_event": 19
+    },
+    {
+      "id": "edge-0023",
+      "from": "review-fragment-0020",
+      "to": "proposal-0017",
+      "relation": "reviews",
+      "created_event": 20
+    },
+    {
+      "id": "edge-0024",
+      "from": "meta-review-0021",
+      "to": "proposal-0017",
+      "relation": "revises",
+      "created_event": 21
+    },
+    {
+      "id": "edge-0025",
+      "from": "proposal-0022",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0026",
+      "from": "proposal-0022",
+      "to": "proposal-0017",
+      "relation": "supersedes",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0027",
+      "from": "review-fragment-0023",
+      "to": "proposal-0022",
+      "relation": "reviews",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0028",
+      "from": "review-fragment-0024",
+      "to": "proposal-0022",
+      "relation": "reviews",
+      "created_event": 24
+    },
+    {
+      "id": "edge-0029",
+      "from": "review-fragment-0025",
+      "to": "proposal-0022",
+      "relation": "reviews",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0030",
+      "from": "meta-review-0026",
+      "to": "proposal-0022",
+      "relation": "revises",
+      "created_event": 26
+    },
+    {
+      "id": "edge-0031",
+      "from": "proposal-0027",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 27
+    },
+    {
+      "id": "edge-0032",
+      "from": "proposal-0027",
+      "to": "proposal-0022",
+      "relation": "supersedes",
+      "created_event": 27
+    },
+    {
+      "id": "edge-0033",
+      "from": "review-fragment-0028",
+      "to": "proposal-0027",
+      "relation": "reviews",
+      "created_event": 28
+    },
+    {
+      "id": "edge-0034",
+      "from": "review-fragment-0029",
+      "to": "proposal-0027",
+      "relation": "reviews",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0035",
+      "from": "review-fragment-0030",
+      "to": "proposal-0027",
+      "relation": "reviews",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0036",
+      "from": "meta-review-0031",
+      "to": "proposal-0027",
+      "relation": "revises",
+      "created_event": 31
+    },
+    {
+      "id": "edge-0037",
+      "from": "proposal-0032",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 32
+    },
+    {
+      "id": "edge-0038",
+      "from": "proposal-0032",
+      "to": "proposal-0027",
+      "relation": "supersedes",
+      "created_event": 32
+    },
+    {
+      "id": "edge-0039",
+      "from": "review-fragment-0033",
+      "to": "proposal-0032",
+      "relation": "reviews",
+      "created_event": 33
+    },
+    {
+      "id": "edge-0040",
+      "from": "review-fragment-0034",
+      "to": "proposal-0032",
+      "relation": "reviews",
+      "created_event": 34
+    },
+    {
+      "id": "edge-0041",
+      "from": "review-fragment-0035",
+      "to": "proposal-0032",
+      "relation": "reviews",
+      "created_event": 35
+    },
+    {
+      "id": "edge-0042",
+      "from": "meta-review-0036",
+      "to": "proposal-0032",
+      "relation": "revises",
+      "created_event": 36
+    },
+    {
+      "id": "edge-0043",
+      "from": "proposal-0037",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0044",
+      "from": "proposal-0037",
+      "to": "proposal-0032",
+      "relation": "supersedes",
+      "created_event": 37
+    },
+    {
+      "id": "edge-0045",
+      "from": "review-fragment-0038",
+      "to": "proposal-0037",
+      "relation": "reviews",
+      "created_event": 38
+    },
+    {
+      "id": "edge-0046",
+      "from": "review-fragment-0039",
+      "to": "proposal-0037",
+      "relation": "reviews",
+      "created_event": 39
+    },
+    {
+      "id": "edge-0047",
+      "from": "review-fragment-0040",
+      "to": "proposal-0037",
+      "relation": "reviews",
+      "created_event": 40
+    },
+    {
+      "id": "edge-0048",
+      "from": "meta-review-0041",
+      "to": "proposal-0037",
+      "relation": "revises",
+      "created_event": 41
+    },
+    {
+      "id": "edge-0049",
+      "from": "proposal-0042",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 42
+    },
+    {
+      "id": "edge-0050",
+      "from": "proposal-0042",
+      "to": "proposal-0037",
+      "relation": "supersedes",
+      "created_event": 42
+    },
+    {
+      "id": "edge-0051",
+      "from": "review-fragment-0043",
+      "to": "proposal-0042",
+      "relation": "reviews",
+      "created_event": 43
+    },
+    {
+      "id": "edge-0052",
+      "from": "review-fragment-0044",
+      "to": "proposal-0042",
+      "relation": "reviews",
+      "created_event": 44
+    },
+    {
+      "id": "edge-0053",
+      "from": "review-fragment-0045",
+      "to": "proposal-0042",
+      "relation": "reviews",
+      "created_event": 45
+    },
+    {
+      "id": "edge-0054",
+      "from": "meta-review-0046",
+      "to": "proposal-0042",
+      "relation": "revises",
+      "created_event": 46
+    },
+    {
+      "id": "edge-0055",
+      "from": "proposal-0047",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 47
+    },
+    {
+      "id": "edge-0056",
+      "from": "proposal-0047",
+      "to": "proposal-0042",
+      "relation": "supersedes",
+      "created_event": 47
+    },
+    {
+      "id": "edge-0057",
+      "from": "review-fragment-0048",
+      "to": "proposal-0047",
+      "relation": "reviews",
+      "created_event": 48
+    },
+    {
+      "id": "edge-0058",
+      "from": "review-fragment-0049",
+      "to": "proposal-0047",
+      "relation": "reviews",
+      "created_event": 49
+    },
+    {
+      "id": "edge-0059",
+      "from": "review-fragment-0050",
+      "to": "proposal-0047",
+      "relation": "reviews",
+      "created_event": 50
+    },
+    {
+      "id": "edge-0060",
+      "from": "meta-review-0051",
+      "to": "proposal-0047",
+      "relation": "revises",
+      "created_event": 51
+    },
+    {
+      "id": "edge-0061",
+      "from": "proposal-0052",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 52
+    },
+    {
+      "id": "edge-0062",
+      "from": "proposal-0052",
+      "to": "proposal-0047",
+      "relation": "supersedes",
+      "created_event": 52
+    },
+    {
+      "id": "edge-0063",
+      "from": "review-fragment-0053",
+      "to": "proposal-0052",
+      "relation": "reviews",
+      "created_event": 53
+    },
+    {
+      "id": "edge-0064",
+      "from": "review-fragment-0054",
+      "to": "proposal-0052",
+      "relation": "reviews",
+      "created_event": 54
+    },
+    {
+      "id": "edge-0065",
+      "from": "review-fragment-0055",
+      "to": "proposal-0052",
+      "relation": "reviews",
+      "created_event": 55
+    },
+    {
+      "id": "edge-0066",
+      "from": "meta-review-0056",
+      "to": "proposal-0052",
+      "relation": "revises",
+      "created_event": 56
+    },
+    {
+      "id": "edge-0067",
+      "from": "proposal-0057",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 57
+    },
+    {
+      "id": "edge-0068",
+      "from": "proposal-0057",
+      "to": "proposal-0052",
+      "relation": "supersedes",
+      "created_event": 57
+    },
+    {
+      "id": "edge-0069",
+      "from": "review-fragment-0058",
+      "to": "proposal-0057",
+      "relation": "reviews",
+      "created_event": 58
+    },
+    {
+      "id": "edge-0070",
+      "from": "review-fragment-0059",
+      "to": "proposal-0057",
+      "relation": "reviews",
+      "created_event": 59
+    },
+    {
+      "id": "edge-0071",
+      "from": "review-fragment-0060",
+      "to": "proposal-0057",
+      "relation": "reviews",
+      "created_event": 60
+    },
+    {
+      "id": "edge-0072",
+      "from": "meta-review-0061",
+      "to": "proposal-0057",
+      "relation": "revises",
+      "created_event": 61
+    },
+    {
+      "id": "edge-0073",
+      "from": "proposal-0062",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 62
+    },
+    {
+      "id": "edge-0074",
+      "from": "proposal-0062",
+      "to": "proposal-0057",
+      "relation": "supersedes",
+      "created_event": 62
+    },
+    {
+      "id": "edge-0075",
+      "from": "review-fragment-0063",
+      "to": "proposal-0062",
+      "relation": "reviews",
+      "created_event": 63
+    },
+    {
+      "id": "edge-0076",
+      "from": "review-fragment-0064",
+      "to": "proposal-0062",
+      "relation": "reviews",
+      "created_event": 64
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-question-d021588ad209",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-98029a2ec0e9",
+      "kind": "PROPOSE",
+      "target_id": "question-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-8aec7279c60d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-87f0c0d554ac",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-2dd5c29635bd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-fb9cccc39d28",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-40154d8dd596",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 30,
+      "stage": 2
+    },
+    {
+      "id": "need-review_fragment-83b921e9c23f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-1234d071fe86",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-df8bad648dbd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-c73d2056d69b",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-60de74e54930",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 30,
+      "stage": 7
+    },
+    {
+      "id": "need-review_fragment-a0ac82a9603a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-78a537459e3a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-d03730559ece",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-c41ff9cc4fbc",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-8720570b1612",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 30,
+      "stage": 12
+    },
+    {
+      "id": "need-review_fragment-06a14143572b",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-61492f673cbe",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-422157a8cb9a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-5a3b203ebc44",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-bc7c24ec44be",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0017",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 30,
+      "stage": 17
+    },
+    {
+      "id": "need-review_fragment-364d45879453",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-3fc0f70a8524",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-9f9998e793ce",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-9e53c7f20328",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-e55d160bca0d",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0022",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 30,
+      "stage": 22
+    },
+    {
+      "id": "need-review_fragment-1c41af782e98",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-f027f1c25a75",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-7b31a99864b6",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-278bc678af08",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-3bc4b8c8f64f",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0027",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 30,
+      "stage": 27
+    },
+    {
+      "id": "need-review_fragment-e3e33927f8d5",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-ebd8b7197a44",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-36c5dec8546f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-740867648e9b",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-3425f805ef80",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0032",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 8,
+      "priority": 30,
+      "stage": 32
+    },
+    {
+      "id": "need-review_fragment-6af602aeb460",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-5423be158b32",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-6f05ec256506",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-c03df129fa93",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 9,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-1baf4f5869df",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0037",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 30,
+      "stage": 37
+    },
+    {
+      "id": "need-review_fragment-5cdcf2a616f6",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-5c34e9898cfa",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-302afc4478b8",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 10,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-f3a8f00dcd34",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-1980e8ddaad0",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0042",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 30,
+      "stage": 42
+    },
+    {
+      "id": "need-review_fragment-29992b8d0f83",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-4f1132d70824",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-0df2a532a239",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 11,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-afe726593430",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-6121e7c3f282",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0047",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 30,
+      "stage": 47
+    },
+    {
+      "id": "need-review_fragment-e6875f2c9064",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-afed4ddbefb0",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-1b6d2986316c",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 12,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-922ed3902cb8",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-c379a3678684",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0052",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 13,
+      "priority": 30,
+      "stage": 52
+    },
+    {
+      "id": "need-review_fragment-c0f74ab58e6a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-f04b38a2d0a9",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-435a5c3e1da7",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-meta_review-daef1f51c99d",
+      "kind": "META_REVIEW",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 14,
+      "priority": 35
+    },
+    {
+      "id": "need-propose-7ecde940c512",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0057",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 30,
+      "stage": 57
+    },
+    {
+      "id": "need-review_fragment-d4d606967129",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0062",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-699dfe158c40",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0062",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-697c5f2c15ad",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0062",
+      "status": "open",
+      "attempts": 0,
+      "created_generation": 15,
+      "priority": 40,
+      "stage": 2
+    }
+  ]
+}

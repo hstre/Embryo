@@ -1,0 +1,60 @@
+{
+  "embryo_id": "comprehension-deepseek-026",
+  "goal": "Collect knowledge about how to work out what a text says, and connect the pieces you collected.",
+  "observations": [
+    {
+      "id": "observation-01",
+      "text": "A claim is checkable only if it carries the exact offsets of the passage it was taken from. Without them a reader cannot return to the source.",
+      "source": "hstre/Budget-Review, src/budget_review/gate.py"
+    },
+    {
+      "id": "observation-02",
+      "text": "Checking that a quoted span occurs in the document verifies provenance and not truth. The check has no operation that can mark a claim true.",
+      "source": "hstre/Budget-Review, docs/architecture.md"
+    },
+    {
+      "id": "observation-03",
+      "text": "The share of a document that admitted claims anchor to is a warning light and not a score. It moves with how the contract defines a claim.",
+      "source": "hstre/Budget-Review, README, coverage"
+    },
+    {
+      "id": "observation-04",
+      "text": "A passage no claim reaches is a question for the reader and not a defect. It may be a heading, a transition, or prose that carries no claim.",
+      "source": "hstre/Budget-Review, coverage_gap"
+    },
+    {
+      "id": "observation-05",
+      "text": "Extraction gets worse as a document grows longer, while a deterministic check over the same document does not. The two halves do not scale alike.",
+      "source": "hstre/Budget-Review, claude/gold-recall-echr"
+    },
+    {
+      "id": "observation-06",
+      "text": "An anchor that reaches into the text of two speakers merges two positions into one node. The anchor is the only record of who said it.",
+      "source": "hstre/Budget-Review, speaker boundaries"
+    },
+    {
+      "id": "observation-07",
+      "text": "A rule can settle whether two strings share a passage. It cannot settle what a passage means, and it damages a judgement when it is allowed to try.",
+      "source": "hstre/DESi, PROJEKTABSCHLUSS.md"
+    },
+    {
+      "id": "observation-08",
+      "text": "An extractor that always answers is worse than one that abstains outside a closed set of kinds. Anything else is intentionally ignored.",
+      "source": "hstre/DESi, self_audit/extractor.py"
+    }
+  ],
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 24,
+    "energy_budget": 96,
+    "max_text_chars": 1200,
+    "local_context_limit": 8,
+    "acceptance_mode": "anchor",
+    "min_span_chars": 40,
+    "show_register": false,
+    "tolerate_wrapping": true,
+    "relate": true
+  }
+}

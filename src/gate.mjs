@@ -1,18 +1,32 @@
-import { validateActionShape } from "./schema.mjs";
-import { registerAttemptFailure, reviewPerspective } from "./needs.mjs";
+import { acceptanceMode, minSpanChars, relationKinds, tolerateWrapping, validateActionShape } from "./schema.mjs";
+import { relaxedSpan } from "./policies/rule.mjs";
+import { registerAttemptFailure, resolveByCitations, reviewPerspective } from "./needs.mjs";
 import { nextNodeId, nodeById } from "./state.mjs";
 
 const ALLOWED = Object.freeze({
   QUESTION: new Set(["ADD_QUESTION", "ABSTAIN"]),
   PROPOSE: new Set(["ADD_PROPOSAL", "ABSTAIN"]),
   REVIEW_FRAGMENT: new Set(["ADD_REVIEW_FRAGMENT", "ABSTAIN"]),
+  RELATE: new Set(["ADD_RELATION", "ABSTAIN"]),
   META_REVIEW: new Set(["META_REVIEW", "ABSTAIN"]),
   SYNTHESIZE: new Set(["ADD_SYNTHESIS", "ABSTAIN"]),
 });
 const VERDICTS = new Set(["ACCEPT", "REVISE", "REJECT"]);
+const RELATIONS = new Set(relationKinds);
 
 function reject(code, message) {
   return { accepted: false, code, message, mutations: [] };
+}
+
+// What a cell wraps around its answer, stripped before the lookup. Quotation
+// marks and a list bullet are how the answer is *presented*; they say nothing
+// about what it says, and 016 to 019 recorded four rejections of passages the
+// observation contains verbatim, refused on nothing else. Only the outside is
+// touched, and what the tissue stores is still the observation's own slice, so
+// this tolerates presentation in the same sense whitespace tolerance does — not
+// paraphrase, which a changed word inside still fails.
+function unwrap(text) {
+  return text.trim().replace(/^[-*\s"„»'`]+/, "").replace(/["“«'`\s]+$/, "").trim();
 }
 
 function normalize(text) {
@@ -65,6 +79,33 @@ export function applyProposal(state, proposal, eventSeq) {
 
   if (proposal.type === "ADD_PROPOSAL") {
     if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "proposal text required");
+
+    // The anchor task. Acceptance is a string lookup against the one observation
+    // this need points at, and there is no path to acceptance that does not pass
+    // through it — no cell is asked whether the quote is any good.
+    if (acceptanceMode(state) === "anchor") {
+      if (target.kind !== "observation") return reject("TARGET_MISMATCH", "an anchored proposal must quote an observation");
+      const offered = tolerateWrapping(state) ? unwrap(payload.text) : payload.text.trim();
+      const quoted = offered ? relaxedSpan(target.text, offered) : null;
+      if (!quoted) return reject("NOT_ANCHORED", "this text does not occur in the observation");
+      if (quoted.length < minSpanChars(state)) return reject("SPAN_TOO_SHORT", `a quote must reach config.min_span_chars (${minSpanChars(state)})`);
+      if (duplicates(state, ["proposal"], quoted)) return reject("DUPLICATE_PROPOSAL", "this passage is already in the register");
+      // What goes into the tissue is the observation's own slice, never the
+      // cell's wording, so a quote that survived only whitespace tolerance still
+      // reproduces the source exactly. The receipt keeps what the cell wrote.
+      const id = nextNodeId(state, "proposal");
+      state.nodes.push({ id, kind: "proposal", status: "accepted", text: quoted, source: "quoting-cell", created_event: eventSeq });
+      const edgeId = addEdge(state, id, target.id, "quotes", eventSeq);
+      need.status = "resolved";
+      return {
+        accepted: true,
+        code: "ANCHORED",
+        message: id,
+        mutations: [`node:${id}`, `edge:${edgeId}`, `need:${need.id}`],
+        ...(quoted === payload.text.trim() ? {} : { relaxed_from: payload.text.trim() }),
+      };
+    }
+
     if (duplicates(state, ["proposal", "synthesis"], payload.text)) return reject("DUPLICATE_PROPOSAL", "proposal already exists, including rejected paths");
     let question;
     const mutations = [];
@@ -95,6 +136,26 @@ export function applyProposal(state, proposal, eventSeq) {
     if (typeof payload.text !== "string" || !payload.text.trim()) return reject("TEXT_REQUIRED", "review fragment text required");
     const perspective = reviewPerspective(need.stage);
     if (!perspective) return reject("PERSPECTIVE_MISSING", "review need has no valid perspective");
+
+    // Under the citation mechanism a review is not an opinion but a reference: the
+    // cell must name a stance and at least one observation that already exists in
+    // the environment. The gate checks that the cited nodes are observations, which
+    // no cell can create, so the reference cannot be manufactured by the citing cell.
+    const citing = acceptanceMode(state) === "citation";
+    let cited = [];
+    if (citing) {
+      if (!payload.stance) return reject("STANCE_REQUIRED", "review fragment must take a stance");
+      if (!Array.isArray(payload.observation_ids) || payload.observation_ids.length === 0) {
+        return reject("CITATION_REQUIRED", "review fragment must cite at least one observation");
+      }
+      cited = payload.observation_ids.map((observationId) => nodeById(state, observationId));
+      if (cited.some((node) => node?.kind !== "observation")) {
+        return reject("CITATION_UNKNOWN", "review fragment cites something that is not a supplied observation");
+      }
+    } else if (payload.stance || payload.observation_ids) {
+      return reject("CITATION_NOT_ALLOWED", "this embryo decides by verdict, not by citation");
+    }
+
     const id = nextNodeId(state, "review-fragment");
     state.nodes.push({
       id,
@@ -103,11 +164,47 @@ export function applyProposal(state, proposal, eventSeq) {
       text: payload.text.trim(),
       source: "reviewer-cell",
       perspective,
+      ...(citing ? { stance: payload.stance } : {}),
       created_event: eventSeq,
     });
     const edgeId = addEdge(state, id, target.id, "reviews", eventSeq);
     need.status = "resolved";
-    return { accepted: true, code: "REVIEW_FRAGMENT_ADDED", message: id, mutations: [`node:${id}`, `edge:${edgeId}`, `need:${need.id}`] };
+    const mutations = [`node:${id}`, `edge:${edgeId}`, `need:${need.id}`];
+    for (const observation of cited) mutations.push(`edge:${addEdge(state, id, observation.id, "cites", eventSeq)}`);
+
+    const resolved = resolveByCitations(state, target);
+    if (!resolved) return { accepted: true, code: "REVIEW_FRAGMENT_ADDED", message: id, mutations };
+    mutations.push(...resolved.mutations);
+    // The overlap ledger travels in the decision and therefore into the receipt,
+    // so what the panel agreed on — and what that agreement was worth — is in the
+    // hash chain rather than reconstructed afterwards from the graph.
+    return {
+      accepted: true,
+      code: `PANEL_${resolved.verdict}`,
+      message: target.id,
+      mutations,
+      ...(resolved.ledger ? { support_ledger: resolved.ledger } : {}),
+    };
+  }
+
+  // The second stage. The gate checks that both endpoints are entries this tissue
+  // admitted, that the relation is one of the closed kinds, and that the pair is
+  // not already decided. It checks nothing about whether the relation holds —
+  // there is no operation here that can mark one true.
+  if (proposal.type === "ADD_RELATION") {
+    const from = nodeById(state, payload.from_id);
+    const to = nodeById(state, payload.to_id);
+    if (!from || !to || from.kind !== "proposal" || to.kind !== "proposal") return reject("ENDPOINT_UNKNOWN", "a relation must join two register entries");
+    if (from.status !== "accepted" || to.status !== "accepted") return reject("ENDPOINT_NOT_ADMITTED", "both endpoints must already be admitted");
+    const wanted = new Set([need.target_id, need.pair_id]);
+    if (!wanted.has(from.id) || !wanted.has(to.id)) return reject("PAIR_MISMATCH", "this relation is not the pair the need names");
+    const key = [from.id, to.id].sort().join("|");
+    if (state.edges.some((edge) => RELATIONS.has(edge.relation) && [edge.from, edge.to].sort().join("|") === key)) {
+      return reject("PAIR_DECIDED", "this pair already carries a relation");
+    }
+    const edgeId = addEdge(state, from.id, to.id, payload.relation, eventSeq);
+    need.status = "resolved";
+    return { accepted: true, code: `RELATED_${payload.relation.toUpperCase()}`, message: `${from.id}->${to.id}`, mutations: [`edge:${edgeId}`, `need:${need.id}`] };
   }
 
   if (proposal.type === "META_REVIEW") {
@@ -144,7 +241,7 @@ export function applyProposal(state, proposal, eventSeq) {
     if (sourceProposals.some((node) => node?.kind !== "proposal" || node.status !== "accepted")) {
       return reject("UNACCEPTED_PROPOSAL", "synthesis may use accepted proposals only");
     }
-    if (duplicates(state, ["synthesis"], payload.text)) return reject("DUPLICATE_SYNTHESIS", "synthesis already exists, including rejected paths");
+    if (duplicates(state, ["proposal", "synthesis"], payload.text)) return reject("DUPLICATE_SYNTHESIS", "synthesis already exists, including rejected paths");
     if (target.kind === "synthesis" && target.status === "revision_requested") target.status = "superseded";
     else if (target.kind !== "goal" || target.status !== "open") return reject("TARGET_MISMATCH", "synthesis must address the goal or revise a synthesis");
     const id = nextNodeId(state, "synthesis");
