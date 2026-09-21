@@ -30,7 +30,7 @@ const ACCEPTANCE_MODES = new Set(["verdict", "citation", "anchor"]);
 // keep their hashes. "logged" keeps the arms sighted but makes the gate account
 // for what each could have read; "blind" additionally withholds the siblings.
 const PANEL_INDEPENDENCE = new Set(["sighted", "logged", "blind"]);
-const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping", "relate", "symmetric_contradiction"]);
+const CONFIG_KEYS = new Set([...REQUIRED_CONFIG_KEYS, "acceptance_mode", "required_support", "panel_independence", "min_span_chars", "show_register", "tolerate_wrapping", "relate", "symmetric_contradiction", "support_counts"]);
 const STANCES = new Set(["supports", "contradicts"]);
 const ACTION_KEYS = new Set(["type", "need_id", "payload"]);
 const PAYLOAD_SPECS = Object.freeze({
@@ -65,8 +65,16 @@ function validateOptionalConfig(config) {
   if (Object.hasOwn(config, "tolerate_wrapping")) {
     invariant(typeof config.tolerate_wrapping === "boolean", "config.tolerate_wrapping must be a boolean");
   }
+  if (Object.hasOwn(config, "support_counts")) {
+    invariant(["observations", "arms"].includes(config.support_counts), "config.support_counts must be observations or arms");
+  }
   if (Object.hasOwn(config, "symmetric_contradiction")) {
     invariant(typeof config.symmetric_contradiction === "boolean", "config.symmetric_contradiction must be a boolean");
+  }
+  if (config.support_counts === "arms") {
+    // Counting arms is a count of instances, and the seed's second premise only
+    // allows that where the instances could not read each other.
+    invariant(config.panel_independence === "blind", "config.support_counts arms requires a blind panel");
   }
   if (Object.hasOwn(config, "relate")) {
     invariant(typeof config.relate === "boolean", "config.relate must be a boolean");
@@ -128,6 +136,17 @@ export function tolerateWrapping(state) {
 // what that costs once a capable adversarial reviewer does its job: fifteen of
 // fifteen complete panels carried an objection and nothing was ever accepted.
 // Default false, so those runs keep their receipts.
+// What a piece of evidence is counted in. "observations" — the default and what
+// every run up to 030 used — counts distinct premises, which guards against a
+// correlated majority but also means a panel agreeing on which premise is
+// relevant never reaches the bar: in all thirteen panels of 030 the supporting
+// arms cited the same observation. "arms" counts the reviewers instead, and
+// takes independence in the sense this project defined it — an arm that could
+// not read the arms beside it. Only a blind panel can use it honestly.
+export function supportCounts(state) {
+  return state.config.support_counts ?? "observations";
+}
+
 export function symmetricContradiction(state) {
   return state.config.symmetric_contradiction ?? false;
 }

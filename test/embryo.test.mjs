@@ -939,3 +939,45 @@ test("a symmetric bar turns a lone objection from a veto into a note", async () 
   addProposal(both);
   assert.equal(citeReviewPanel(both, (view) => ({ ...plan(view), stance: view.perspective === "coherence" ? "supports" : "contradicts" })).at(-1).code, "PANEL_REVISE");
 });
+
+test("counting arms lets blind convergence on one premise carry a panel", async () => {
+  const config = { panel_independence: "blind", symmetric_contradiction: true, support_counts: "arms" };
+  const onePremise = (view) => ({
+    // All three arms find the same observation relevant; two support it, one objects.
+    // This is the shape of every panel in run 030, where it scored as one piece
+    // of evidence and the proposal was rejected.
+    observation_ids: ["observation-04"],
+    stance: view.perspective === "adversarial" ? "contradicts" : "supports",
+  });
+
+  const counted = await groundedState(config);
+  addQuestion(counted);
+  addProposal(counted);
+  const results = citeReviewPanel(counted, onePremise);
+  assert.equal(results.at(-1).code, "PANEL_ACCEPT");
+  const ledger = results.at(-1).support_ledger;
+  assert.equal(ledger.counted_by, "arms");
+  assert.equal(ledger.independent_supporting_arms, 2);
+  assert.equal(ledger.independent_contradicting_arms, 1);
+  // The bookkeeping still records exactly what was shared with whom.
+  assert.equal(ledger.overlap.length, 1);
+  assert.equal(ledger.support.length, 1);
+
+  // The same panel under the rule 030 used is a rejection.
+  const byObservation = await groundedState({ panel_independence: "blind", symmetric_contradiction: true });
+  addQuestion(byObservation);
+  addProposal(byObservation);
+  assert.equal(citeReviewPanel(byObservation, onePremise).at(-1).code, "PANEL_REJECT");
+
+  // Two objecting arms still send it back, so the symmetry holds both ways.
+  const objected = await groundedState(config);
+  addQuestion(objected);
+  addProposal(objected);
+  assert.equal(citeReviewPanel(objected, (view) => ({ ...onePremise(view), stance: view.perspective === "charitable" ? "supports" : "contradicts" })).at(-1).code, "PANEL_REVISE");
+
+  // And counting arms is refused where the arms could read each other.
+  await assert.rejects(
+    async () => createState({ ...(await readJson(groundedSeedPath)), config: { ...(await readJson(groundedSeedPath)).config, support_counts: "arms" } }),
+    /requires a blind panel/,
+  );
+});

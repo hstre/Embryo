@@ -1,5 +1,5 @@
 import { digest } from "./canonical.mjs";
-import { acceptanceMode, panelIndependence, relateEnabled, requiredSupport, symmetricContradiction } from "./schema.mjs";
+import { acceptanceMode, panelIndependence, relateEnabled, requiredSupport, supportCounts, symmetricContradiction } from "./schema.mjs";
 import { nodeById } from "./state.mjs";
 
 const PRIORITY = Object.freeze({ REVIEW_FRAGMENT: 40, META_REVIEW: 35, PROPOSE: 30, RELATE: 25, SYNTHESIZE: 20, QUESTION: 10 });
@@ -179,6 +179,18 @@ export function supportLedger(state, target) {
     }
   }
 
+  // Under "arms" a supporting reviewer counts once, whether or not another
+  // reviewer reached the same premise before it — convergence between blind arms
+  // stops being worth nothing. The classification above is unchanged, so the
+  // ledger still says exactly which observations were shared with whom.
+  const byArms = supportCounts(state) === "arms";
+  const armSupport = fragments.filter(
+    (fragment, index) => fragment.stance === "supports"
+      && (mode === "blind" || fragments.slice(0, index).every((earlier) => earlier.stance !== "supports"))
+      && citedObservations(state, fragment.id).length > 0,
+  ).length;
+  const armContradictions = contradictions.filter((entry) => entry.blind).length;
+
   return {
     mode,
     arms: fragments.length,
@@ -187,7 +199,8 @@ export function supportLedger(state, target) {
     overlap,
     correlated,
     contradictions,
-    independent_support: support.length,
+    ...(byArms ? { counted_by: "arms", independent_supporting_arms: armSupport, independent_contradicting_arms: armContradictions } : {}),
+    independent_support: byArms ? armSupport : support.length,
     required_support: requiredSupport(state),
   };
 }
@@ -202,12 +215,18 @@ export function citationVerdict(state, target) {
   if (symmetricContradiction(state)) {
     // An objection is counted the way support is: by the distinct observations
     // it rests on. One reviewer naming one premise is a note, not a veto.
-    const against = new Set();
-    for (const fragment of fragments) {
-      if (fragment.stance !== "contradicts") continue;
-      for (const id of citedObservations(state, fragment.id)) against.add(id);
+    if (supportCounts(state) === "arms") {
+      // Counted the same way support is, or the asymmetry simply changes sides.
+      const arms = supportLedger(state, target).independent_contradicting_arms ?? 0;
+      if (arms >= requiredSupport(state)) return "REVISE";
+    } else {
+      const against = new Set();
+      for (const fragment of fragments) {
+        if (fragment.stance !== "contradicts") continue;
+        for (const id of citedObservations(state, fragment.id)) against.add(id);
+      }
+      if (against.size >= requiredSupport(state)) return "REVISE";
     }
-    if (against.size >= requiredSupport(state)) return "REVISE";
   } else if (fragments.some((fragment) => fragment.stance === "contradicts")) {
     return "REVISE";
   }
