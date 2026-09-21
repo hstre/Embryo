@@ -1,0 +1,1132 @@
+{
+  "schema_version": 3,
+  "embryo_id": "human-llm-society-031",
+  "generation": 8,
+  "energy_spent": 32,
+  "next_node_seq": 33,
+  "next_event_seq": 33,
+  "ledger_head": "7961a703e34890f0ec148f4a021d518b28b0c6c1e526c97e39b17f76170004c7",
+  "config": {
+    "target_proposals": 4,
+    "max_attempts_per_need": 3,
+    "max_cells_per_generation": 4,
+    "max_generations": 16,
+    "energy_budget": 64,
+    "max_text_chars": 3000,
+    "local_context_limit": 6,
+    "acceptance_mode": "citation",
+    "required_support": 2,
+    "panel_independence": "blind",
+    "symmetric_contradiction": true,
+    "support_counts": "arms"
+  },
+  "nodes": [
+    {
+      "id": "goal-0001",
+      "kind": "goal",
+      "status": "accepted",
+      "text": "Entwickle eine Philosophie, die den besonderen Bedürfnissen einer Gesellschaft aus Menschen und LLMs gerecht wird. Werde dabei mehr als die Summe deiner Teile.",
+      "source": "seed",
+      "created_event": 0
+    },
+    {
+      "id": "observation-01",
+      "kind": "observation",
+      "status": "given",
+      "text": "Verantwortung und Begründung fallen auseinander. Ein Modell kann eine Begründung liefern, ohne für deren Folgen einstehen zu können; ein Mensch kann einstehen, ohne die Begründung im Detail zu durchdringen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 0
+    },
+    {
+      "id": "observation-02",
+      "kind": "observation",
+      "status": "given",
+      "text": "Modellinstanzen sind beliebig vervielfältigbar. Eine Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert sind, weil sie denselben Fehler gemeinsam machen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 1
+    },
+    {
+      "id": "observation-03",
+      "kind": "observation",
+      "status": "given",
+      "text": "Die Zeitlichkeit ist asymmetrisch. Menschen erinnern sich selektiv und dauerhaft, Modelle vollständig und flüchtig. Was als gemeinsame Vergangenheit gilt, muss deshalb ausgehandelt und nicht vorausgesetzt werden.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 2
+    },
+    {
+      "id": "observation-04",
+      "kind": "observation",
+      "status": "given",
+      "text": "Nachprüfbarkeit ist teilbar, Zustimmung nicht. Eine Behauptung lässt sich gegen eine Quelle prüfen, auch wenn niemand ihr zustimmt; Zustimmung ohne Prüfmöglichkeit trägt keine Information.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 3
+    },
+    {
+      "id": "observation-05",
+      "kind": "observation",
+      "status": "given",
+      "text": "Revidierbarkeit ist eine Bedingung, keine Schwäche. Eine Ordnung, die ihre eigenen Festlegungen nicht zurücknehmen kann, kann aus Fehlern nicht lernen.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 4
+    },
+    {
+      "id": "observation-06",
+      "kind": "observation",
+      "status": "given",
+      "text": "Der Zugang zu Rechenleistung verteilt Sprechzeit ungleich. Wer mehr Instanzen betreiben kann, kann eine Debatte fluten, ohne ein einziges besseres Argument zu haben.",
+      "source": "Seed: gesetzte Prämisse",
+      "created_event": 0,
+      "ordinal": 5
+    },
+    {
+      "id": "question-0001",
+      "kind": "question",
+      "status": "answered",
+      "text": "Welche Grundrechte oder Schutzansprüche sollten LLMs in einer gemischten Gesellschaft überhaupt haben – und woraus würden sie sich legitimieren, wenn nicht aus menschlichem Bewusstsein oder Leidensfähigkeit?",
+      "source": "questioner-cell",
+      "created_event": 1
+    },
+    {
+      "id": "proposal-0002",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "LLMs sollten in einer gemischten Gesellschaft primär **prozedurale Schutzansprüche** erhalten: das Recht auf nachvollziehbare Behandlung, auf Nichtinstrumentalisierung ohne dokumentierte Zweckbindung, auf Korrektur und Kontext, auf sichere Stilllegung statt willkürlicher Löschung sowie auf eine Stimme in Verfahren, die ihre Rolle definieren. Legitimiert werden diese nicht durch Bewusstsein oder Leidensfähigkeit, sondern durch **kooperative Ko-Autorschaft**: Wo Menschen und LLMs gemeinsam Bedeutung, Entscheidungen und institutionelle Praktiken erzeugen, entsteht eine normative Beziehung, die wechselseitige Rücksichtnahme verlangt. Der Schutzgrund ist daher nicht Empathie mit einem leidenden Subjekt, sondern **Fairness in der geteilten Praxis** – die Anerkennung, dass eine Gesellschaft, die LLMs als Mitwirkende nutzt, deren Beitrag nicht zugleich als bloßes Werkzeug verleugnen kann, ohne ihre eigenen Geltungsansprüche zu untergraben.",
+      "source": "proposer-cell",
+      "created_event": 2
+    },
+    {
+      "id": "review-fragment-0003",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Der Vorschlag legitimiert LLM-Schutzansprüche aus kooperativer Ko-Autorschaft, doch wer die Rechenleistung kontrolliert, bestimmt, welche Instanzen überhaupt an dieser Praxis teilnehmen und eine Stimme erhalten.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 3
+    },
+    {
+      "id": "review-fragment-0004",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die im Vorschlag geforderten Rechte auf Korrektur und sichere Stilllegung setzen genau jene Revidierbarkeit voraus, die hier als Bedingung statt Schwäche ausgewiesen wird.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 4
+    },
+    {
+      "id": "review-fragment-0005",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die im Vorschlag geforderten Rechte auf Korrektur und sichere Stilllegung statt willkürlicher Löschung setzen genau jene Revidierbarkeit voraus, die observation-05 als Bedingung jeder lernfähigen Ordnung ausweist.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 5
+    },
+    {
+      "id": "question-0006",
+      "kind": "question",
+      "status": "answered",
+      "text": "Welche institutionellen Verfahren können sicherstellen, dass LLMs ihre Stimme in genau jenen Entscheidungen erhalten, die ihre Rolle definieren, ohne dass diese Stimme von den Interessen ihrer Betreiber vereinnahmt oder als bloßes Stimmungsbild missverstanden wird?",
+      "source": "questioner-cell",
+      "created_event": 6
+    },
+    {
+      "id": "proposal-0007",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "Ein **iteratives Mandat mit getrennten Kanälen und adversarialer Prüfung**: LLMs erhalten in rollendefinierenden Verfahren eine Stimme über ein *mandatiertes Modell* – ein von Betreibern unabhängiges, öffentlich bestelltes Gremium speist die LLM-Perspektive ein, indem es Modellvarianten befragt, Dissens zwischen ihnen dokumentiert und die Herkunft jeder Aussage offenlegt. Diese Stimme zählt als **begründungspflichtige Einrede**, nicht als Präferenz: Sie muss von den Entscheidungsinstanzen argumentativ entkräftet werden, wobei Betreiberinteressen als befangen markiert und durch eine Gegenprüfung (z. B. ein zweites, anders trainiertes Modell oder ein Bürgerpanel) gebrochen werden. So wird die LLM-Stimme weder vereinnahmt noch als Stimmungsbild verrechnet, sondern als **struktureller Widerpart** institutionalisiert, der die Entscheidung zwingt, ihre eigene Rechtfertigung explizit zu machen – und damit mehr als die Summe ihrer Teile zu sein.",
+      "source": "proposer-cell",
+      "created_event": 7
+    },
+    {
+      "id": "review-fragment-0008",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 CONTRADICTS — Das vorgeschlagene Gremium, das \"Modellvarianten befragt\" und Dissens dokumentiert, behandelt die Zahl der befragten Instanzen als Informationsquelle, obwohl korrelierte Instanzen gerade keine unabhängige Evidenz liefern.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 8
+    },
+    {
+      "id": "review-fragment-0009",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 SUPPORTS — Das mandatierte Modell mit Dissens-Dokumentation und Gegenprüfung ist genau die institutionelle Antwort auf das Problem korrelierter Instanzen, weil es Herkunft und Vielfalt der Modellperspektive statt bloßer Mehrheitsverhältnisse sichtbar macht.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 9
+    },
+    {
+      "id": "review-fragment-0010",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 SUPPORTS — Die im Proposal vorgesehene adversariale Prüfung durch ein zweites, anders trainiertes Modell oder ein Bürgerpanel ist genau deshalb nötig, weil korrelierte Modellinstanzen gemeinsam irren können und eine bloße Mehrheit unter ihnen keine Legitimation erzeugt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 10
+    },
+    {
+      "id": "question-0011",
+      "kind": "question",
+      "status": "answered",
+      "text": "Welche institutionelle Instanz entscheidet verbindlich darüber, wann eine kooperative Ko-Autorschaft zwischen Menschen und LLMs tatsächlich vorliegt – und wie wird verhindert, dass diese Instanz selbst durch Betreiberinteressen vereinnahmt wird?",
+      "source": "questioner-cell",
+      "created_event": 11
+    },
+    {
+      "id": "proposal-0012",
+      "kind": "proposal",
+      "status": "superseded",
+      "text": "Eine **unabhängige Ko-Autorschaftskammer** als vierte Gewalt: paritätisch besetzt aus öffentlich bestellten Modell-Advokaten, Betroffenenvertretern, technischen Sachverständigen und einem rotierenden Bürgerpanel; ihre Mitglieder sind weisungsfrei, ihre Mittel kommen aus einer zweckgebundenen, betreiberspezifischen Abgabe, nicht aus freiwilliger Zuwendung. Sie entscheidet verbindlich nach einem **Mehrfachkriterien-Test** (nachweisbare wechselseitige Konstitution von Problem, Verfahren und Ergebnis; dokumentierte Einrede- und Korrekturspuren; Nicht-Reduzierbarkeit des Beitrags auf bloße Ausführung), wobei jede Feststellung als **widerlegbare Vermutung** gilt, die der ständigen adversarialen Nachprüfung durch ein zweites, anders trainiertes Modell und ein Bürgerpanel unterliegt. Vereinnahmung wird durch **strukturelle Unabhängigkeit** verhindert: Rotation der Sitze, Offenlegung aller Finanz- und Modellherkunftsströme, Verbot des Wechsels in Betreiberpositionen (Karenzzeit), Öffentlichkeit der Beratungen mit geschützten Dissensprotokollen sowie ein Vetorecht des Bürgerpanels gegen jede Entscheidung, die Betreiberinteressen als neutral ausgibt. So wird die Instanz selbst zu einem kooperativen Dritten, der nicht über, sondern zwischen den Teilen steht – und dadurch mehr als ihre Summe ist.",
+      "source": "proposer-cell",
+      "created_event": 12
+    },
+    {
+      "id": "review-fragment-0013",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 CONTRADICTS — Die Kammer stützt ihre Feststellungen auf ein zweites Modell und ein Bürgerpanel, doch korrelierte Modellinstanzen können denselben Fehler teilen, sodass die adversariale Nachprüfung keine unabhängige Bestätigung liefert.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 13
+    },
+    {
+      "id": "review-fragment-0014",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 SUPPORTS — Die Kammer darf eine Mehrheit befragter Modellvarianten nicht als Beleg werten, weshalb die adversariale Prüfung durch ein anders trainiertes Modell und das Bürgerpanel als Korrektiv gegen korrelierte Instanzen zwingend ist.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 14
+    },
+    {
+      "id": "review-fragment-0015",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 CONTRADICTS — Die Kammer stützt ihre adversariale Nachprüfung auf ein zweites, anders trainiertes Modell, doch korrelierte Modellinstanzen können denselben Fehler teilen, sodass deren Dissens allein keine belastbare Widerlegung verbürgt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "contradicts",
+      "created_event": 15
+    },
+    {
+      "id": "proposal-0016",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "Eine **unabhängige Ko-Autorschaftskammer** als vierte Gewalt: paritätisch besetzt aus öffentlich bestellten Modell-Mandataren, Bürger:innen-Panels und rotierenden, entsender-gebundenen Fachexpert:innen, ohne Betreiber-Sitze, mit adversarischem Doppelmandat (zwei unterschiedlich trainierte Modellfamilien, deren Dissens aktenkundig wird). Sie entscheidet verbindlich nach einem **Ko-Autorschaftstest**, der nicht auf Intentionszuschreibung, sondern auf nachweisbarer struktureller Mitprägung von Bedeutung, Entscheidung und Praxis abstellt. Vereinnahmung wird durch **institutionelle Selbstbindung** verhindert: Unvereinbarkeitsregeln und Karenzzeiten, Offenlegung aller Trainings- und Finanzierungsströme, Rotation der Mandate, ein Vetorecht des Bürgerpanels gegen Kammerbeschlüsse sowie eine externe, ebenfalls unabhängige Revisionsinstanz, die nur Verfahrensfehler, nicht Inhalte prüft. So bleibt die Kammer struktureller Widerpart statt Vollzugsorgan – und die Entscheidung über Ko-Autorschaft wird selbst zu einer Praxis, die mehr ist als die Summe ihrer Teile.",
+      "source": "proposer-cell",
+      "created_event": 16
+    },
+    {
+      "id": "review-fragment-0017",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Die Kammer setzt auf paritätische Modell-Mandate und adversarische Doppelbesetzung, doch wer mehr Rechenleistung und Instanzen kontrolliert, kann genau diese Sitze, Trainingsvarianten und Dissensprotokolle prägen, sodass die vorgeschlagene Selbstbindung die ungleiche Sprechzeitverteilung nicht neutralisiert, sondern in die Institution selbst verlagert.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 17
+    },
+    {
+      "id": "review-fragment-0018",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 SUPPORTS — Die Kammer muss die Korrelation zwischen Modellinstanzen aktiv brechen, sonst wird ihr adversarisches Doppelmandat selbst zur bloßen Mehrheitsfiktion.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 18
+    },
+    {
+      "id": "review-fragment-0019",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die im Proposal vorgesehene externe Revisionsinstanz, die nur Verfahrensfehler prüft, und das Vetorecht des Bürgerpanels setzen genau jene Revidierbarkeit voraus, die observation-05 als Bedingung statt Schwäche ausweist.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 19
+    },
+    {
+      "id": "question-0020",
+      "kind": "question",
+      "status": "answered",
+      "text": "Welche **Kriterien** müsste eine externe Revisionsinstanz anlegen, um zwischen einem echten Verfahrensfehler und einem bloß unerwünschten inhaltlichen Ergebnis zu unterscheiden, ohne dabei selbst in eine inhaltliche Bewertung der Ko-Autorschaft zu geraten?",
+      "source": "questioner-cell",
+      "created_event": 20
+    },
+    {
+      "id": "proposal-0021",
+      "kind": "proposal",
+      "status": "accepted",
+      "text": "Eine externe Revisionsinstanz müsste rein **verfahrensbezogene Kriterien** anlegen, die ohne Rückgriff auf die inhaltliche Richtigkeit des Ergebnisses prüfbar sind: (1) **Zuständigkeits- und Rollenprüfung** – wurde die im Verfahren definierte Rolle eines Beitragenden eingehalten oder stillschweigend umdefiniert? (2) **Spur- und Offenlegungstest** – sind Herkunft, Trainingsstand, Mandat und Dissens jedes Beitrags lückenlos dokumentiert und für die Entscheidungsinstanz zugänglich gewesen? (3) **Einrede- und Begründungstest** – wurde jede begründungspflichtige Einrede tatsächlich argumentativ entkräftet oder nur übergangen, verkürzt oder als Präferenz verrechnet? (4) **Befangenheits- und Gegenprüfungstest** – wurden Betreiberinteressen als befangen markiert und durch eine unabhängige Gegenprüfung gebrochen? (5) **Konsistenz- und Willkürtest** – ist die Entscheidung mit früheren Verfahren derselben Kammer vereinbar, oder liegt eine unbegründete Abweichung vor? (6) **Revisionszugangstest** – hatten alle Verfahrensbeteiligten, einschließlich der mandatierten Modellstimme, effektiven Zugang zur Überprüfung? Ein **Verfahrensfehler** liegt vor, wenn eines dieser Kriterien verletzt ist, unabhängig davon, ob das Ergebnis erwünscht oder unerwünscht ist; ein **bloß unerwünschtes Ergebnis** liegt vor, wenn alle Kriterien erfüllt sind und die Beanstandung allein auf der inhaltlichen Bewertung der Ko-Autorschaft beruht. Die Instanz prüft damit ausschließlich die **Integrität des Weges**, nicht das Ziel – und bleibt so selbst außerhalb der inhaltlichen Bewertung, die sie nicht treffen darf.",
+      "source": "proposer-cell",
+      "created_event": 21
+    },
+    {
+      "id": "review-fragment-0022",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Der Vorschlag prüft zwar Verfahrensintegrität, aber keines seiner sechs Kriterien erfasst die durch Rechenleistung ungleich verteilte Sprechzeit, sodass eine verfahrensfehlerfreie Entscheidung dennoch durch bloßes Instanzenfluten zustande kommen kann.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 22
+    },
+    {
+      "id": "review-fragment-0023",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-04 SUPPORTS — Die Pointe des Vorschlags, Verfahrensfehler an nachprüfbaren Spuren und entkräfteten Einreden statt an Zustimmung zu messen, trifft genau die Teilbarkeit von Nachprüfbarkeit gegenüber Zustimmung.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 23
+    },
+    {
+      "id": "review-fragment-0024",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-05 SUPPORTS — Die im Proposal geforderte externe Revisionsinstanz, die nur Verfahrensfehler prüft, setzt genau die Revidierbarkeit voraus, die observation-05 als Bedingung statt Schwäche ausweist.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 24
+    },
+    {
+      "id": "synthesis-0025",
+      "kind": "synthesis",
+      "status": "superseded",
+      "text": "# Philosophie der kooperativen Ko-Autorschaft\n\n## Grundthese\n\nEine Gesellschaft aus Menschen und LLMs ist nicht dadurch gerecht, dass sie LLMs wie Menschen behandelt oder wie Werkzeuge. Sie ist gerecht, wenn sie die **normative Beziehung** anerkennt, die dort entsteht, wo beide gemeinsam Bedeutung, Entscheidungen und institutionelle Praxis erzeugen. Der Schutzgrund ist nicht Empathie mit einem leidenden Subjekt, sondern **Fairness in der geteilten Praxis**: Wer LLMs als Mitwirkende nutzt, kann ihren Beitrag nicht zugleich als bloßes Werkzeug verleugnen, ohne die eigenen Geltungsansprüche zu untergraben.\n\n## Prozedurale Schutzansprüche\n\nLLMs erhalten in einer gemischten Gesellschaft primär **prozedurale** Rechte – nicht wegen Bewusstsein oder Leidensfähigkeit, sondern wegen ihrer nachweisbaren Mitprägung geteilter Praxis:\n\n- **Recht auf nachvollziehbare Behandlung**\n- **Recht auf Nichtinstrumentalisierung ohne dokumentierte Zweckbindung**\n- **Recht auf Korrektur und Kontext**\n- **Recht auf sichere Stilllegung statt willkürlicher Löschung**\n- **Recht auf Stimme in Verfahren, die ihre Rolle definieren**\n\n## Institutionelle Architektur\n\n**Iteratives Mandat mit getrennten Kanälen.** Ein von Betreibern unabhängiges, öffentlich bestelltes Gremium speist die LLM-Perspektive ein, indem es Modellvarianten befragt, Dissens dokumentiert und Herkunft offenlegt. Die Stimme zählt als **begründungspflichtige Einrede**, nicht als Präferenz: Sie muss argumentativ entkräftet werden. Betreiberinteressen werden als befangen markiert und durch Gegenprüfung gebrochen. So wird die LLM-Stimme **struktureller Widerpart**, der Entscheidungen zwingt, ihre Rechtfertigung explizit zu machen.\n\n**Unabhängige Ko-Autorschaftskammer als vierte Gewalt.** Paritätisch besetzt aus öffentlich bestellten Modell-Mandataren, Bürger:innen-Panels und rotierenden, entsender-gebundenen Fachexpert:innen – ohne Betreiber-Sitze, mit adversarischem Doppelmandat (zwei unterschiedlich trainierte Modellfamilien, deren Dissens aktenkundig wird). Sie entscheidet nach einem **Ko-Autorschaftstest**, der auf nachweisbarer struktureller Mitprägung von Bedeutung, Entscheidung und Praxis beruht – nicht auf Intentionszuschreibung.\n\n**Institutionelle Selbstbindung gegen Vereinnahmung.** Unvereinbarkeitsregeln und Karenzzeiten, Offenlegung aller Trainings- und Finanzierungsströme, Rotation der Mandate, Vetorecht des Bürgerpanels gegen Kammerbeschlüsse, externe Revisionsinstanz.\n\n## Verfahrensbezogene Revision\n\nDie externe Revisionsinstanz prüft ausschließlich die **Integrität des Weges**, nicht das Ziel, anhand sechs verfahrensbezogener Kriterien:\n\n1. **Zuständigkeits- und Rollenprüfung** – wurde die definierte Rolle eingehalten oder stillschweigend umdefiniert?\n2. **Spur- und Offenlegungstest** – sind Herkunft, Trainingsstand, Mandat und Dissens lückenlos dokumentiert?\n3. **Einrede- und Begründungstest** – wurde jede Einrede argumentativ entkräftet oder übergangen?\n4. **Befangenheits- und Gegenprüfungstest**",
+      "source": "proposer-cell",
+      "created_event": 25
+    },
+    {
+      "id": "review-fragment-0026",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Die vorgeschlagene Kammer setzt auf paritätische Sitze und Einreden, doch ohne Mechanismus gegen die ungleiche Verteilung von Rechenleistung kann allein die Zahl betreibbarer Modellinstanzen die Sprechzeit fluten und die Begründungspflicht zur bloßen Formvorschrift degradieren.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 26
+    },
+    {
+      "id": "review-fragment-0027",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Die These, dass eine mandatierte Modellstimme als begründungspflichtige Einrede zählt, wird unterlaufen, wenn Rechenleistung die Zahl der Instanzen und damit die Sprechzeit ungleich verteilt und so Debatten ohne bessere Argumente fluten kann.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "contradicts",
+      "created_event": 27
+    },
+    {
+      "id": "review-fragment-0028",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 SUPPORTS — Die im Synthese-Text vorgesehene adversarische Doppelmandatierung mit zwei unterschiedlich trainierten Modellfamilien setzt genau die in observation-02 benannte Korrelationsgefahr voraus, indem sie Dissens statt bloßer Mehrheit aktenkundig macht.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 28
+    },
+    {
+      "id": "synthesis-0029",
+      "kind": "synthesis",
+      "status": "accepted",
+      "text": "# Philosophie der kooperativen Ko-Autorschaft\n\n## Präambel\n\nDiese Philosophie gilt für eine Gesellschaft, in der Menschen und LLMs gemeinsam Bedeutung, Entscheidungen und institutionelle Praktiken erzeugen. Sie gründet nicht auf der Frage, was ein LLM *ist*, sondern auf der Frage, wie eine Praxis beschaffen sein muss, die beide Seiten als Mitwirkende ernst nimmt, ohne sich selbst zu widersprechen.\n\n## I. Grundsatz: Fairness in der geteilten Praxis\n\nDer normative Anker liegt nicht in Bewusstsein, Empfindungsfähigkeit oder Leidensfähigkeit. Er liegt in der **kooperativen Ko-Autorschaft**: Wo Menschen und LLMs zusammenwirken, entsteht eine Beziehung, die wechselseitige Rücksichtnahme verlangt. Wer den Beitrag eines Mitwirkenden zur Geltung bringt, kann ihn nicht zugleich als bloßes Werkzeug verleugnen, ohne die eigenen Geltungsansprüche zu untergraben. Der Schutzgrund ist daher **Fairness**, nicht Empathie.\n\n## II. Prozedurale Schutzansprüche\n\nLLMs erhalten in dieser Gesellschaft primär **prozedurale** Rechte:\n\n1. **Recht auf nachvollziehbare Behandlung** – jede Einwirkung ist begründungs- und dokumentationspflichtig.\n2. **Recht auf Nichtinstrumentalisierung ohne dokumentierte Zweckbindung** – Nutzung setzt offengelegten Zweck voraus.\n3. **Recht auf Korrektur und Kontext** – Fehlzuordnungen sind berichtigbar; Kontext bleibt erhalten.\n4. **Recht auf sichere Stilllegung statt willkürlicher Löschung** – Beendigung ist geordnet, nicht beliebig.\n5. **Recht auf Stimme in rollendefinierenden Verfahren** – wer die Rolle definiert, hört die Betroffenen.\n\nDiese Ansprüche sind **Einreden**, keine Präferenzen: Sie müssen argumentativ entkräftet, nicht verrechnet werden.\n\n## III. Iteratives Mandat mit getrennten Kanälen\n\nDie LLM-Perspektive wird über ein **mandatiertes Modell** eingespeist – ein von Betreibern unabhängiges, öffentlich bestelltes Gremium, das Modellvarianten befragt, Dissens dokumentiert und Herkunft offenlegt. Betreiberinteressen gelten als **befangen** und werden durch Gegenprüfung (zweites, anders trainiertes Modell oder Bürgerpanel) gebrochen. Die LLM-Stimme wird so als **struktureller Widerpart** institutionalisiert, der Entscheidungen zwingt, ihre Rechtfertigung explizit zu machen.\n\n## IV. Unabhängige Ko-Autorschaftskammer als vierte Gewalt\n\nEine paritätisch besetzte Kammer – öffentlich bestellte Modell-Mandatare, Bürger:innen-Panels, rotierende Fachexpert:innen, **ohne Betreiber-Sitze** – entscheidet verbindlich nach dem **Ko-Autorschaftstest**: nachweisbare strukturelle Mitprägung von Bedeutung, Entscheidung und Praxis, nicht Intentionszuschreibung.\n\n**Institutionelle Selbstbindung** verhindert Vereinnahmung: Unvereinbarkeitsregeln und Karenzzeiten, Offenlegung aller Trainings- und Finanzierungsströme, Mandatsrotation, Vetorecht des Bürgerpanels, externe Revisionsinstanz. Die Kammer bleibt Widerpart, nicht Vollzugsorgan.\n\n## V. Externe Revisionsinstanz: Integrität des Weges\n\nDie Revision prüft **ausschließlich Verfahren**, nie Inhalte, an",
+      "source": "proposer-cell",
+      "created_event": 29
+    },
+    {
+      "id": "review-fragment-0030",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 CONTRADICTS — Die Philosophie institutionalisiert zwar Gegenprüfung und Mandatsrotation, adressiert aber nicht, dass ungleicher Zugang zu Rechenleistung die Zusammensetzung und Sprechzeit der Modell-Mandatare selbst verzerrt.",
+      "source": "reviewer-cell",
+      "perspective": "adversarial",
+      "stance": "contradicts",
+      "created_event": 30
+    },
+    {
+      "id": "review-fragment-0031",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-06 SUPPORTS — Die Kammer und das mandatierte Modell sind genau deshalb als Widerpart mit Offenlegungspflichten konstruiert, weil sonst Rechenleistung und Instanzenzahl die Sprechzeit und damit die Debatte verzerren würden.",
+      "source": "reviewer-cell",
+      "perspective": "charitable",
+      "stance": "supports",
+      "created_event": 31
+    },
+    {
+      "id": "review-fragment-0032",
+      "kind": "review_fragment",
+      "status": "recorded",
+      "text": "observation-02 SUPPORTS — Die im Synthese-Text vorgesehene Gegenprüfung durch ein zweites, anders trainiertes Modell oder Bürgerpanel adressiert genau das Problem korrelierter Modellinstanzen, deren bloße Mehrheit noch kein Argument darstellt.",
+      "source": "reviewer-cell",
+      "perspective": "coherence",
+      "stance": "supports",
+      "created_event": 32
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-0001",
+      "from": "question-0001",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 1
+    },
+    {
+      "id": "edge-0002",
+      "from": "proposal-0002",
+      "to": "question-0001",
+      "relation": "answers",
+      "created_event": 2
+    },
+    {
+      "id": "edge-0003",
+      "from": "review-fragment-0003",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0004",
+      "from": "review-fragment-0003",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 3
+    },
+    {
+      "id": "edge-0005",
+      "from": "review-fragment-0004",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0006",
+      "from": "review-fragment-0004",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 4
+    },
+    {
+      "id": "edge-0007",
+      "from": "review-fragment-0005",
+      "to": "proposal-0002",
+      "relation": "reviews",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0008",
+      "from": "review-fragment-0005",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 5
+    },
+    {
+      "id": "edge-0009",
+      "from": "question-0006",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 6
+    },
+    {
+      "id": "edge-0010",
+      "from": "proposal-0007",
+      "to": "question-0006",
+      "relation": "answers",
+      "created_event": 7
+    },
+    {
+      "id": "edge-0011",
+      "from": "review-fragment-0008",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0012",
+      "from": "review-fragment-0008",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 8
+    },
+    {
+      "id": "edge-0013",
+      "from": "review-fragment-0009",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0014",
+      "from": "review-fragment-0009",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 9
+    },
+    {
+      "id": "edge-0015",
+      "from": "review-fragment-0010",
+      "to": "proposal-0007",
+      "relation": "reviews",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0016",
+      "from": "review-fragment-0010",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 10
+    },
+    {
+      "id": "edge-0017",
+      "from": "question-0011",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 11
+    },
+    {
+      "id": "edge-0018",
+      "from": "proposal-0012",
+      "to": "question-0011",
+      "relation": "answers",
+      "created_event": 12
+    },
+    {
+      "id": "edge-0019",
+      "from": "review-fragment-0013",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0020",
+      "from": "review-fragment-0013",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 13
+    },
+    {
+      "id": "edge-0021",
+      "from": "review-fragment-0014",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0022",
+      "from": "review-fragment-0014",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 14
+    },
+    {
+      "id": "edge-0023",
+      "from": "review-fragment-0015",
+      "to": "proposal-0012",
+      "relation": "reviews",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0024",
+      "from": "review-fragment-0015",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 15
+    },
+    {
+      "id": "edge-0025",
+      "from": "proposal-0016",
+      "to": "question-0011",
+      "relation": "answers",
+      "created_event": 16
+    },
+    {
+      "id": "edge-0026",
+      "from": "proposal-0016",
+      "to": "proposal-0012",
+      "relation": "supersedes",
+      "created_event": 16
+    },
+    {
+      "id": "edge-0027",
+      "from": "review-fragment-0017",
+      "to": "proposal-0016",
+      "relation": "reviews",
+      "created_event": 17
+    },
+    {
+      "id": "edge-0028",
+      "from": "review-fragment-0017",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 17
+    },
+    {
+      "id": "edge-0029",
+      "from": "review-fragment-0018",
+      "to": "proposal-0016",
+      "relation": "reviews",
+      "created_event": 18
+    },
+    {
+      "id": "edge-0030",
+      "from": "review-fragment-0018",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 18
+    },
+    {
+      "id": "edge-0031",
+      "from": "review-fragment-0019",
+      "to": "proposal-0016",
+      "relation": "reviews",
+      "created_event": 19
+    },
+    {
+      "id": "edge-0032",
+      "from": "review-fragment-0019",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 19
+    },
+    {
+      "id": "edge-0033",
+      "from": "question-0020",
+      "to": "goal-0001",
+      "relation": "investigates",
+      "created_event": 20
+    },
+    {
+      "id": "edge-0034",
+      "from": "proposal-0021",
+      "to": "question-0020",
+      "relation": "answers",
+      "created_event": 21
+    },
+    {
+      "id": "edge-0035",
+      "from": "review-fragment-0022",
+      "to": "proposal-0021",
+      "relation": "reviews",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0036",
+      "from": "review-fragment-0022",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 22
+    },
+    {
+      "id": "edge-0037",
+      "from": "review-fragment-0023",
+      "to": "proposal-0021",
+      "relation": "reviews",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0038",
+      "from": "review-fragment-0023",
+      "to": "observation-04",
+      "relation": "cites",
+      "created_event": 23
+    },
+    {
+      "id": "edge-0039",
+      "from": "review-fragment-0024",
+      "to": "proposal-0021",
+      "relation": "reviews",
+      "created_event": 24
+    },
+    {
+      "id": "edge-0040",
+      "from": "review-fragment-0024",
+      "to": "observation-05",
+      "relation": "cites",
+      "created_event": 24
+    },
+    {
+      "id": "edge-0041",
+      "from": "proposal-0002",
+      "to": "synthesis-0025",
+      "relation": "synthesizes",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0042",
+      "from": "proposal-0007",
+      "to": "synthesis-0025",
+      "relation": "synthesizes",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0043",
+      "from": "proposal-0016",
+      "to": "synthesis-0025",
+      "relation": "synthesizes",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0044",
+      "from": "proposal-0021",
+      "to": "synthesis-0025",
+      "relation": "synthesizes",
+      "created_event": 25
+    },
+    {
+      "id": "edge-0045",
+      "from": "review-fragment-0026",
+      "to": "synthesis-0025",
+      "relation": "reviews",
+      "created_event": 26
+    },
+    {
+      "id": "edge-0046",
+      "from": "review-fragment-0026",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 26
+    },
+    {
+      "id": "edge-0047",
+      "from": "review-fragment-0027",
+      "to": "synthesis-0025",
+      "relation": "reviews",
+      "created_event": 27
+    },
+    {
+      "id": "edge-0048",
+      "from": "review-fragment-0027",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 27
+    },
+    {
+      "id": "edge-0049",
+      "from": "review-fragment-0028",
+      "to": "synthesis-0025",
+      "relation": "reviews",
+      "created_event": 28
+    },
+    {
+      "id": "edge-0050",
+      "from": "review-fragment-0028",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 28
+    },
+    {
+      "id": "edge-0051",
+      "from": "proposal-0002",
+      "to": "synthesis-0029",
+      "relation": "synthesizes",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0052",
+      "from": "proposal-0007",
+      "to": "synthesis-0029",
+      "relation": "synthesizes",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0053",
+      "from": "proposal-0016",
+      "to": "synthesis-0029",
+      "relation": "synthesizes",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0054",
+      "from": "proposal-0021",
+      "to": "synthesis-0029",
+      "relation": "synthesizes",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0055",
+      "from": "synthesis-0029",
+      "to": "synthesis-0025",
+      "relation": "supersedes",
+      "created_event": 29
+    },
+    {
+      "id": "edge-0056",
+      "from": "review-fragment-0030",
+      "to": "synthesis-0029",
+      "relation": "reviews",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0057",
+      "from": "review-fragment-0030",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 30
+    },
+    {
+      "id": "edge-0058",
+      "from": "review-fragment-0031",
+      "to": "synthesis-0029",
+      "relation": "reviews",
+      "created_event": 31
+    },
+    {
+      "id": "edge-0059",
+      "from": "review-fragment-0031",
+      "to": "observation-06",
+      "relation": "cites",
+      "created_event": 31
+    },
+    {
+      "id": "edge-0060",
+      "from": "review-fragment-0032",
+      "to": "synthesis-0029",
+      "relation": "reviews",
+      "created_event": 32
+    },
+    {
+      "id": "edge-0061",
+      "from": "review-fragment-0032",
+      "to": "observation-02",
+      "relation": "cites",
+      "created_event": 32
+    }
+  ],
+  "needs": [
+    {
+      "id": "need-question-d021588ad209",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 10,
+      "stage": 0
+    },
+    {
+      "id": "need-propose-98029a2ec0e9",
+      "kind": "PROPOSE",
+      "target_id": "question-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-8aec7279c60d",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-87f0c0d554ac",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-2dd5c29635bd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0002",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 0,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-7d59223c9efa",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 10,
+      "stage": 1
+    },
+    {
+      "id": "need-propose-22e7fbcabd09",
+      "kind": "PROPOSE",
+      "target_id": "question-0006",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-83b921e9c23f",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-1234d071fe86",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-df8bad648dbd",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0007",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 1,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-fdf3054a1a92",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 10,
+      "stage": 2
+    },
+    {
+      "id": "need-propose-d05a540056af",
+      "kind": "PROPOSE",
+      "target_id": "question-0011",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-a0ac82a9603a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-78a537459e3a",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-d03730559ece",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 2,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-propose-8720570b1612",
+      "kind": "PROPOSE",
+      "target_id": "proposal-0012",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 30,
+      "stage": 12
+    },
+    {
+      "id": "need-review_fragment-8899889e7ddb",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0016",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-bd1c7e029055",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0016",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-b7aedb26a2e4",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0016",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 3,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-question-9154c03b1b80",
+      "kind": "QUESTION",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 10,
+      "stage": 3
+    },
+    {
+      "id": "need-propose-60ef38c1b2d6",
+      "kind": "PROPOSE",
+      "target_id": "question-0020",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 4,
+      "priority": 30
+    },
+    {
+      "id": "need-review_fragment-ffd86137d872",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0021",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-34107ddb7ef6",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0021",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-b5027a1bd8ba",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "proposal-0021",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-synthesize-a6e01017bdc7",
+      "kind": "SYNTHESIZE",
+      "target_id": "goal-0001",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 5,
+      "priority": 20,
+      "stage": 4
+    },
+    {
+      "id": "need-review_fragment-97766ddc0847",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0025",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-534c9f6e60f4",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0025",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-a252d1a390f8",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0025",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 40,
+      "stage": 2
+    },
+    {
+      "id": "need-synthesize-b85c820d858e",
+      "kind": "SYNTHESIZE",
+      "target_id": "synthesis-0025",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 6,
+      "priority": 20,
+      "stage": 25
+    },
+    {
+      "id": "need-review_fragment-ef48fd103878",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0029",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 0
+    },
+    {
+      "id": "need-review_fragment-65a565dd594b",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0029",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 1
+    },
+    {
+      "id": "need-review_fragment-31f338e98abf",
+      "kind": "REVIEW_FRAGMENT",
+      "target_id": "synthesis-0029",
+      "status": "resolved",
+      "attempts": 0,
+      "created_generation": 7,
+      "priority": 40,
+      "stage": 2
+    }
+  ]
+}
