@@ -2308,60 +2308,128 @@ sondern die Zelle.
 
 ### Weitere offene Punkte
 
-- Die Kernfrage ist teilbeantwortet: die Organisation entsteht, die
-  Differenzierung nicht. Ob sie bei rollentreueren Zellen entsteht, ist offen.
-- **Größer werden** ist nach Abschnitt 13 nicht mehr eine Option unter mehreren,
-  sondern die einzig verbliebene, und die Batterie entscheidet es in Minuten.
-  SmolLM2 gibt es als 1.7B. Die Reihenfolge der Prüfung ist dabei vorgegeben:
-  zuerst C3a und C6, denn ohne sie trägt keiner der vier gebauten Mechanismen,
-  und erst danach lohnen Kalibrierung, Positionskontrolle und Tauschprüfung.
+Die Liste stand lange vor 014 und ist seither zur Hälfte abgearbeitet worden.
+Was erledigt ist, steht hier weiter mit Verweis, damit nachvollziehbar bleibt,
+was wann offen war.
+
+**Beantwortet:**
+
+- ~~Größer werden ist die einzig verbliebene Option.~~ Durchgeführt: 1.7B in
+  Abschnitt 13, `deepseek-flash` in 19 bis 21. Die Wand gehört der Modellgröße.
+- ~~Ob die Differenzierung bei rollentreueren Zellen entsteht, ist offen.~~ Sie
+  entsteht: Abschnitt 20, adversarial 11 Einwände zu 2 Zustimmungen, charitable
+  13 zu 0.
+- ~~Die Aufgabe muss ins messbare Band.~~ Mit 031 bis 033 liegt sie darin —
+  dieselbe Aufgabe scheitert auf 1.7B vollständig und gelingt auf der großen
+  Zelle in 28 von 64 Zellen.
+- ~~Seed-Observations werden von der Local View nicht gelesen.~~ Behoben mit dem
+  Zitat-Mechanismus, Abschnitt 11.
+- ~~Wieviel Substrat eine Perspektive sehen darf.~~ Gemessen und entschieden:
+  blindes Panel, Abschnitt 14, und die Buchführung dazu.
+- ~~Die Zellen antworten auf Englisch, obwohl das Ziel Deutsch verlangt.~~ Auf
+  den kleinen Modellen ja; die große Zelle arbeitet durchgehend in der Sprache
+  des Ziels — die Synthese von 033 ist deutsch.
+
+**Weiterhin offen:**
+
 - **Der komparative Aufbau ist nicht widerlegt, nur seine Implementierung.** Dass
   Vergleichen leichter ist als absolutes Bewerten, bleibt richtig; auf 360M
-  scheitert schon der Vergleich. Die Tauschprüfung ist damit die
-  Eingangsbedingung für jedes darwinsche Design: ohne stabile Präferenz kein
-  Selektionsdruck, und dann braucht der Rest nicht gebaut zu werden. Wäre sie
-  erfüllt, stünde der Aufbau fest — Varianten über gestörte Prompts statt über
-  Zufall, Turnier mit Tauschprüfung, unentschiedenes Turnier nimmt nichts an.
-- **Die ACCEPT-Schwelle ist ungeklärt.** Denkbar ist, dass `ACCEPT` nicht als
-  Urteil verliert, sondern als Token — etwa weil Instruction-Tuning zustimmende
-  Einwortantworten selten macht. Ein Gegentest wäre, die drei Label gegen
-  semantisch gleichwertige, aber anders verteilte Wörter zu tauschen
-  (`KEEP` / `REWORK` / `DROP`) und zu prüfen, ob die Rangfolge kippt. Bleibt sie
-  stabil, urteilt das Modell; kippt sie, misst die Skala Tokenhäufigkeit.
+  scheitert schon der Vergleich (59 % bei n=34). Auf der großen Zelle ist die
+  Tauschprüfung nie wiederholt worden, und sie wäre die Eingangsbedingung für
+  jedes darwinsche Design.
+- **Die ACCEPT-Schwelle ist ungeklärt.** Denkbar bleibt, dass `ACCEPT` nicht als
+  Urteil verliert, sondern als Token. Der Gegentest — die drei Label gegen
+  `KEEP` / `REWORK` / `DROP` tauschen — ist nie gelaufen. Er betrifft nur den
+  gescorten Pfad und damit die kleinen Modelle.
 - **Die Marge ist ungenutzt.** Zwischen `REVISE` und `REJECT` liegen 0,1 bis 0,3
-  nats. Eine Entscheidungsregel könnte einen Mindestabstand verlangen und sonst
-  abstinieren — dann bliebe die Erschöpfung des Bedürfnisses als ehrliche
-  Antwort auf ein Urteil, das keines ist.
-- **Das Ziel selbst ist zur Hälfte keine Aufgabe.** „Werde dabei mehr als die
-  Summe deiner Teile" ist eine Hoffnung, an der kein Lauf scheitern oder gelingen
-  kann; falsifizierbar ist nur der erste Halbsatz. Bei einer Neuformulierung
-  gehört der zweite gestrichen oder in ein messbares Kriterium überführt — etwa
-  den Vergleich gegen eine Einzelzelle, den das README ohnehin vorsieht.
-- **Die Aufgabe muss ins messbare Band.** Bei einer Erfolgsrate von null ist kein
-  Kollektivvorteil feststellbar; es braucht eine Aufgabe, die eine einzelne Zelle
-  manchmal löst und manchmal nicht. Erst dann kann ein Unterschied überhaupt
-  sichtbar werden, und erst dann ist der blinded benchmark durchführbar.
-- Die Zellen antworten auf Englisch, obwohl Ziel und Prompt Deutsch verlangen —
-  auf beiden Modellgrößen. Das Gewebe wächst also nicht in der Sprache des
-  Ziels.
-- Die Perspektivmaskierung der Local View (adversarial ohne akzeptierte
-  Vorschläge, charitable ohne negative Spuren) war in 007 wirkungslos, weil das
-  frühe Gewebe beides noch nicht enthielt. Ob sie in einem gewachsenen Gewebe
-  greift, ist ungemessen.
-- Seed-Observations werden validiert, als Knoten gespeichert und von der Local
-  View nicht gelesen. Das Feld ist wirkungslos. Ob Zellen die Umgebung des
-  Seeds wahrnehmen sollen, ist eine Designfrage und bewusst offen gelassen —
-  die Wahrnehmung einer Zelle zu erweitern ist kein Fehlerfix.
-- Die drei Reviewer-Perspektiven laufen sequenziell, und die Fragmente der
-  früheren stehen in der Local View der späteren. In einem stigmergischen
-  System ist das Lesen fremder Spuren der Mechanismus und nicht dessen Störung
-  — die Prompts der Reviewer nutzen die Fragmente derzeit ohnehin nicht. Offen
-  ist die Designfrage, ob sie es sollen: wieviel Substrat eine Perspektive
-  sehen darf, bevor sie ihre Differenzierung verliert.
-- Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
+  nats. Eine Regel könnte einen Mindestabstand verlangen und sonst abstinieren.
+- **Das Ziel ist zur Hälfte keine Aufgabe.** „Werde dabei mehr als die Summe
+  deiner Teile" ist eine Hoffnung, an der kein Lauf scheitern oder gelingen kann;
+  falsifizierbar ist nur der erste Halbsatz. Das gilt unverändert — auch 033 hat
+  den zweiten Halbsatz nicht geprüft, sondern nur zitiert.
+- **Der Kollektivvorteil ist nicht gemessen.** Ob das Gewebe besser ist als eine
+  einzelne große Zelle mit demselben Ziel, weiß niemand. Das ist jetzt zum ersten
+  Mal durchführbar — eine Zelle, ein Aufruf, dasselbe Ziel, und der Vergleich
+  gegen die Synthese von 033 —, und es ist die nächstliegende Messung überhaupt.
+  Solange sie fehlt, ist über den Nutzen der ganzen Konstruktion nichts gesagt.
+- **Die Perspektivmaskierung der Local View** (adversarial ohne akzeptierte
+  Vorschläge, charitable ohne negative Spuren) ist in einem gewachsenen Gewebe
+  weiterhin ungemessen.
+- **Die JSON-Schemas unter `schemas/`** werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
+- **Die Relationsschicht aus Abschnitt 18** hat auf der großen Zelle 5 von 6
+  Paaren stabil entschieden — ob die Kanten *richtig* sind, ist offen und
+  braucht ein Gold-Korpus, das nicht von mir stammt.
+- **Der Streuungsbefund gilt für sechs Aufrufe.** Dass die gehostete Zelle
+  denselben Prompt identisch beantwortet, ist eine bestandene Kontrolle und kein
+  Determinismus-Beweis. Über mehrere Sitzungen ist es nie geprüft worden — und
+  budget-review hat genau dort gefunden, dass die Streuung größer ist als im
+  Fenster.
 
-## 23. Nachprüfen
+## 23. Bilanz
+
+Dreiunddreißig Läufe, rund achthundert Zellen, drei Modellgrößen und ein
+gehostetes Modell. Der Bericht endet an einer anderen Stelle, als er begonnen
+hat, und die Bewegung dazwischen lässt sich in vier Sätzen sagen.
+
+**Der erste Befund war ein Defekt.** Fünf Experimente liefen als reine
+Textvervollständigung, weil die Policy der Pipeline einen String statt eines
+Message-Arrays übergab. Alles, was vorher wie ein Modellgrenzwert aussah, war
+ein Aufrufdefekt.
+
+**Der zweite war die Modellgröße.** Auf 135M bis 1.7B fehlt jede Fähigkeit, auf
+der die Architektur aufbaut: die drei Reviewer-Phänotypen sind byteidentisch,
+die Zitatwahl folgt dem Bezeichner statt dem Text (0 von 9), das Panel teilt
+seine vollständige Rangfolge und übernimmt einen Köder 3 von 3, und keine
+Prompt-Variante bewegt daran etwas. Eine Fähigkeitsleiter von sechs Sprossen
+wird auf 360M einmal bestanden.
+
+**Der dritte war der Aufbau selbst.** Mit einer Zelle, die es kann, fielen drei
+Entwurfsfehler auf, die keine kleine Zelle je hätte sichtbar machen können: ein
+einzelner Einwand als absolutes Veto, eine Beweislast, die Einigkeit über die
+einschlägige Prämisse bestraft, und zweimal ein Erzeugnis, das an einer Grenze
+von mir abbrach. Jeder davon hielt das Ziel für sich allein auf.
+
+**Der vierte ist, dass es dann geht.** 033 erreicht das ursprüngliche Ziel in 28
+von 64 Zellen: vier zitatgestützte Annahmen, eine akzeptierte Synthese, kein
+abgeschnittenes Receipt, replay-stabil von Anfang bis Ende.
+
+### Was davon trägt
+
+Die stigmergische Maschinerie hat über alle dreiunddreißig Läufe getragen und
+war nie die Ursache eines Fehlschlags. Bedürfnisse entstehen aus dem Gewebe,
+zwischen Zellen fließt keine Nachricht, das Gate prüft Struktur, Herkunft und
+akkumulierte Belege und behauptet an keiner Stelle Qualität. Dass sich am Ende
+sagen lässt, *was* fehlte — und nicht nur, dass etwas fehlte —, liegt genau
+daran.
+
+Drei Dinge haben dabei mehr geleistet als jeder Mechanismus:
+
+**Die Vorregistrierung.** Marke vor dem Lauf festschreiben und committen. Von
+den zwölf so gestellten Marken sind sechs verfehlt worden, und jede verfehlte
+hat mehr gezeigt als eine getroffene.
+
+**Der entartete Kontrollarm.** Aus dem Projektabschluss von DESi übernommen.
+Fünfzehn Zeilen, die nichts vergleichen, haben hier wie dort gezeigt, dass die
+Modellzelle im Zitatmechanismus genau so viel leistete.
+
+**Die eingebaute Kontrolle gegen die naheliegendste Scheinerklärung.** Zehn
+Zahlen dieser Untersuchung maßen bei genauerem Hinsehen etwas anderes als
+behauptet, und alle zehn stammen von mir. Gefunden wurden sie nicht durch
+Sorgfalt, sondern dadurch, dass jede Messung eine Kontrolle mitführte, die
+scheitern konnte.
+
+### Was nicht gezeigt ist
+
+Dass das Erzeugnis gut ist. Das Gate zählt Belege und prüft Herkunft; über
+Qualität sagt es nichts, und dieser Bericht sagt es auch nicht.
+
+Und der eigentliche Anspruch des Projekts ist unberührt: ob ein Gewebe aus
+kurzlebigen Zellen mehr leistet als eine einzelne Zelle mit demselben Ziel. Das
+ist nie gemessen worden, es ist seit 033 zum ersten Mal messbar, und ohne diese
+Messung steht über den Nutzen der ganzen Konstruktion nichts fest.
+
+## 24. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -2412,6 +2480,17 @@ MODEL=HuggingFaceTB/SmolLM2-1.7B-Instruct \
   REVISION=31b70e2e869a7173562077fd711b654946d38674 \
   node tools/probe.mjs span-length
 
+# Das ursprüngliche Ziel mit einer großen Zelle, so wie 033 es erreicht hat
+DEEPSEEK_API_KEY=… node src/cli.mjs step --backend deepseek \
+  --seed docs/runs/033/seed.json --state docs/runs/033/embryo.json \
+  --events docs/runs/033/events.jsonl
+
+# Die Annahmebilanz jedes Panels eines erreichten Laufs
+node src/cli.mjs panel --state docs/runs/031/embryo.json
+
+# Prüfen, dass kein Receipt eine abgeschnittene Antwort trägt
+grep -c 'finish_reason":"length"' docs/runs/033/events.jsonl
+
 # Einen Lauf mit Regelarm bzw. mit dem entarteten Kontrollarm fahren
 node src/cli.mjs step --backend smollm --citation-by score --rule-arm anchor
 node src/cli.mjs step --backend smollm --citation-by score --rule-arm degenerate
@@ -2432,5 +2511,9 @@ grep -o 'verdict_scores.\{0,240\}' docs/runs/008/events.jsonl
 ---
 
 Grundlage sind die hash-verketteten Receipts der Branches `archive/embryo-001`
-bis `archive/embryo-004` sowie `embryo-state`. Die Nachmessungen liefen lokal
-gegen die angehefteten Revisionen `12fd25f7` (135M) und `a10cc151` (360M).
+bis `archive/embryo-004` und `embryo-state` sowie die Läufe 006 bis 033 unter
+`docs/runs/`. Die lokalen Messungen liefen gegen die angehefteten Revisionen
+`12fd25f7` (135M), `a10cc151` (360M) und `31b70e2e` (1.7B); die Läufe 025 bis
+033 gegen `deepseek-flash` über die OpenAI-Format-API, mit dem Denkmodus im
+Policy-Namen. Jeder Lauf ist gegen den Code dieses Branches replay-stabil, und
+`npm test` deckt die Regeln ab, die dabei geprüft werden.
