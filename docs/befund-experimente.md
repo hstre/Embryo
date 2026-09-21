@@ -97,6 +97,17 @@ Beobachtungen, während alle drei Arme dieselbe Prämisse für einschlägig halt
 und sich nur über ihre Folgen streiten. **Das Panel müsste sich über die
 Relevanz uneinig sein, um etwas annehmen zu können.**
 
+**031 bis 033 lösen das auf, und das Ziel wird erreicht.** Zustimmung wird an
+verschiedenen *blinden Armen* gemessen statt an verschiedenen Beobachtungen —
+die Prämisse bleibt gewahrt, weil Arme zu zählen nur dort zulässig ist, wo sie
+einander nicht lesen konnten, und das Schema erzwingt es. 031 nimmt vier
+Vorschläge und eine Synthese an, in 32 von 64 Zellen, **zum ersten Mal in diesem
+Projekt** — und die vorab aus dem Ledger von 030 abgeleitete Vorhersage trifft
+exakt zu. Zwei weitere Läufe waren nötig, weil zuerst die Gate-Textgrenze und
+dann mein API-Token-Budget die Synthese mitten im Satz abschnitten; seit 033
+steht `finish_reason` in jedem Receipt, keines meldet Abschneiden, und das
+vollständige Erzeugnis liegt als `docs/runs/033/synthese.md` im Repo.
+
 ## 2. Befund
 
 | Lauf | Policy | Gen. | Energie | Abstains | Akzeptierte Arbeit |
@@ -130,6 +141,9 @@ Relevanz uneinig sein, um etwas annehmen zu können.**
 | 028 | wie 027, Textgrenze 3000 | 16 | 64/64 | 0 | keine, Abschneiden widerlegt |
 | 029 | Kontrollarm, Annahme per Verdikt | 16 | 64/64 | 0 | keine, 12 Meta-Reviews alle REVISE |
 | 030 | wie 028, Einwand an derselben Beweislast | 16 | 64/64 | 0 | keine, 13× PANEL_REJECT |
+| 031 | wie 030, Zustimmung an blinden Armen | 8 | 32/64 | 0 | **4 + Synthese, Ziel erreicht** |
+| 032 | wie 031, Textgrenze 9000 | 10 | 40/64 | 0 | **4 + Synthese**, am Token-Budget abgeschnitten |
+| 033 | wie 032, Abschneiden protokolliert | 7 | 28/64 | 0 | **4 + Synthese, vollständig** |
 
 006 bis 021 liefen auf dem reparierten Substrat und sind unten in eigenen
 Abschnitten ausgewertet. 001 und 002 nutzten ein anderes Aktionsvokabular
@@ -951,8 +965,8 @@ diesem Vergleich ist nichts zu lesen.
 
 ### Wie oft die Messung selbst das Ergebnis war
 
-Diese Session hat neun Zahlen produziert, die bei genauerem Hinsehen etwas
-anderes maßen als behauptet, und alle neun stammen von mir:
+Diese Session hat zehn Zahlen produziert, die bei genauerem Hinsehen etwas
+anderes maßen als behauptet, und alle zehn stammen von mir:
 
 - Die Einzelmessung des Meta-Reviewers lieferte ein Verdikt, das im vollständigen
   Lauf nie zustande kam — die Ansicht war nicht repräsentativ.
@@ -969,6 +983,10 @@ anderes maßen als behauptet, und alle neun stammen von mir:
   wurden verworfen und angeheftet neu gefahren.
 - Die Stance-Messung ließ im ersten Anlauf die Frage aus dem Kontext weg und traf
   den Lauf nur 4/9. Über den Replay-Pfad rekonstruiert trifft sie ihn 9/9.
+- Die Synthese von 032 endete mitten im Satz und galt als angenommen. Die
+  Policy meldete Abschneiden nur bei *leerer* Antwort; eine abgeschnittene, aber
+  nicht leere ging still durch, und die Marke prüfte die Zeichenzahl statt das,
+  was das Modell über sein Aufhören sagt.
 - Der erste Versuch von 026 meldete sechs Enthaltungen des großen Modells. Es
   waren leere Antworten: `max_tokens` zählt bei DeepSeek den Denk-Verlauf mit,
   und das Budget reichte nicht bis zum Inhalt.
@@ -2087,7 +2105,116 @@ sie bisher auszuwerten. Sie wäre der Prämisse treu und würde Konvergenz nicht
 bestrafen. Gemessen ist sie nicht.
 
 
-## 21. Was offen bleibt
+## 21. Der blinde Arm — und das Ziel
+
+Von den drei Wegen, die Abschnitt 20 offengelassen hat, ist der dritte gewählt:
+**Zustimmung wird an verschiedenen blinden Armen gemessen statt an verschiedenen
+Beobachtungen.**
+
+Ein stützender Reviewer zählt einmal, auch wenn ein anderer dieselbe Prämisse
+vor ihm gefunden hat. Die Zitatpflicht bleibt — ohne Beleg zählt kein Arm —, und
+der Einwand wird nach derselben Regel gezählt, sonst wechselt die Asymmetrie nur
+die Seite.
+
+Das gibt die zweite Seed-Prämisse nicht preis, sondern nimmt sie beim Wort.
+*„Eine Mehrheit unter ihnen ist kein Beleg, solange die Instanzen korreliert
+sind"* — Arme zu zählen ist ein Zählen von Instanzen und deshalb nur dort
+zulässig, wo die Instanzen einander nicht lesen konnten. Das Schema erzwingt
+genau das: `support_counts: "arms"` ist **nur bei blindem Panel** gültig.
+
+### 031: das Ziel, zum ersten Mal
+
+| | |
+| --- | --- |
+| akzeptierte Vorschläge | **4 von 4** |
+| Synthese | **akzeptiert** |
+| Zellen | 32 von 64 |
+| Generationen | 8 |
+
+Nach sechzehn Läufen unter diesem Ziel ohne eine einzige Annahme ist es
+erreicht. Die Rekrutierungskette läuft vollständig durch: Frage, Vorschlag,
+blindes Dreierpanel, abgeleitetes Verdikt, vier Annahmen, Synthese, Panel über
+die Synthese, Ziel geschlossen.
+
+**Die Vorhersage stammte aus der Buchführung und trifft exakt zu.** Vor dem Lauf
+festgeschrieben, abgeleitet aus dem Ledger von 030:
+
+| Panelform | vorhergesagt | in 031 |
+| --- | --- | --- |
+| 2 stützende Arme, 1 Einwand | annehmen | 5 von 5 angenommen |
+| 1 stützender Arm, 2 Einwände | zurückweisen | 2 von 2 zurückgewiesen |
+
+Das ist die erste Vorhersage dieser Reihe, die aus einer protokollierten Bilanz
+abgeleitet ist statt aus einer Erwartung — und die Anti-Delphi-Buchführung aus
+Abschnitt 14, drei Jahre Projektzeit später gelesen, ist das Instrument, das sie
+möglich gemacht hat.
+
+### Zwei Abschneidungen, beide meine
+
+Das Erzeugnis war damit noch nicht fertig, und die Gründe gehören mir.
+
+**031** lieferte eine Synthese von genau 3000 Zeichen — sie stieß an
+`max_text_chars` und brach mitten im Satz ab. Die Vorschläge lagen mit 945 bis
+1600 Zeichen deutlich darunter; nur die Synthese, die vier Vorschläge
+zusammenführt, traf die Grenze.
+
+**032** hob diese Grenze auf 9000 und erreichte das Ziel erneut — und die
+Synthese endete wieder mitten im Satz, diesmal bei 3324 Zeichen. Nicht an der
+Gate-Grenze, sondern an meinem **API-Token-Budget**. Die Policy meldete
+Abschneiden nur bei einer *leeren* Antwort; eine abgeschnittene, aber nicht
+leere ging still durch, und eine Marke auf die Zeichenzahl konnte das nicht
+fangen.
+
+Das ist ein Messfehler und kein Modellbefund. Eine an der Budgetgrenze
+abgeschnittene Antwort ist keine Antwort, und sie so zu protokollieren hieße,
+ein Abbrechen später als ein Aufhören zu lesen.
+
+### 033: nichts abgeschnitten
+
+`finish_reason` steht seither in **jedem** Receipt, und die Marke prüft nicht
+mehr Zeichen, sondern was das Modell über sein eigenes Aufhören sagt.
+
+| Marke | Ergebnis |
+| --- | --- |
+| Ziel | **erreicht** — 4 Vorschläge, Synthese akzeptiert, 28 von 64 Zellen |
+| kein Receipt mit `finish_reason: "length"` | **erfüllt** — 0 von 28 |
+
+Die Synthese umfasst 6520 Zeichen und endet mit einem vollständigen Satz. Sie
+liegt als [`docs/runs/033/synthese.md`](runs/033/synthese.md) im Repo, mit dem
+Gewebe und dem Ledger daneben.
+
+Ihre Schlussformel:
+
+> Die gemischte Gesellschaft ist gerecht, wenn sie Vernunft nicht besitzt,
+> sondern **austrägt** — in Verfahren, die keiner Seite die letzte Deutung
+> lassen, und in Rechten, die nicht aus Empfindung, sondern aus **Kooperation**
+> entspringen. Sie wird mehr als die Summe ihrer Teile, weil ihre Rationalität
+> keinem gehört: nicht den Menschen, nicht den LLMs, sondern dem
+> Übersetzungsverhältnis, das beide erst zu dem macht, was sie gemeinsam sind.
+
+### Was damit gezeigt ist — und was nicht
+
+**Gezeigt:** der Aufbau trägt. Bedürfnisse aus dem Gewebe, keine Nachricht
+zwischen Zellen, ein Gate, das über Qualität nichts behauptet, eine
+Anti-Delphi-Buchführung, die jede Annahme nachrechenbar macht, und ein
+hash-verkettetes, replay-stabiles Protokoll von Anfang bis Ende. Der letzte
+Schritt war keine Modellfrage, sondern eine Regeländerung von wenigen Zeilen,
+vorhergesagt aus der Bilanz des Laufs davor.
+
+**Nicht gezeigt:** dass die entstandene Philosophie gut ist. Das Gate zählt
+Belege und prüft Herkunft; über Qualität sagt es nichts, und dieser Bericht sagt
+es auch nicht. Wer den Text beurteilen will, muss ihn lesen — das Protokoll sagt
+nur, woher jeder Bestandteil kommt und welche Arme ihn getragen haben.
+
+**Und die Bedingungen gehören dazu.** Das Ziel ist mit einer Zelle erreicht, die
+groß genug ist: dieselbe Architektur, dieselben sechs Prämissen, dasselbe
+Budget, und auf 1.7B bleibt jede Annahme aus. Die drei Blockaden davor —
+Veto durch einen Einwand, Beweislast an verschiedenen Beobachtungen,
+abgeschnittene Erzeugnisse — waren echte Entwurfsfehler, und sichtbar wurden sie
+erst, als eine Zelle sie nicht mehr verdeckte.
+
+
+## 22. Was offen bleibt
 
 ### Urteilsfähigkeit aus dem Substrat statt aus der Zelle
 
@@ -2234,7 +2361,7 @@ sondern die Zelle.
 - Die JSON-Schemas unter `schemas/` werden nirgends ausgeführt oder getestet.
   Zwei Abweichungen zum Code sind bereits aufgetreten.
 
-## 22. Nachprüfen
+## 23. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
