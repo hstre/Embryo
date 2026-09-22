@@ -108,6 +108,21 @@ dann mein API-Token-Budget die Synthese mitten im Satz abschnitten; seit 033
 steht `finish_reason` in jedem Receipt, keines meldet Abschneiden, und das
 vollständige Erzeugnis liegt als `docs/runs/033/synthese.md` im Repo.
 
+**Und dann die Frage, um die es eigentlich geht (034–037):** leistet das Gewebe
+mehr als eine einzelne Zelle mit demselben Ziel? Eine Zelle, ein Aufruf,
+dieselben sechs Prämissen. Drei Durchgänge mit jeweils strengerer Kontrolle, und
+die Antwort dreht sich dabei um. Der familieninterne Richter sah neun von neun
+Vergleichen für das Gewebe, ohne Längenkontrolle. **Sechs starke Richter aus fünf
+Familien, die alle eine Positivkontrolle bestehen, lesen die Einzelzelle
+einstimmig bei 6 von 6 berührten Prämissen und das Gewebe bei 2 bis 4** — der
+Paarvergleich trägt bei angeglichener Länge in keine Richtung mehr. Die Ursache
+ist benennbar: in dieser Architektur ist die Abdeckung der Umgebung niemandes
+Aufgabe. Was bleibt, ist kein Qualitätsvorteil, sondern die **Herkunft** — für
+jeden Satz des Gewebe-Textes sagt das Ledger, worauf er sich stützt und welche
+blinden Arme ihn getragen haben. Der Tausch lautet damit:
+achtundzwanzigfacher Aufwand und schlechtere Abdeckung gegen
+Nachvollziehbarkeit.
+
 ## 2. Befund
 
 | Lauf | Policy | Gen. | Energie | Abstains | Akzeptierte Arbeit |
@@ -965,8 +980,10 @@ diesem Vergleich ist nichts zu lesen.
 
 ### Wie oft die Messung selbst das Ergebnis war
 
-Diese Session hat zwölf Zahlen produziert, die bei genauerem Hinsehen etwas
-anderes maßen als behauptet, und alle zwölf stammen von mir:
+Diese Session hat vierzehn Stellen produziert, an denen die Messung selbst das
+Ergebnis war — zwölf Zahlen, die bei genauerem Hinsehen etwas anderes maßen als
+behauptet, ein Aufbau, der eine Frage nicht entscheiden konnte, und eine gute
+Messung, die ich weggeworfen habe. Alle vierzehn stammen von mir:
 
 - Die Einzelmessung des Meta-Reviewers lieferte ein Verdikt, das im vollständigen
   Lauf nie zustande kam — die Ansicht war nicht repräsentativ.
@@ -1003,9 +1020,23 @@ anderes maßen als behauptet, und alle zwölf stammen von mir:
   Paare mit Stringersetzungen, die ins Leere liefen. Beide waren derselbe Text
   und lieferten auf vier Nachkommastellen dieselben Werte — eine arithmetische
   Identität, die wie der stärkste Befund der Messung aussah.
+- Die vier Richter des Fremdurteils waren nach **Preis** ausgewählt, bei einem
+  Budget von fünf Dollar, von dem der Lauf zwei Cent verbrauchte. Ein Richter,
+  der schwächer ist als das beurteilte Modell, kann nicht als urteilsfähig
+  unterstellt werden; die Aussage von Abschnitt 25 war damit zwischen
+  Längenartefakt und Richterschwäche unentscheidbar. Zugleich hatte der
+  Paarvergleich gar keine Positivkontrolle — ich habe nie geprüft, ob ein
+  Richter einen offensichtlichen Fall richtig entscheidet. Der einzige Eintrag
+  dieser Liste, den nicht ich gefunden habe, sondern der Auftraggeber.
+- Der Panel-Lauf lief im Hintergrund, und ich habe seine Ausgabe durch
+  `tail -34` gefiltert. Der erste Block fiel weg, und das waren Geminis
+  Abdeckungszahlen. Nachgemessen für 1,33 $. Hier war nicht die Messung falsch,
+  sondern ich habe die richtige verworfen.
 
 Keiner dieser Fehler hat die Richtung des Gesamtbefunds gedreht, aber fünf
-hätten eine falsche Zahl in diesem Bericht hinterlassen. Sie stehen hier, weil
+hätten eine falsche Zahl in diesem Bericht hinterlassen, und einer — die nach
+Preis ausgewählten Richter — hätte eine Teilfrage als beantwortet stehen lassen,
+die es nicht war. Sie stehen hier, weil
 der Bericht sonst genau den Fehler wiederholte, den er an fünf Experimenten
 beanstandet: eine Messung zu zitieren, ohne zu prüfen, ob sie misst, was sie
 behauptet.
@@ -2426,37 +2457,50 @@ hat mehr gezeigt als eine getroffene.
 Fünfzehn Zeilen, die nichts vergleichen, haben hier wie dort gezeigt, dass die
 Modellzelle im Zitatmechanismus genau so viel leistete.
 
-**Die eingebaute Kontrolle gegen die naheliegendste Scheinerklärung.** Zehn
-Zahlen dieser Untersuchung maßen bei genauerem Hinsehen etwas anderes als
-behauptet, und alle zwölf stammen von mir. Gefunden wurden sie nicht durch
-Sorgfalt, sondern dadurch, dass jede Messung eine Kontrolle mitführte, die
-scheitern konnte.
+**Die eingebaute Kontrolle gegen die naheliegendste Scheinerklärung.** Vierzehn
+Stellen dieser Untersuchung maßen bei genauerem Hinsehen etwas anderes als
+behauptet, oder konnten die Frage nicht entscheiden, die sie stellten; alle
+vierzehn stammen von mir. Dreizehn davon sind gefunden worden, weil jede Messung
+eine Kontrolle mitführte, die scheitern konnte — nicht durch Sorgfalt. Die
+vierzehnte, die nach Preis ausgewählten Richter, hat der Auftraggeber gefunden,
+und sie war die folgenreichste.
 
 ### Was nicht gezeigt ist
 
 Dass das Erzeugnis gut ist. Das Gate zählt Belege und prüft Herkunft; über
 Qualität sagt es nichts, und dieser Bericht sagt es auch nicht.
 
-Und der eigentliche Anspruch des Projekts ist zur Hälfte beantwortet: ob ein
-Gewebe aus kurzlebigen Zellen mehr leistet als eine einzelne Zelle mit demselben
-Ziel. Abschnitt 24 misst es. Auf der Schicht, die am wenigsten urteilt, gibt es
-**keinen** Unterschied — ein Aufruf berührt dieselben sechs Prämissen wie
-achtundzwanzig Zellen. Auf der urteilenden Schicht ging die Präferenz neun von
-neun tauschstabilen Vergleichen an das Gewebe — von einem Richter, der beide
-Texte geschrieben hatte und dem niemand den Längenunterschied genommen hatte.
-Abschnitt 25 holt beides nach, mit vier familienfremden Familien und einem
-längenangeglichenen Gegentext, und von der Präferenz bleibt **einer von vier**.
+### Der eigentliche Anspruch, und wie er ausgeht
 
-Und Abschnitt 25 nimmt auch diese Hälfte zurück: vier familienfremde Richter,
-Länge kontrolliert, und die Präferenz für das Gewebe hält bei **einem von
-vier**; auf der Abdeckung sieht sie kein Richter vorn. **Der Kollektivvorteil
-ist nicht nachgewiesen, und der beste Hinweis darauf ist widerlegt.**
+Ob ein Gewebe aus kurzlebigen Zellen mehr leistet als eine einzelne Zelle mit
+demselben Ziel: die Abschnitte 24 bis 26 messen es, in drei Durchgängen mit
+jeweils strengerer Kontrolle, und die Antwort dreht sich dabei um.
 
-Zweifelsfrei bleibt damit kein Qualitätsunterschied, sondern ein Unterschied in
-der **Herkunft**: für jeden Bestandteil des Gewebe-Textes sagt das Ledger,
-worauf er sich stützt und welche Arme ihn getragen haben; für den Text der
-Einzelzelle gibt es nichts dergleichen. Ob das den Aufwand wert ist, ist eine
-Frage, die dieser Bericht stellen, aber nicht beantworten kann.
+| Durchgang | Richter | Abdeckung | Paarvergleich |
+| --- | --- | --- | --- |
+| 24 | `deepseek-flash` (Autor beider Texte) | 6/6 zu 6/6 — gleich | 9/9 für das **Gewebe**, Länge nicht kontrolliert |
+| 25 | vier familienfremde, nach Preis gewählt | kein Richter sieht das Gewebe vorn | längenangeglichen 1 von 4 fürs Gewebe |
+| 26 | sechs starke, fünf Familien, Positivkontrolle bestanden | **einstimmig Einzelzelle**, 6/6 gegen 2/6–4/6 | 2 Einzelzelle, 1 Gewebe, 3 Enthaltungen |
+
+**Der Kollektivvorteil ist nicht nur unbewiesen, er ist auf der Schicht, die am
+wenigsten urteilt, gegen das Gewebe entschieden.** Ein Aufruf berührt alle sechs
+Prämissen der Umgebung, achtundzwanzig Zellen zwei bis vier — einstimmig über
+sechs Richter aus fünf Familien.
+
+Der Grund ist benennbar und liegt nicht an der Zellgröße. In dieser Architektur
+ist die Abdeckung der Umgebung **niemandes Aufgabe**: Bedürfnisse entstehen aus
+dem Gewebe, das Gate prüft jeden Vorschlag einzeln, die Synthese fasst
+Angenommenes zusammen — und nirgends fragt etwas, was noch fehlt. Ein einzelner
+Aufruf mit der ganzen Umgebung im Kontext hat diese Stelle implizit. Das ist
+reparierbar, und Abschnitt 26 sagt, wie; gemessen ist es nicht.
+
+Zweifelsfrei bleibt damit kein Qualitätsvorteil, sondern ein Unterschied in der
+**Herkunft**: für jeden Bestandteil des Gewebe-Textes sagt das Ledger, worauf er
+sich stützt und welche blinden Arme ihn getragen haben; für den Text der
+Einzelzelle gibt es nichts dergleichen. Der Tausch, den diese Konstruktion
+anbietet, ist damit vollständig beschrieben: **achtundzwanzigfacher Aufwand und
+schlechtere Abdeckung gegen Nachvollziehbarkeit.** Ob er sich lohnt, ist keine
+Messfrage. Dass er der ganze Tausch ist, war eine.
 
 ## 24. Das Gewebe gegen eine Zelle
 
@@ -2497,6 +2541,12 @@ Die vorab festgelegte Marke zählte einen Unterschied ab 2 von 6. Der Unterschie
 ist **null**. Ein Aufruf berührt dieselben sechs Prämissen wie achtundzwanzig
 Zellen, und das gilt für jede der vier Ziehungen.
 
+> **Korrektur, Abschnitt 26.** Dieses Gleichstand-Ergebnis stammt von einem
+> Richter aus derselben Familie, die beide Texte geschrieben hat. Sechs
+> familienfremde Richter lesen denselben Vergleich einstimmig anders: die
+> Einzelzelle 6/6, das Gewebe 2/6 bis 4/6. Der Unterschied ist nicht null, er
+> geht gegen das Gewebe.
+
 ### Auf der Schicht, die urteilt: durchgehend das Gewebe
 
 | | tauschstabil | davon für das Gewebe |
@@ -2507,12 +2557,16 @@ Zellen, und das gilt für jede der vier Ziehungen.
 Neun tauschstabile Vergleiche, neunmal das Gewebe. Das ist konsistenter, als ich
 erwartet hatte, und es lässt sich nicht einfach wegreden.
 
-> **Korrektur, Abschnitt 25.** Diese neun Vergleiche haben einen Confound, den
-> ich nicht kontrolliert habe: der Gewebe-Text ist 2,2-mal so lang wie der Text
-> der Einzelzelle, und Längenpräferenz ist ein bekanntes Richter-Artefakt. Gegen
-> eine längenangeglichene Ziehung derselben Einzelzelle verlieren **drei von
-> vier** familienfremden Richtern ihre Präferenz. Der Befund dieses Abschnitts
-> ist damit zu einem erheblichen Teil die Länge, nicht der Inhalt.
+> **Korrektur, Abschnitte 25 und 26.** Diese neun Vergleiche haben einen
+> Confound, den ich nicht kontrolliert habe: der Gewebe-Text ist 2,2-mal so lang
+> wie der Text der Einzelzelle, und Längenpräferenz ist ein bekanntes
+> Richter-Artefakt. Gegen eine längenangeglichene Ziehung derselben Einzelzelle
+> verlieren **drei von vier** familienfremden Richtern ihre Präferenz
+> (Abschnitt 25). Mit sechs Richtern aus fünf Familien, die alle eine
+> Paarvergleich-Positivkontrolle bestehen, bleibt vom Vorteil nichts: bei
+> angeglichener Länge 2 Stimmen für die Einzelzelle, 1 für das Gewebe, 3
+> Enthaltungen — und auf der Abdeckung liegt die Einzelzelle **einstimmig** vorn
+> (Abschnitt 26). Der Befund dieses Abschnitts ist damit erledigt.
 
 Es bleibt trotzdem eine **Präferenz mit Interessenkonflikt** und keine
 Qualitätsaussage. Der Richter gehört derselben Modellfamilie an, die beide Texte
@@ -2539,7 +2593,7 @@ andere Richtung gegangen als die übrigen zehn: er hätte einen Befund
 **Der Kollektivvorteil ist nicht nachgewiesen.** Auf der einzigen Schicht, die
 weitgehend ohne Urteil auskommt, ist er null. Achtundzwanzig Zellen, rund
 fünfundzwanzigmal so viele Aufrufe, und die Abdeckung der Umgebung ist
-identisch.
+identisch. (Nach Abschnitt 26: schlechter.)
 
 **Widerlegt ist er aber auch nicht** — so stand es hier, bevor Abschnitt 25
 gemessen war. Neun von neun tauschstabilen Vergleichen gehen an das Gewebe, und
@@ -2576,6 +2630,11 @@ beide Texte geschrieben. Mit einem OpenRouter-Schlüssel ist das behebbar.
 Ausgeschlossen sind zwei Familien. **DeepSeek**, weil es Partei ist. Und
 **Anthropic**, weil das meine eigene ist und ich den Aufbau gebaut habe, der
 hier zur Debatte steht. Es urteilen Google, OpenAI, Mistral und Qwen.
+
+> **Vorbemerkung, nachgetragen.** Die vier Modelle dieses Abschnitts sind nach
+> Preis ausgewählt — ein Fehler, den Abschnitt 26 benennt und mit sechs starken
+> Richtern korrigiert. Was hier steht, gilt deshalb nur als erster Durchgang;
+> das Urteil liegt in Abschnitt 26.
 
 Vier unabhängige Familien sind zugleich die eigene Prämisse dieses Berichts,
 angewandt auf seine letzte Messung: Übereinstimmung zwischen Armen, die einander
@@ -2659,6 +2718,10 @@ hätte, der meiner war.
 widerlegt.** Achtundzwanzig Zellen gegen einen Aufruf: gleiche Abdeckung, kein
 Urteil, sobald die Länge kontrolliert ist.
 
+Mit den starken Richtern aus Abschnitt 26 wird daraus ein Nachteil: die
+Einzelzelle deckt einstimmig mehr ab. Der Satz oben bleibt als Zwischenstand
+richtig und ist nicht mehr der Endstand.
+
 **Was unverändert steht, ist die Herkunft.** Für jeden Bestandteil des
 Gewebe-Textes sagt das Ledger, worauf er sich stützt und welche Arme ihn
 getragen haben. Für den Text der Einzelzelle gibt es nichts dergleichen. Das war
@@ -2669,7 +2732,144 @@ Ob Nachvollziehbarkeit den achtundzwanzigfachen Aufwand wert ist, ist keine
 Messfrage. Dass sie das Einzige ist, was er einbringt, ist eine.
 
 
-## 26. Nachprüfen
+## 26. Starke Richter — und die Umkehrung
+
+Abschnitt 25 hat mit vier familienfremden Richtern gemessen, und ich habe sie
+nach **Preis** ausgewählt. Bei einem Budget von fünf Dollar, von dem der Lauf
+zwei Cent verbraucht hat. Das ist kein Abwägen gegen eine Schranke, sondern eine
+Optimierung gegen eine Schranke, die nie gebunden hat.
+
+Die Folge ist keine Kleinigkeit. **Ein Richter, der schwächer ist als das Modell,
+dessen Arbeit er beurteilt, kann nicht als urteilsfähig unterstellt werden** —
+und dieser Bericht misst auf zwanzig Seiten, was schwache Richter produzieren.
+Damit war die Kernaussage von Abschnitt 25 unterbestimmt. Dass drei von vier
+Richtern bei angeglichener Länge kippen, hatte zwei Lesarten:
+
+1. Die Präferenz war ein Längenartefakt.
+2. Die Richter sind für diesen Vergleich zu schwach; gegen den kurzen Text gab
+   ihnen die Länge einen leichten Anhaltspunkt, ohne ihn rauschen sie.
+
+Abschnitt 25 behauptet (1). Die Daten trugen beide. Und es fehlte eine
+Kontrolle ganz: für die Abdeckung gibt es den Teetext als Negativkontrolle, für
+den **Paarvergleich gab es keine** — ich habe nie geprüft, ob ein Richter einen
+offensichtlichen Fall überhaupt richtig entscheidet.
+
+### Der Aufbau
+
+Sechs Richter, fünf Familien, jeweils die Spitze der Familie, soweit mit
+Reasoning kalkulierbar. Ausgeschlossen bleiben DeepSeek (Autor beider Texte) und
+Anthropic (meine eigene Familie). Neu: jeder Richter vergleicht zuerst das
+Gewebe gegen den Absatz über Teekochen, in beiden Reihenfolgen. Wer das nicht
+tauschstabil richtig entscheidet, dessen Paarvergleiche werden nicht gelesen.
+
+**Alle sechs bestehen diese Positivkontrolle.** Das war die Vorhersage der
+Vorregistrierung, und sie trifft zu. Diese Richter urteilen.
+
+### Berührte Prämissen
+
+| Richter | Familie | Reihenfolgenkontrolle | Gewebe | Einzelzelle | Teetext |
+| --- | --- | --- | ---: | ---: | ---: |
+| `gemini-3.1-pro-preview` | Google | **gescheitert** (2 instabil) | (0/6) | 6/6 | 0/6 |
+| `gpt-6-astra` | OpenAI | gehalten | **2/6** | **6/6** | 0/6 |
+| `gpt-5` | OpenAI | gehalten | **3/6** | **6/6** | 0/6 |
+| `qwen3.8-max-0902` | Qwen | gehalten | **3/6** | **6/6** | 0/6 |
+| `grok-4.6` | xAI | gehalten | **3/6** | **6/6** | 0/6 |
+| `mistral-medium-3-5` | Mistral | gehalten | **4/6** | **6/6** | 0/6 |
+
+Geminis Abdeckungszahlen stehen in Klammern und werden nicht gelesen, weil seine
+Reihenfolgenkontrolle gescheitert ist — dieselbe Regel wie in Abschnitt 25. Sein
+Paarvergleich wird gelesen, weil dessen eigene Kontrolle gehalten hat.
+
+**Einstimmig: die Einzelzelle berührt alle sechs Prämissen, das Gewebe zwei bis
+vier.** Fünf von fünf lesbaren Richtern überschreiten die vorab festgelegte
+Marke von 2 — zugunsten der **Einzelzelle**. Kein Richter sieht das Gewebe vorn.
+
+Das entscheidet zwischen den beiden Lesarten, und zwar gegen die zweite. Die
+starken Richter rauschen nicht: sie geben dem Teetext einheitlich 0 von 6,
+bestehen die Positivkontrolle und liegen untereinander in einem Band von drei
+Punkten. Sie urteilen — und sie urteilen deutlicher gegen das Gewebe als die
+schwachen.
+
+### Paarvergleich
+
+| Richter | gegen den kurzen Text | längenangeglichen |
+| --- | --- | --- |
+| `gemini-3.1-pro-preview` | kein Urteil | **Einzelzelle** |
+| `gpt-6-astra` | kein Urteil | **Einzelzelle** |
+| `gpt-5` | Gewebe | kein Urteil |
+| `qwen3.8-max-0902` | Gewebe | **Gewebe** |
+| `grok-4.6` | kein Urteil | kein Urteil |
+| `mistral-medium-3-5` | Gewebe | kein Urteil |
+
+Bei angeglichener Länge: **2 Einzelzelle, 1 Gewebe, 3 kein Urteil.** Gegen den
+kurzen Text 3 von 6 für das Gewebe — wo das schwache Panel aus Abschnitt 25 noch
+4 von 4 lieferte.
+
+Die Länge war also ein Teil des Effekts, Lesart 1 hält insoweit. Aber sie war
+nicht der ganze: auch gegen den kurzen, 2,2-mal längeren Gewebe-Text kommt die
+Hälfte der starken Richter zu keinem Urteil, und bei angeglichener Länge kippt
+die Mehrheit der Urteile auf die andere Seite. **Der Paarvergleich trägt jetzt in
+keine Richtung.** Was trägt, ist die Abdeckung, und die geht gegen das Gewebe.
+
+### Der Confound, den auch dieser Lauf nicht auflöst
+
+Die Einzelzelle wurde **einmal** aufgerufen, mit allen sechs Prämissen im
+Prompt. Der Gewebe-Text ist aus vier Vorschlägen zusammengesetzt, die aus vier
+getrennten Fragen hervorgingen; keine Zelle hat je alle sechs Prämissen
+zusammen gesehen, und keine Regel im Gate verlangt, dass die Vorschläge
+zusammengenommen die Umgebung abdecken. Der Abdeckungsvergleich vergleicht
+insofern zwei ungleiche Aufgaben.
+
+Nur ist das keine Entschuldigung, sondern der Befund selbst, eine Ebene tiefer.
+Die Abdeckung der Umgebung ist bei dieser Architektur **niemandes Aufgabe**:
+`deriveNeeds()` leitet Fragen aus dem Gewebe ab, das Gate prüft jeden Vorschlag
+einzeln gegen eine zitierte Stelle, und die Synthese fasst zusammen, was
+angenommen wurde. Zwischen diesen drei Schritten gibt es keine Stelle, an der
+irgendetwas fragt, was noch fehlt. Ein einzelner Aufruf mit der ganzen Umgebung
+im Kontext hat diese Stelle implizit — deshalb gewinnt er.
+
+Das ist reparierbar, und es wäre die nächste Messung: ein Bedarf, der aus
+*unberührten* Prämissen entsteht, so wie `deriveAnchorNeeds()` aus unzitierten
+Beobachtungen einen erzeugt. Solange er fehlt, ist der gemessene Nachteil echt
+und seine Ursache benannt.
+
+### Noch eine eigene Fehlmessung
+
+Der Panel-Lauf lief im Hintergrund, und ich habe seine Ausgabe durch
+`tail -34` gefiltert. Der erste Ausgabeblock fiel damit weg, und das war
+Geminis. Seine Abdeckungszahlen waren verloren; ich habe sie für 1,33 $
+nachgemessen. Kein Befund hat sich dadurch geändert, aber es ist der vierzehnte
+Eintrag in der Liste aus Abschnitt 13 und der erste, bei dem nicht die Messung
+falsch war, sondern ich die richtige weggeworfen habe.
+
+### Was jetzt steht
+
+**Auf der Schicht, die am wenigsten urteilt, ist der Kollektivnachteil
+gemessen.** Einstimmig, von sechs Richtern aus fünf Familien, die alle eine
+Positivkontrolle bestanden haben: ein Aufruf berührt sechs von sechs Prämissen,
+achtundzwanzig Zellen zwei bis vier.
+
+**Auf der urteilenden Schicht trägt nichts.** Mit Längenkontrolle und starken
+Richtern zerfällt der Paarvergleich in drei Enthaltungen, zwei Stimmen für die
+Einzelzelle und eine für das Gewebe.
+
+**Was übrig bleibt, ist die Herkunft** — unverändert seit Abschnitt 24. Für jeden
+Bestandteil des Gewebe-Textes sagt das Ledger, worauf er sich stützt und welche
+blinden Arme ihn getragen haben. Für den Text der Einzelzelle gibt es nichts
+dergleichen.
+
+Die Bilanz dieser drei Läufe ist damit unangenehm eindeutig: **die Konstruktion
+kostet den achtundzwanzigfachen Aufwand, deckt ihre Umgebung schlechter ab und
+liefert dafür Nachvollziehbarkeit.** Ob dieser Tausch sich lohnt, ist keine
+Messfrage. Dass er der ganze Tausch ist, war eine — und sie ist jetzt
+beantwortet.
+
+Kosten: 210 Panel-Aufrufe, 42 für Astra, 36 für den Gemini-Nachlauf, rund
+3,15 $. Belege in [`docs/runs/037`](runs/037), vorab festgelegt in
+[`docs/runs/037-vorab.md`](runs/037-vorab.md).
+
+
+## 27. Nachprüfen
 
 Alle Zahlen in diesem Bericht stammen aus den committeten Receipts und lassen
 sich gegenrechnen:
@@ -2731,8 +2931,10 @@ node src/cli.mjs panel --state docs/runs/031/embryo.json
 # Das Gewebe gegen eine einzelne Zelle, mit beiden Kontrollen
 DEEPSEEK_API_KEY=… DRAWS=3 node tools/single-cell.mjs
 
-# Dasselbe von vier familienfremden Richtern, mit Längenkontrolle
+# Dasselbe von familienfremden Richtern, mit Längenkontrolle und
+# Paarvergleich-Positivkontrolle; JUDGES überschreibt die Richterliste
 OPENROUTER_API_KEY=… node tools/outside-judges.mjs
+OPENROUTER_API_KEY=… JUDGES=openai/gpt-6-astra node tools/outside-judges.mjs
 
 # Der lokale Richter, der es nicht kann — und dessen Kontrolle das zeigt
 node tools/independent-judge.mjs
@@ -2760,7 +2962,7 @@ grep -o 'verdict_scores.\{0,240\}' docs/runs/008/events.jsonl
 ---
 
 Grundlage sind die hash-verketteten Receipts der Branches `archive/embryo-001`
-bis `archive/embryo-004` und `embryo-state` sowie die Läufe 006 bis 033 unter
+bis `archive/embryo-004` und `embryo-state` sowie die Läufe 006 bis 037 unter
 `docs/runs/`. Die lokalen Messungen liefen gegen die angehefteten Revisionen
 `12fd25f7` (135M), `a10cc151` (360M) und `31b70e2e` (1.7B); die Läufe 025 bis
 033 gegen `deepseek-flash` über die OpenAI-Format-API, mit dem Denkmodus im
