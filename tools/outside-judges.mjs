@@ -41,6 +41,9 @@ const JUDGES = (process.env.JUDGES ?? [
   "mistralai/mistral-medium-3-5",
   "qwen/qwen3.8-max-0902",
   "x-ai/grok-4.6",
+  // Added after the fact: the strongest judge that is still costable, and the
+  // first to pass every control and still not favour the tissue.
+  "openai/gpt-6-astra",
 ].join(",")).split(",");
 
 const base = new URL("../docs/runs/", import.meta.url).pathname;
