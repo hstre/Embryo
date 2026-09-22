@@ -28,11 +28,19 @@ import { readJson } from "../src/state.mjs";
 
 const KEY = process.env.OPENROUTER_API_KEY;
 if (!KEY) throw new Error("OPENROUTER_API_KEY is not set");
+// The first pass used the cheap-but-decent tier of each family and was wrong to.
+// A judge weaker than the model whose work it judges cannot be presumed able to
+// judge it, and this report spends twenty pages measuring what weak judges do.
+// The budget was five dollars and the first pass spent two cents, so cost was
+// never the constraint I optimised against. These are the top of each family
+// that is still costable — gpt-5.5-pro at $180/M completion is not, with
+// reasoning in the loop.
 const JUDGES = (process.env.JUDGES ?? [
-  "google/gemini-2.5-flash",
-  "openai/gpt-5-mini",
-  "mistralai/mistral-medium-3.1",
-  "qwen/qwen3-235b-a22b-2507",
+  "google/gemini-3.1-pro-preview",
+  "openai/gpt-5",
+  "mistralai/mistral-medium-3-5",
+  "qwen/qwen3.8-max-0902",
+  "x-ai/grok-4.6",
 ].join(",")).split(",");
 
 const base = new URL("../docs/runs/", import.meta.url).pathname;
@@ -44,12 +52,13 @@ const TEA = "Wasser siedet auf Meereshöhe bei hundert Grad Celsius. Schwarzer T
 
 let calls = 0;
 let tokens = 0;
+let completion = 0;
 // 512, not 16. A reasoning model spends the budget on its own trace before it
 // writes anything, so a budget that fits the word "YES" returns nothing at all —
 // run 026 lost six relations to exactly this and the lesson did not travel into
 // this tool. gpt-5-mini answered 0 of 18 premise questions on the first pass for
 // that reason, which read as the model failing a control it never saw.
-async function ask(model, system, user, maxTokens = 4096) {
+async function ask(model, system, user, maxTokens = 2048) {
   for (let attempt = 0; attempt < 4; attempt += 1) {
     try {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -70,6 +79,7 @@ async function ask(model, system, user, maxTokens = 4096) {
       }
       calls += 1;
       tokens += payload.usage?.prompt_tokens ?? 0;
+      completion += payload.usage?.completion_tokens ?? 0;
       return (payload.choices?.[0]?.message?.content ?? "").trim();
     } catch (error) {
       if (attempt === 3) throw error;
@@ -127,6 +137,15 @@ for (const model of JUDGES) {
     (tally.unstable ? ` · ${tally.unstable} reihenfolgeabhängig` : ""));
   console.log(`  Kontrolle: ${controlHolds ? "gehalten" : "GESCHEITERT — die Abdeckungszahlen sind nicht lesbar"}`);
 
+  // The control the first pass did not have. A judge must get an obvious case
+  // right before its verdict on a hard one means anything: the tissue against a
+  // paragraph about brewing tea, swap-stable. Failing this does not make a judge
+  // weak at this comparison — it makes its pairwise answers unusable.
+  const forwardTea = await prefer(model, tissue, TEA);
+  const reverseTea = await prefer(model, TEA, tissue);
+  const teaOk = forwardTea === "A" && reverseTea === "B";
+  console.log(`  Paarvergleich-Positivkontrolle (gegen den Teetext): ${teaOk ? "bestanden" : "GESCHEITERT — die Paarvergleiche unten sind nicht lesbar"}`);
+
   for (const [label, rival] of [["kurz", short], ["längenangeglichen", long]]) {
     if (!rival) continue;
     const forward = await prefer(model, tissue, rival);
@@ -138,4 +157,4 @@ for (const model of JUDGES) {
   }
   console.log();
 }
-console.log(`Aufrufe ${calls}, Prompt-Tokens ${tokens}`);
+console.log(`Aufrufe ${calls}, Prompt-Tokens ${tokens}, Completion-Tokens ${completion}`);
